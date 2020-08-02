@@ -1,18 +1,8 @@
 GCC = gcc -Wall -Wextra -Werror
 NAME = RTv1
-SRCS = sources/cl_init.c\
-		sources/coloring.c\
-		sources/controls.c\
-		sources/controls_2.c\
-		sources/data_init.c\
-		sources/draw_image.c\
-		sources/errors.c\
-		sources/key.c\
-		sources/main.c\
-		sources/rgb.c
+SRCS = sources/main.c
 OBJS = $(SRCS:.c=.o)
-HEAD = -c -I includes\fractol.h\
-				includes\key.h
+HEAD = -c -I includes\rtv1.h
 
 ifeq ($(OS),Windows_NT)
 	detected_OS := Windows
