@@ -33,9 +33,7 @@ sources%.o: %.c
 
 lib:
 		make -C libft
-		./sdl/configure
-		make -C sdl
-		make -C sdl install
+		cd sdl && ./configure && make && make install
 
 $(NAME): $(OBJS) lib
 		 $(GCC) $(OBJS)  $(LIB)   -o $(NAME)
@@ -47,6 +45,6 @@ clean:
 fclean: clean
 		rm -f $(NAME)
 		make -C libft fclean
-		make -C sdl clean
+		cd sdl && make clean
 
 re: fclean all
