@@ -22,15 +22,18 @@ endif
 ifeq ($(detected_OS),Linux)
 	#LIB += -L./libs/glad/ -lglad -ldl  -lGL -L./libs/glfw/src/ -lglfw3 \
 	-lXrandr -lXrender -lXi -lXfixes -lXxf86vm -lXext -lX11 -lpthread -lxcb -lXau -lXdmcp
-	LIBMAKE := minilibx/minilibx
-	LIB :=  -L libft -lft -L $(LIBMAKE) -lmlx_Linux  -lXrandr -lXrender -lXi -lXfixes \
-	-lXxf86vm -lXext -lX11 -lpthread -lxcb -lXau -lXdmcp -lm -lOpenCL -lrt
+#	LIBMAKE := minilibx/minilibx
+#	LIB :=  -L libft -lft -L $(LIBMAKE) -lmlx_Linux  -lXrandr -lXrender -lXi -lXfixes \
+#	-lXxf86vm -lXext -lX11 -lpthread -lxcb -lXau -lXdmcp -lm -lOpenCL -lrt
+	LIB :=  -L libft -lft -L -lXrandr -lXrender -lXi -lXfixes \
+    	-lXxf86vm -lXext -lX11 -lpthread -lxcb -lXau -lXdmcp -lm -lOpenCL -lrt
 endif
 ifeq ($(detected_OS),Darwin)  
 	#LIB = -L./libs/glad/ -lglad -L./libs/glfw/src/ -lglfw3      # Mac OS X
 	#LIBRARIES += -framework Cocoa -framework OpenGL -framework IOKit -framework CoreVideo
-	LIBMAKE := minilibx/minilibx_macos
-	LIB = -L libft -lft -L $(LIBMAKE) -lmlx -framework OpenGL -framework Appkit -framework OpenCL
+#	LIBMAKE := minilibx/minilibx_macos
+#	LIB = -L libft -lft -L $(LIBMAKE) -lmlx -framework OpenGL -framework Appkit -framework OpenCL
+	LIB = -L libft -lft -L -framework OpenGL -framework Appkit -framework OpenCL
 endif
 
 all: $(NAME)
@@ -40,7 +43,9 @@ sources%.o: %.c
 
 lib:
 		make -C libft
-		make -C $(LIBMAKE)
+		./sdl/configure
+		make -C sdl
+		make -C sdl install
 
 $(NAME): $(OBJS) lib
 		 $(GCC) $(OBJS)  $(LIB)   -o $(NAME)
@@ -52,6 +57,6 @@ clean:
 fclean: clean
 		rm -f $(NAME)
 		make -C libft fclean
-		make -C $(LIBMAKE) clean
+		make -C sdl clean
 
 re: fclean all
