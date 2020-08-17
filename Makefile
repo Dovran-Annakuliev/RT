@@ -23,7 +23,7 @@ ifeq ($(detected_OS),Darwin)
 	#LIBRARIES += -framework Cocoa -framework OpenGL -framework IOKit -framework CoreVideo
 #	LIBMAKE := minilibx/minilibx_macos
 #	LIB = -L libft -lft -L $(LIBMAKE) -lmlx -framework OpenGL -framework Appkit -framework OpenCL
-	LIB = -L libft -lft -L -framework OpenGL -framework Appkit -framework OpenCL
+	LIB = -L libft -lft -L. -lSDL2 -framework OpenGL -framework Appkit -framework OpenCL
 endif
 
 all: $(NAME)
@@ -36,7 +36,7 @@ lib:
 		cd sdl && ./configure && make && make install
 
 $(NAME): $(OBJS) lib
-		 $(GCC) $(OBJS)  $(LIB)   -o $(NAME)
+		 $(GCC) $(OBJS)  $(LIB) -o $(NAME)
 
 clean:
 		rm -f $(OBJS)
