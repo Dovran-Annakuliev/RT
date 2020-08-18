@@ -1,4 +1,4 @@
-#include "../sdl_fr/SDL2.framework/Headers/SDL.h"
+#include "../includes/rtv1.h"
 
 const int WIDTH = 800, HEIGHT = 600;
 
