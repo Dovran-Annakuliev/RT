@@ -1,0 +1,11 @@
+#ifndef ERROR_CODES_H
+# define ERROR_CODES_H
+
+# define MLX_MALLOC_ERROR -1
+# define MLX_INIT_ERROR -2
+# define MLX_MAIN_WINDOW_CREATE_ERROR -3
+# define MLX_HELP_WINDOW_CREATE_ERROR -4
+# define MLX_IMAGE_CREATE_ERROR -5
+# define MLX_IMAGE_DATA_ERROR - 6
+
+#endif

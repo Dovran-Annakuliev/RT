@@ -1,6 +1,9 @@
 GCC = gcc -Wall -Wextra -Werror
 NAME = RTv1
-SRCS = sources/main.c
+SRC_DIR = sources/
+SRCS = $(SRC_DIR)main.c\
+		$(SRC_DIR)cl_init.c\
+		$(SRC_DIR)error.c
 INC = includes/
 OBJS = $(SRCS:.c=.o)
 
