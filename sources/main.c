@@ -1,4 +1,4 @@
-#include "../sdl/include/SDL.h"
+#include "../sdl_fr/SDL2.framework/Headers/SDL.h"
 
 const int WIDTH = 800, HEIGHT = 600;
 
@@ -25,5 +25,5 @@ int main( int argc, char *argv[] )
 	SDL_DestroyWindow( window );
 	SDL_Quit( );
 
-	return EXIT_SUCCESS;
+	return (0);
 }
