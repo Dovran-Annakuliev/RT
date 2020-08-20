@@ -19,7 +19,7 @@ ifeq ($(detected_OS),Linux)
     	-lXxf86vm -lXext -lX11 -lpthread -lxcb -lXau -lXdmcp -lm -lOpenCL -lrt
 endif
 ifeq ($(detected_OS),Darwin)  
-	LIB = -L libft -lft -framework OpenGL -framework Appkit -framework OpenCL -I SDL2.framework/Headers -F ./ -framework SDL2
+	LIB = -L libft -lft -framework OpenGL -framework Appkit -framework OpenCL -I SDL2.framework/Headers -F ./ -framework SDL2 -I SDL2_image.framework/Headers -F ./ -framework SDL2_image
 endif
 
 all: $(NAME)
@@ -32,8 +32,9 @@ lib: install
 
 install:
 		cp -r SDL2.framework ~/Library/Frameworks/
+		cp -r SDL2_image.framework ~/Library/Frameworks/
 
-$(NAME): $(OBJS) $(INC)rtv1.h lib
+$(NAME): lib $(OBJS) $(INC)rtv1.h
 		 $(GCC) $(OBJS) $(LIB) -o $(NAME)
 
 clean:
@@ -48,3 +49,4 @@ re: fclean all
 
 uninstall:
 		rm -rf ~/Library/Frameworks/SDL2.framework
+		rm -rf ~/Library/Frameworks/SDL2_image.framework

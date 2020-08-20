@@ -9,14 +9,16 @@
 #endif
 
 
+
 #include "../libft/includes/libft.h"
 #include "../SDL2.framework/Headers/SDL.h"
+#include "../SDL2_image.framework/Headers/SDL_image.h"
 #include "error_codes.h"
 
 //# define WIDTH 800
 //# define HEIGHT 600
-# define WINPOS_X 200
-# define WINPOS_Y 200
+# define WINPOS_X 0
+# define WINPOS_Y 0
 
 typedef union			u_rgb
 {
@@ -46,8 +48,10 @@ typedef struct			s_cl
 
 typedef struct			s_rt
 {
-	SDL_Window			*window;
-	SDL_Surface			*surface;
+	SDL_Window			*window;;
+	SDL_Renderer		*renderer;
+	SDL_Texture			*texture;
+	int 				*pixels;
 	int 				width;
 	int 				height;
 }						t_rt;
@@ -71,6 +75,6 @@ char					**get_kernel_source(t_cl *cl, char *type);
  ** ---error---
  */
 
-void					error(int err);
+void					error(int err, const char *message);
 
 #endif
