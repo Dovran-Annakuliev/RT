@@ -9,14 +9,16 @@
 #endif
 
 
+
 #include "../libft/includes/libft.h"
 #include "../SDL2.framework/Headers/SDL.h"
+#include "../SDL2_image.framework/Headers/SDL_image.h"
 #include "error_codes.h"
 
 //# define WIDTH 800
 //# define HEIGHT 600
-# define WINPOS_X 200
-# define WINPOS_Y 200
+# define WINPOS_X 0
+# define WINPOS_Y 0
 
 typedef union			u_rgb
 {
