@@ -1,3 +1,6 @@
 [submodule "SDL2.framework"]
 	path = SDL2.framework
 	url = https://github.com/Dovran-Annakuliev/SDL2.framework.git
+[submodule "libft"]
+	path = libft
+	url = https://github.com/ltammie/libft.git
