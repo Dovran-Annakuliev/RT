@@ -48,6 +48,9 @@ typedef struct			s_rt
 {
 	SDL_Window			*window;
 	SDL_Surface			*surface;
+	SDL_Renderer		*renderer;
+	SDL_Texture			*texture;
+	int 				*pixels;
 	int 				width;
 	int 				height;
 }						t_rt;

@@ -8,15 +8,13 @@ t_rt	*init_data()
 	!data ? error(MALLOC_ERROR) : 0;
 	if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
 		error(INIT_ERROR);
-	data->window = SDL_CreateWindow("RTv1", WINPOS_X, WINPOS_Y, 0, 0, SDL_WINDOW_FULLSCREEN);
+	data->window = SDL_CreateWindow("RTv1", WINPOS_X, WINPOS_Y, 800, 600, SDL_WINDOW_FULLSCREEN);
 	!(data->window) ? error(WINDOW_CREATE_ERROR) : 0;
 	SDL_GetWindowSize(data->window, &data->width, &data->height);
 	data->surface = SDL_GetWindowSurface(data->window);
-	//del
-	SDL_FillRect(data->surface, NULL, SDL_MapRGB(data->surface->format, 0xFF, 0xFF, 0xFF));
-	SDL_UpdateWindowSurface(data->window);
-	SDL_Delay(5000);
-	//
+	data->surface = IMG_;
+	data->renderer = SDL_CreateRenderer(data->window, -1, SDL_RENDERER_ACCELERATED);
+	data->texture = load;
 	return (data);
 }
 
@@ -25,6 +23,5 @@ void 	close_rt(t_rt *data)
 	SDL_DestroyWindow(data->window);
 	SDL_Quit();
 	free(data);
-	(void*)data;
 	data = NULL;
 }
