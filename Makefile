@@ -3,7 +3,9 @@ NAME = RTv1
 SRC_DIR = sources/
 SRCS = $(SRC_DIR)main.c\
 		$(SRC_DIR)cl_init.c\
-		$(SRC_DIR)error.c
+		$(SRC_DIR)error.c\
+		$(SRC_DIR)init.c
+
 INC = includes/
 OBJS = $(SRCS:.c=.o)
 

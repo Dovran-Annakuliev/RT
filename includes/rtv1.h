@@ -13,8 +13,10 @@
 #include "../SDL2.framework/Headers/SDL.h"
 #include "error_codes.h"
 
-# define WIDTH 800
-# define HEIGHT 600
+//# define WIDTH 800
+//# define HEIGHT 600
+# define WINPOS_X 200
+# define WINPOS_Y 200
 
 typedef union			u_rgb
 {
@@ -42,17 +44,31 @@ typedef struct			s_cl
 	size_t				global_size[2];
 }						t_cl;
 
+typedef struct			s_rt
+{
+	SDL_Window			*window;
+	SDL_Surface			*surface;
+	int 				width;
+	int 				height;
+}						t_rt;
 
 /*
-** ----------OpenCl functions---------
+ ** ---init_functions---
+ */
+
+t_rt					*init_data();
+void					close_rt(t_rt *data);
+
+/*
+** ---OpenCl functions---
 */
 
-void					cl_init(t_cl *cl);
+void					cl_init(t_cl *cl, int width, int height);
 void					cl_free(t_cl *cl);
 char					**get_kernel_source(t_cl *cl, char *type);
 
 /*
- ** --error--
+ ** ---error---
  */
 
 void					error(int err);

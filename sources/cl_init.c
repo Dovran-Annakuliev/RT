@@ -28,13 +28,13 @@ char			**get_kernel_source(t_cl *cl, char *type)
 	cl->count = get_lines(fd);
 	close(fd);
 	if (!(source = (char **)malloc(sizeof(char *) * cl->count)))
-		error(MLX_MALLOC_ERROR);
+		error(MALLOC_ERROR);
 	fd = open(type, O_RDONLY);
 	i = 0;
 	while (get_next_line(fd, &line))
 	{
 		if (!(source[i] = ft_strdup(line)))
-			error(MLX_MALLOC_ERROR);
+			error(MALLOC_ERROR);
 		free(line);
 		line = NULL;
 		i++;
@@ -43,7 +43,7 @@ char			**get_kernel_source(t_cl *cl, char *type)
 	return (source);
 }
 
-void			cl_init(t_cl *cl)
+void			cl_init(t_cl *cl, int width, int height)
 {
 	cl_int				ret;
 
@@ -57,8 +57,8 @@ void			cl_init(t_cl *cl)
 	cl->kernel = clCreateKernel(cl->program, "array_add", &ret);
 	cl->queue = clCreateCommandQueue(cl->context, cl->device_id, 0, &ret);
 	cl->dim = 2;
-	cl->global_size[0] = WIDTH;
-	cl->global_size[1] = HEIGHT;
+	cl->global_size[0] = width;
+	cl->global_size[1] = height;
 }
 
 void			cl_free(t_cl *cl)

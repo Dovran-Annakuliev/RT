@@ -1,27 +1,10 @@
 #include "../includes/rtv1.h"
 
-int main( int argc, char *argv[] )
+int main(int argc, char **argv)
 {
-	SDL_Init( SDL_INIT_EVERYTHING );
+	t_rt *data;
 
-	SDL_Window *window = SDL_CreateWindow( "Hello SDL World", SDL_WINDOWPOS_UNDEFINED,
-			SDL_WINDOWPOS_UNDEFINED, WIDTH, HEIGHT, SDL_WINDOW_ALLOW_HIGHDPI );
-
-	SDL_Event windowEvent;
-
-	while (1)
-	{
-		if ( SDL_PollEvent( &windowEvent ) )
-		{
-			if ( SDL_QUIT == windowEvent.type )
-			{
-				break;
-			}
-		}
-	}
-
-	SDL_DestroyWindow( window );
-	SDL_Quit( );
-
+	data = init_data();
+	close_rt(data);
 	return (0);
 }
