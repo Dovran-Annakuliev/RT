@@ -24,17 +24,17 @@ char			**get_kernel_source(t_cl *cl, char *type)
 
 	line = NULL;
 	if (((fd = open(type, O_RDONLY)) < 0) || ((read(fd, line, 0)) < 0))
-		error(0);
+		error(0, "");
 	cl->count = get_lines(fd);
 	close(fd);
 	if (!(source = (char **)malloc(sizeof(char *) * cl->count)))
-		error(MALLOC_ERROR);
+		error(MALLOC_ERROR, "Malloc error");
 	fd = open(type, O_RDONLY);
 	i = 0;
 	while (get_next_line(fd, &line))
 	{
 		if (!(source[i] = ft_strdup(line)))
-			error(MALLOC_ERROR);
+			error(MALLOC_ERROR, "Malloc error");
 		free(line);
 		line = NULL;
 		i++;

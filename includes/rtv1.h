@@ -48,9 +48,7 @@ typedef struct			s_cl
 
 typedef struct			s_rt
 {
-	SDL_Window			*window;
-	SDL_DisplayMode		*mode;
-	SDL_Surface			*surface;
+	SDL_Window			*window;;
 	SDL_Renderer		*renderer;
 	SDL_Texture			*texture;
 	int 				*pixels;
@@ -77,6 +75,6 @@ char					**get_kernel_source(t_cl *cl, char *type);
  ** ---error---
  */
 
-void					error(int err);
+void					error(int err, const char *message);
 
 #endif

@@ -3,12 +3,17 @@
 int main(int argc, char **argv)
 {
 	t_rt *data;
+	SDL_Event event;
 
 	data = init_data();
-	SDL_RenderCopy(data->renderer, data->texture, NULL, NULL);
-	SDL_RenderPresent(data->renderer);
-	SDL_Delay(5000);
+	while (1)
+	{
+		SDL_RenderClear(data->renderer);
+		SDL_RenderCopy(data->renderer, data->texture, NULL, NULL);
+		SDL_RenderPresent(data->renderer);
+		if (SDL_PollEvent(&event) && event.type == SDL_QUIT)
+			break;
+	}
 	close_rt(data);
-
 	return (0);
 }

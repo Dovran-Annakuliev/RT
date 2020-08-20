@@ -1,6 +1,6 @@
 #include "../includes/rtv1.h"
 
-void	error(int err)
+void	error(int err, const char *message)
 {
 	if (err == 1)
 	{
@@ -9,7 +9,7 @@ void	error(int err)
 	}
 	else
 	{
-		ft_printf("%d\n", err);
+		ft_printf("SDL init fail: %s[%d]\n", message, err);
 		exit(0);
 	}
 }
