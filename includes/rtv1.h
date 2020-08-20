@@ -47,6 +47,7 @@ typedef struct			s_cl
 typedef struct			s_rt
 {
 	SDL_Window			*window;
+	SDL_DisplayMode		*mode;
 	SDL_Surface			*surface;
 	SDL_Renderer		*renderer;
 	SDL_Texture			*texture;
