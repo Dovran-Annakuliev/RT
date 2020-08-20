@@ -9,7 +9,7 @@
 #endif
 
 
-#include "../libft/libft.h"
+#include "../libft/includes/libft.h"
 #include "../SDL2.framework/Headers/SDL.h"
 #include "error_codes.h"
 
