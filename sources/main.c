@@ -6,5 +6,6 @@ int main(int argc, char **argv)
 
 	data = init_data();
 	close_rt(data);
+
 	return (0);
 }
