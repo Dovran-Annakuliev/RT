@@ -71,6 +71,14 @@ void					cl_init(t_cl *cl, int width, int height);
 void					cl_free(t_cl *cl);
 char					**get_kernel_source(t_cl *cl, char *type);
 
+
+/*
+ ** ---controls---
+ */
+void					controller(SDL_Event *e);
+void					keyboard_controller(SDL_Event *e);
+void					mouse_controller(SDL_Event *e);
+
 /*
  ** ---error---
  */

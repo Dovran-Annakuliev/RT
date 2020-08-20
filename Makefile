@@ -1,10 +1,14 @@
 GCC = gcc -Wall -Wextra -Werror
 NAME = RTv1
 SRC_DIR = sources/
+CONTROLLERS_DIR = $(SRC_DIR)controllers/
 SRCS = $(SRC_DIR)main.c\
 		$(SRC_DIR)cl_init.c\
 		$(SRC_DIR)error.c\
-		$(SRC_DIR)init.c
+		$(SRC_DIR)init.c\
+		$(CONTROLLERS_DIR)controller.c\
+		$(CONTROLLERS_DIR)keyboard_controller.c\
+		$(CONTROLLERS_DIR)mouse_controller.c
 
 INC = includes/
 OBJS = $(SRCS:.c=.o)
