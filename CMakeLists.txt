@@ -4,6 +4,118 @@ project(RTv1)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -framework OpenGL -framework AppKit -I ~/Library/Frameworks/SDL2.framework/Headers -F /Users/ltammie/Library/Frameworks/ -framework SDL2 ")
 
+include_directories(includes)
+include_directories(libft/includes)
+include_directories(SDL2.framework)
+include_directories(SDL2.framework/Headers)
+include_directories(SDL2.framework/Versions)
+include_directories(SDL2.framework/Versions/A)
+include_directories(SDL2.framework/Versions/A/Headers)
+include_directories(SDL2.framework/Versions/Current)
+include_directories(SDL2.framework/Versions/Current/Headers)
+
 add_executable(RTv1
+        includes/error_codes.h
         includes/rtv1.h
+        libft/includes/ft_printf.h
+        libft/includes/libft.h
+        libft/list_funcs/ft_lstadd.c
+        libft/list_funcs/ft_lstdel.c
+        libft/list_funcs/ft_lstdelone.c
+        libft/list_funcs/ft_lstiter.c
+        libft/list_funcs/ft_lstmap.c
+        libft/list_funcs/ft_lstnew.c
+        libft/memory_funcs/ft_bzero.c
+        libft/memory_funcs/ft_memalloc.c
+        libft/memory_funcs/ft_memccpy.c
+        libft/memory_funcs/ft_memchr.c
+        libft/memory_funcs/ft_memcmp.c
+        libft/memory_funcs/ft_memcpy.c
+        libft/memory_funcs/ft_memdel.c
+        libft/memory_funcs/ft_memmove.c
+        libft/memory_funcs/ft_memset.c
+        libft/numbers_funcs/ft_abs.c
+        libft/numbers_funcs/ft_atoi.c
+        libft/numbers_funcs/ft_itoa.c
+        libft/numbers_funcs/ft_itoa_base.c
+        libft/numbers_funcs/ft_lltoa.c
+        libft/numbers_funcs/ft_ulltoa_base.c
+        libft/numbers_funcs/ft_utoa.c
+        libft/numbers_funcs/ft_utoa_base.c
+        libft/print_funcs/printf_src/c_pr.c
+        libft/print_funcs/printf_src/cast.c
+        libft/print_funcs/printf_src/di_pr.c
+        libft/print_funcs/printf_src/f_pr.c
+        libft/print_funcs/printf_src/float_utils.c
+        libft/print_funcs/printf_src/float_utils2.c
+        libft/print_funcs/printf_src/float_utils3.c
+        libft/print_funcs/printf_src/long_arithmetics.c
+        libft/print_funcs/printf_src/long_arithmetics2.c
+        libft/print_funcs/printf_src/parse.c
+        libft/print_funcs/printf_src/parse_flags.c
+        libft/print_funcs/printf_src/parse_length.c
+        libft/print_funcs/printf_src/parse_precision.c
+        libft/print_funcs/printf_src/parse_type.c
+        libft/print_funcs/printf_src/parse_width.c
+        libft/print_funcs/printf_src/percent_pr.c
+        libft/print_funcs/printf_src/pointer_pr.c
+        libft/print_funcs/printf_src/pr.c
+        libft/print_funcs/printf_src/s_pr.c
+        libft/print_funcs/printf_src/uox_pr.c
+        libft/print_funcs/printf_src/utils.c
+        libft/print_funcs/ft_printf.c
+        libft/print_funcs/ft_putchar.c
+        libft/print_funcs/ft_putchar_fd.c
+        libft/print_funcs/ft_putendl.c
+        libft/print_funcs/ft_putendl_fd.c
+        libft/print_funcs/ft_putnbr.c
+        libft/print_funcs/ft_putnbr_fd.c
+        libft/print_funcs/ft_putstr.c
+        libft/print_funcs/ft_putstr_fd.c
+        libft/read_funcs/get_next_line.c
+        libft/string_funcs/ft_char_in_str.c
+        libft/string_funcs/ft_count_words.c
+        libft/string_funcs/ft_str_to_lower.c
+        libft/string_funcs/ft_strcat.c
+        libft/string_funcs/ft_strchr.c
+        libft/string_funcs/ft_strclr.c
+        libft/string_funcs/ft_strcmp.c
+        libft/string_funcs/ft_strcpy.c
+        libft/string_funcs/ft_strdel.c
+        libft/string_funcs/ft_strdup.c
+        libft/string_funcs/ft_strequ.c
+        libft/string_funcs/ft_striter.c
+        libft/string_funcs/ft_striteri.c
+        libft/string_funcs/ft_strjoin.c
+        libft/string_funcs/ft_strjoin_free.c
+        libft/string_funcs/ft_strlcat.c
+        libft/string_funcs/ft_strlen.c
+        libft/string_funcs/ft_strmap.c
+        libft/string_funcs/ft_strmapi.c
+        libft/string_funcs/ft_strncat.c
+        libft/string_funcs/ft_strncmp.c
+        libft/string_funcs/ft_strncpy.c
+        libft/string_funcs/ft_strnequ.c
+        libft/string_funcs/ft_strnew.c
+        libft/string_funcs/ft_strnstr.c
+        libft/string_funcs/ft_strrchr.c
+        libft/string_funcs/ft_strsplit.c
+        libft/string_funcs/ft_strstr.c
+        libft/string_funcs/ft_strsub.c
+        libft/string_funcs/ft_strtrim.c
+        libft/utility_funcs/ft_isalnum.c
+        libft/utility_funcs/ft_isalpha.c
+        libft/utility_funcs/ft_isascii.c
+        libft/utility_funcs/ft_isblank.c
+        libft/utility_funcs/ft_iscntrl.c
+        libft/utility_funcs/ft_isdigit.c
+        libft/utility_funcs/ft_islower.c
+        libft/utility_funcs/ft_isprint.c
+        libft/utility_funcs/ft_isspace.c
+        libft/utility_funcs/ft_isupper.c
+        libft/utility_funcs/ft_tolower.c
+        libft/utility_funcs/ft_toupper.c
+        sources/cl_init.c
+        sources/error.c
+        sources/init.c
         sources/main.c)
