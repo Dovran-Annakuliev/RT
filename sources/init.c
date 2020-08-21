@@ -16,11 +16,13 @@ t_rt				*init_data()
 	data->window = SDL_CreateWindow("RTv1", 0, 0, 0, 0,  SDL_WINDOW_FULLSCREEN_DESKTOP);
 	!(data->window) ? error(WINDOW_CREATE_ERROR, SDL_GetError()) : 0;
 	SDL_GetWindowSize(data->window, &data->width, &data->height);
+	ft_printf("width = %d, height = %d\n", data->width, data->height);
 	data->renderer = SDL_CreateRenderer(data->window, -1, SDL_RENDERER_ACCELERATED);
 	!(data->renderer) ? error(RENDER_INIT_ERROR, SDL_GetError()) : 0;
 	data->texture = SDL_CreateTexture(data->renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, data->width, data->height);
 	!(data->texture) ? error(TEXTURE_LOAD_ERROR, SDL_GetError()) : 0;
 	data->cl_path = return_path();
+	data->cl->kernel_source = get_kernel_source(data->cl, data->cl_path);
 	return (data);
 }
 

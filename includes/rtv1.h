@@ -62,13 +62,13 @@ char					**get_kernel_source(t_cl *cl, char *path);
  ** ---rendering---
  */
 
-t_rgba					*render(t_cl *cl, int w, int h);
+int					*render(t_cl *cl, int w, int h);
 
 /*
  ** ---coloring---
  */
 
-void					update_texture(SDL_Texture *texture, int width, int height, t_rgba *r);
+void					update_texture(SDL_Texture *texture, int width, int height, int *r);
 
 /*
  ** ---controls---

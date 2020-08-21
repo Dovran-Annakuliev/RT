@@ -54,7 +54,8 @@ void			cl_init(t_cl *cl, int width, int height)
 	cl->context = clCreateContext(NULL, 1, &cl->device_id, NULL, NULL, &ret);
 	cl->program = clCreateProgramWithSource(cl->context, cl->count,
 			(const char **)cl->kernel_source, NULL, &ret);
-	ret = clBuildProgram(cl->program, 1, &cl->device_id,  "-I includes/" , NULL, NULL);
+	ret = clBuildProgram(cl->program, 1, &cl->device_id, NULL, NULL, NULL);
+	ft_printf("build = %d\n", ret);
 	if (ret < 0)
 	{
 		clGetProgramBuildInfo(cl->program, cl->device_id, CL_PROGRAM_BUILD_LOG, 0, NULL, &log_size);
@@ -64,7 +65,8 @@ void			cl_init(t_cl *cl, int width, int height)
 		ft_printf("%s\n", log);
 		free(log);
 	}
-	cl->kernel = clCreateKernel(cl->program, "array_add", &ret);
+	cl->kernel = clCreateKernel(cl->program, "raytrace", &ret);
+	ft_printf("kernel = %d\n", ret);
 	cl->queue = clCreateCommandQueue(cl->context, cl->device_id, 0, &ret);
 	cl->dim = 2;
 	cl->global_size[0] = width;
