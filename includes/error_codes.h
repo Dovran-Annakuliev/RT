@@ -7,5 +7,6 @@
 # define WINDOW_CREATE_ERROR -4
 # define RENDER_INIT_ERROR -5
 # define TEXTURE_LOAD_ERROR -6
+# define TEXTURE_LOCK_ERROR -7
 
 #endif

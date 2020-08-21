@@ -20,18 +20,6 @@
 # define WINPOS_X 0
 # define WINPOS_Y 0
 
-typedef union			u_rgb
-{
-	unsigned int		c;
-	struct				s_rgba
-	{
-		unsigned char	b;
-		unsigned char	g;
-		unsigned char	r;
-		unsigned char	a;
-	}					t_rgba;
-}						t_rgb;
-
 typedef struct			s_cl
 {
 	cl_platform_id		platform_id;
@@ -48,10 +36,12 @@ typedef struct			s_cl
 
 typedef struct			s_rt
 {
-	SDL_Window			*window;;
+	SDL_Window			*window;
 	SDL_Renderer		*renderer;
+	SDL_Surface			*surface;
 	SDL_Texture			*texture;
-	int 				*pixels;
+	Uint32				*pixels;
+	int 				pitch;
 	int 				width;
 	int 				height;
 }						t_rt;
@@ -78,6 +68,12 @@ char					**get_kernel_source(t_cl *cl, char *type);
 void					controller(SDL_Event *e);
 void					keyboard_controller(SDL_Event *e);
 void					mouse_controller(SDL_Event *e);
+
+/*
+ ** ---coloring---
+ */
+
+void					update_texture(t_rt *data);
 
 /*
  ** ---error---

@@ -11,6 +11,7 @@ int main(int argc, char **argv)
 	while (quit != 1)
 	{
 		SDL_RenderClear(data->renderer);
+		update_texture(data);
 		SDL_RenderCopy(data->renderer, data->texture, NULL, NULL);
 		SDL_RenderPresent(data->renderer);
 		while (SDL_PollEvent(&e))

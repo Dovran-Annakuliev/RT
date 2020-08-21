@@ -6,6 +6,7 @@ SRCS = $(SRC_DIR)main.c\
 		$(SRC_DIR)cl_init.c\
 		$(SRC_DIR)error.c\
 		$(SRC_DIR)init.c\
+		$(SRC_DIR)coloring.c\
 		$(CONTROLLERS_DIR)controller.c\
 		$(CONTROLLERS_DIR)keyboard_controller.c\
 		$(CONTROLLERS_DIR)mouse_controller.c
