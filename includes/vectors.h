@@ -8,5 +8,6 @@ typedef struct			s_vector3
 	float z;
 }						t_vector3;
 
-t_vector3				new_vector3(int x, int y, int z);
+t_vector3				new_vector3(float x, float y, float z);
+
 #endif
