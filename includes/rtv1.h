@@ -8,29 +8,12 @@
 # include <GL/opengl.h>
 #endif
 
-
-
 #include "../libft/includes/libft.h"
 #include "../SDL2.framework/Headers/SDL.h"
 #include "../SDL2_image.framework/Headers/SDL_image.h"
 #include "error_codes.h"
-
-//# define WIDTH 800
-//# define HEIGHT 600
-# define WINPOS_X 0
-# define WINPOS_Y 0
-
-typedef union			u_rgb
-{
-	unsigned int		c;
-	struct				s_rgba
-	{
-		unsigned char	b;
-		unsigned char	g;
-		unsigned char	r;
-		unsigned char	a;
-	}					t_rgba;
-}						t_rgb;
+#include "vectors.h"
+#include "rgba.h"
 
 typedef struct			s_cl
 {
@@ -48,12 +31,16 @@ typedef struct			s_cl
 
 typedef struct			s_rt
 {
-	SDL_Window			*window;;
+	SDL_Window			*window;
 	SDL_Renderer		*renderer;
+	SDL_Surface			*surface;
 	SDL_Texture			*texture;
-	int 				*pixels;
+	Uint32				*pixels;
+	int 				pitch;
 	int 				width;
 	int 				height;
+	t_cl				*cl;
+	char 				*cl_path;
 }						t_rt;
 
 /*
@@ -69,12 +56,24 @@ void					close_rt(t_rt *data);
 
 void					cl_init(t_cl *cl, int width, int height);
 void					cl_free(t_cl *cl);
-char					**get_kernel_source(t_cl *cl, char *type);
+char					**get_kernel_source(t_cl *cl, char *path);
 
+/*
+ ** ---rendering---
+ */
+
+int					*render(t_cl *cl, int w, int h);
+
+/*
+ ** ---coloring---
+ */
+
+void					update_texture(SDL_Texture *texture, int width, int height, int *r);
 
 /*
  ** ---controls---
  */
+
 void					controller(SDL_Event *e);
 void					keyboard_controller(SDL_Event *e);
 void					mouse_controller(SDL_Event *e);

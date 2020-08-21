@@ -2,10 +2,14 @@ GCC = gcc -Wall -Wextra -Werror
 NAME = RTv1
 SRC_DIR = sources/
 CONTROLLERS_DIR = $(SRC_DIR)controllers/
-SRCS = $(SRC_DIR)main.c\
-		$(SRC_DIR)cl_init.c\
+SRCS = $(SRC_DIR)cl_init.c\
+		$(SRC_DIR)coloring.c\
 		$(SRC_DIR)error.c\
 		$(SRC_DIR)init.c\
+		$(SRC_DIR)main.c\
+		$(SRC_DIR)render.c\
+		$(SRC_DIR)rgba.c\
+		$(SRC_DIR)vectors.c\
 		$(CONTROLLERS_DIR)controller.c\
 		$(CONTROLLERS_DIR)keyboard_controller.c\
 		$(CONTROLLERS_DIR)mouse_controller.c
