@@ -1,6 +1,11 @@
 #include "../includes/rtv1.h"
 
-t_rt	*init_data()
+static	char		*return_path()
+{
+	return ("kernels/raytrace.cl");
+}
+
+t_rt				*init_data()
 {
 	t_rt *data;
 
@@ -15,6 +20,7 @@ t_rt	*init_data()
 	!(data->renderer) ? error(RENDER_INIT_ERROR, SDL_GetError()) : 0;
 	data->texture = SDL_CreateTexture(data->renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, data->width, data->height);
 	!(data->texture) ? error(TEXTURE_LOAD_ERROR, SDL_GetError()) : 0;
+	data->cl_path = return_path();
 	return (data);
 }
 
