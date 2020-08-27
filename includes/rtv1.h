@@ -14,6 +14,7 @@
 #include "error_codes.h"
 #include "vectors.h"
 #include "rgba.h"
+#include "sphere.h"
 
 typedef struct			s_cl
 {
