@@ -1,5 +1,27 @@
 #include "../includes/rtv1.h"
 
+/*
+ ** ---------------------------------------------
+ ** ray eqation O + tD (1)
+ ** ---------------------------------------------
+ ** x^2 + y^2 + z^2 = R^2 2)
+ ** ---------------------------------------------
+ ** may P be the point (origin?) of x,y,z, then:
+ ** P^2 - R^2 = 0 (3)
+ ** ---------------------------------------------
+ ** substitute (1) in (2):
+ ** |O + tD|^2 - R^2 = 0
+ ** ---------------------------------------------
+ ** O^2 + D^2*t^2 + 2ODt - R^2 = 0 (quadratic equation f(x) = ax^2 + bx + c
+ ** where: a = D^2, b = 2OD, c = O^2 - R^2
+ ** ---------------------------------------------
+ ** If sphere is not located in the origin, then we rewrite (3):
+ ** (P - C)^2 - R^2 = 0
+ ** |O + tD - C|^2 - R^2 = 0
+ ** which give us: a = 1, b = 2D(O - C), c = (O - C)^2 - R^2
+ */
+
+
 int		*render(t_cl *cl, int w, int h)
 {
 	cl_mem		output_buffer;
