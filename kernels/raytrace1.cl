@@ -1,3 +1,12 @@
+static void change_places(float &x0, float &x1)
+{
+	float temp;
+
+	temp = x0;
+	x0 = x1;
+	x1 = temp;
+}
+
 typedef struct			s_vector3
 {
 	float x;
@@ -11,32 +20,23 @@ typedef struct		s_sphere
 	float			r;
 }					t_sphere;
 
-static void change_places(float *x0, float *x1)
-{
-	float temp;
-
-	temp = *x0;
-	*x0 = *x1;
-	*x1 = temp;
-}
-
-static	int			solve_eq(float a, float b, float c, float *x0, float *x1)
+static	int				solve_eq(float a, float b, float c, float &x0, float &x1)
 {
 	float dis = b * b - 4 * a * c;
 	if (dis < 0)
 		return (0);
 	else if (dis == 0)
 	{
-		*x0 = -0.5 * b / a;
-		*x1 = -0.5 * b / a;
+		x0 = -0.5 * b / a;
+		x1 = -0.5 * b / a;
 	}
 	else
 	{
 		float q = (b > 0) ? -0.5 * (b + sqrt(dis)) : -0.5 * (b - sqrt(dis));
-		*x0 = q / a;
-		*x1 = c / q;
+		x0 = q / a;
+		x1 = c / q;
 	}
-	if ((*x0) > (*x1))
+	if (x0 > x1)
 		change_places(x0, x1);
 	return (1);
 }
@@ -46,6 +46,7 @@ __kernel void raytrace(t_vector3 o, t_vector3 d, t_sphere s, __global int *outpu
 	int x = get_global_id(0);
     int y = get_global_id(1);
     int width = get_global_size(0);
+    int height = get_global_size(1);
 
 	float t0, t1, t;
 
@@ -58,12 +59,12 @@ __kernel void raytrace(t_vector3 o, t_vector3 d, t_sphere s, __global int *outpu
     float a = dot(dir, dir);
     float b = 2 * dot(dir, L);
     float c = dot(L, L) - radius * radius;
-    if (!(solve_eq(a, b, c, &t0, &t1)))
+    if (!(solve_eq(a, b, c, t0, t1)))
     	output[y * width + x] = 0;
     else
     {
     	if (t0 > t1){
-    		change_places(&t0, &t1);
+    		change_places(t0, t1);
     	}
     	if (t0 < 0)
     	{
