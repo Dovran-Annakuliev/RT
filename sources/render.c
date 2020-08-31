@@ -1,46 +1,41 @@
 #include "../includes/rtv1.h"
 
-/*
- ** ---------------------------------------------
- ** ray eqation O + tD (1)
- ** ---------------------------------------------
- ** x^2 + y^2 + z^2 = R^2 2)
- ** ---------------------------------------------
- ** may P be the point (origin?) of x,y,z, then:
- ** P^2 - R^2 = 0 (3)
- ** ---------------------------------------------
- ** substitute (1) in (2):
- ** |O + tD|^2 - R^2 = 0
- ** ---------------------------------------------
- ** O^2 + D^2*t^2 + 2ODt - R^2 = 0 (quadratic equation f(x) = ax^2 + bx + c
- ** where: a = D^2, b = 2OD, c = O^2 - R^2
- ** ---------------------------------------------
- ** If sphere is not located in the origin, then we rewrite (3):
- ** (P - C)^2 - R^2 = 0
- ** |O + tD - C|^2 - R^2 = 0
- ** which give us: a = 1, b = 2D(O - C), c = (O - C)^2 - R^2
- */
+static float	**new_res_array(int w, int h)
+{
+	float		**res;
+	int			i;
 
+	if (!(res = (float**)malloc(sizeof(float*) * w * h)))
+		error(MALLOC_ERROR, "renderer malloc error");
+	i = 0;
+	while (i < h * w)
+	{
+		if (!(res[i] = (float*)malloc(sizeof(float) * 4)))
+				error(MALLOC_ERROR, "renderer malloc error");
+		i++;
+	}
+	return (res);
+}
 
-int		*render(t_cl *cl, int w, int h)
+float		*render(t_cl *cl, int w, int h)
 {
 	cl_mem		output_buffer;
-	int		*res;
+	float		*res;
 	t_sphere	s;
 	float 		fov;
 
-	fov = 120.0f;
+	fov = 90.0f;
 	s = new_sphere(new_vector3(0.0f, 0.0f, -15.0f), 10.0f, new_material(new_vector3(240, 180, 50)));
-	if (!(res = (int*)malloc(sizeof(int) * w * h)))
+	if (!(res = (float*)malloc(sizeof(float) * w * h * 4)))
 		error(MALLOC_ERROR, "renderer malloc error");
-	output_buffer = clCreateBuffer(cl->context, CL_MEM_WRITE_ONLY, sizeof(int) * w * h, NULL, NULL);
+	output_buffer = clCreateBuffer(cl->context, CL_MEM_WRITE_ONLY, sizeof(float) * w * h * 4, NULL, NULL);
 	clSetKernelArg(cl->kernel, 0, sizeof(float), &fov);
 	clSetKernelArg(cl->kernel, 1, sizeof(t_sphere), &s);
 	clSetKernelArg(cl->kernel, 2, sizeof(cl_mem), &output_buffer);
 	clEnqueueNDRangeKernel(cl->queue, cl->kernel, cl->dim, NULL,
 						   cl->global_size, NULL, 0, NULL, NULL);
 	clFinish(cl->queue);
-	clEnqueueReadBuffer(cl->queue, output_buffer, CL_TRUE, 0, sizeof(int) * w * h,
+	clEnqueueReadBuffer(cl->queue, output_buffer, CL_TRUE, 0, sizeof(float) * w * h * 4,
 						res, 0, NULL, NULL);
 	clFinish(cl->queue);
 	clReleaseMemObject(output_buffer);

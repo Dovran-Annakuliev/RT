@@ -14,6 +14,7 @@ typedef struct		s_sphere
 {
 	t_vector3		c;
 	float			r;
+	t_material		material;
 }					t_sphere;
 
 typedef struct		s_light
@@ -85,7 +86,7 @@ static		int		sphere_intersect(float3 orig, float3 dir, t_sphere s)
 		return (0);
 }
 
-__kernel void raytrace(float fov, t_sphere s, __global int *output)
+__kernel void raytrace(float fov, t_sphere s, __global float4* output)
 {
 	int x = get_global_id(0);
 	int y = get_global_id(1);
@@ -103,7 +104,7 @@ __kernel void raytrace(float fov, t_sphere s, __global int *output)
     dir = normalize(dir);
 
 	if (sphere_intersect(orig, dir, s))
-		output[y * width + x] = 1;
+		output[y * width + x] = (float4)(s.material.diff_color.x, s.material.diff_color.y, s.material.diff_color.z, 0.0f);
 	else
-		output[y * width + x] = 0;
+		output[y * width + x] = (float4)(25.0f, 25.0f, 25.0f, 0.0f);
 }

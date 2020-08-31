@@ -5,7 +5,7 @@ int main(int argc, char **argv)
 	t_rt *data;
 	SDL_Event e;
 	int quit;
-	int *res;
+	float *res;
 
 	data = init_data();
 	cl_init(data->cl, data->width, data->height);
