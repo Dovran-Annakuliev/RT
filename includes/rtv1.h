@@ -15,6 +15,7 @@
 #include "vectors.h"
 #include "rgba.h"
 #include "sphere.h"
+#include "plane.h"
 #include "lights.h"
 
 typedef struct			s_cl
