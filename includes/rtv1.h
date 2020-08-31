@@ -15,6 +15,8 @@
 #include "vectors.h"
 #include "rgba.h"
 #include "sphere.h"
+#include "plane.h"
+#include "lights.h"
 
 typedef struct			s_cl
 {
@@ -63,13 +65,13 @@ char					**get_kernel_source(t_cl *cl, char *path);
  ** ---rendering---
  */
 
-int					*render(t_cl *cl, int w, int h);
+float					*render(t_cl *cl, int w, int h);
 
 /*
  ** ---coloring---
  */
 
-void					update_texture(SDL_Texture *texture, int width, int height, int *r);
+void					update_texture(SDL_Texture *texture, int width, int height, float *r);
 
 /*
  ** ---controls---
