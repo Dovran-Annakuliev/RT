@@ -41,16 +41,20 @@ static	int			solve_eq(float a, float b, float c, float *x0, float *x1)
 	return (1);
 }
 
-__kernel void raytrace(t_vector3 o, t_vector3 d, t_sphere s, __global int *output)
+__kernel void raytrace(int imageWidth, int imageHeight, float fov, t_sphere s, __global int *output)
 {
 	int x = get_global_id(0);
     int y = get_global_id(1);
     int width = get_global_size(0);
 
 	float t0, t1, t;
-
-    float3 orig = (float3)(o.x, o.y, o.z);
-    float3 dir = (float3)(d.x, d.y, d.z);
+	float imageAspectRatio = imageWidth / (float)imageHeight;
+	float scale = tan(fov / 2 * M_PI_F / 180);
+    float Px = (2 * (x + 0.5) / imageWidth - 1) * scale * imageAspectRatio;
+    float Py = (1 - 2 * (y + 0.5) / imageHeight) * scale;
+    float3 orig = (float3)(0, 0, 0);
+    float3 dir = (float3)(Px, Py, -1) - orig;
+    dir = normalize(dir);
     float3 center = (float3)(s.c.x, s.c.y, s.c.z);
     float radius = (float)(s.r);
 
@@ -62,17 +66,20 @@ __kernel void raytrace(t_vector3 o, t_vector3 d, t_sphere s, __global int *outpu
     	output[y * width + x] = 0;
     else
     {
-    	if (t0 > t1){
+    	if (t0 > t1)
     		change_places(&t0, &t1);
-    	}
     	if (t0 < 0)
     	{
     		t0 = t1;
-    		if (t0 < 0){
+    		if (t0 < 0)
     			output[y * width + x] = 0;
-			}
+    		else
+    			output[y * width + x] = 1;
 		}
-		t = t0;
-		output[y * width + x] = 1;
+		else
+		{
+			t = t0;
+			output[y * width + x] = 1;
+		}
 	}
 }

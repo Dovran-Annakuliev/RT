@@ -26,20 +26,19 @@ int		*render(t_cl *cl, int w, int h)
 {
 	cl_mem		output_buffer;
 	int		*res;
-	t_vector3	orig;
-	t_vector3	dir;
 	t_sphere	s;
+	float 		fov;
 
-	orig = new_vector3(0.0f, 0.0f, 0.0f); // mb 0,0,5  - somewhere on z-axis
-	dir = new_vector3(0.0f, 0.0f, -1.0f);
-	s = new_sphere(new_vector3(0.0f, 0.0f, -20.0f), 10);
+	fov = 90.0f;
+	s = new_sphere(new_vector3(0.0f, 0.0f, -15.0f), 10.0f);
 	if (!(res = (int*)malloc(sizeof(int) * w * h)))
 		error(MALLOC_ERROR, "renderer malloc error");
 	output_buffer = clCreateBuffer(cl->context, CL_MEM_WRITE_ONLY, sizeof(int) * w * h, NULL, NULL);
-	clSetKernelArg(cl->kernel, 0, sizeof(t_vector3), &orig);
-	clSetKernelArg(cl->kernel, 1, sizeof(t_vector3), &dir);
-	clSetKernelArg(cl->kernel, 2, sizeof(t_sphere), &s);
-	clSetKernelArg(cl->kernel, 3, sizeof(cl_mem), &output_buffer);
+	clSetKernelArg(cl->kernel, 0, sizeof(int), &w);
+	clSetKernelArg(cl->kernel, 1, sizeof(int), &h);
+	clSetKernelArg(cl->kernel, 2, sizeof(float), &fov);
+	clSetKernelArg(cl->kernel, 3, sizeof(t_sphere), &s);
+	clSetKernelArg(cl->kernel, 4, sizeof(cl_mem), &output_buffer);
 	clEnqueueNDRangeKernel(cl->queue, cl->kernel, cl->dim, NULL,
 						   cl->global_size, NULL, 0, NULL, NULL);
 	clFinish(cl->queue);
