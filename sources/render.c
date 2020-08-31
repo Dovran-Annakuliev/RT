@@ -27,7 +27,7 @@ float		*render(t_cl *cl, int w, int h)
 
 	fov = 90.0f;
 	s = new_sphere(new_vector3(0.0f, 0.0f, -15.0f), 10.0f, new_material(new_vector3(240, 180, 50)));
-	l = new_light_source(new_vector3(0.0f, -1000.0f, 100.0f), 1.0f);
+	l = new_light_source(new_vector3(0.0f, -1000.0f, 20.0f), 1.0f);
 	if (!(res = (float*)malloc(sizeof(float) * w * h * 4)))
 		error(MALLOC_ERROR, "renderer malloc error");
 	output_buffer = clCreateBuffer(cl->context, CL_MEM_WRITE_ONLY, sizeof(float) * w * h * 4, NULL, NULL);

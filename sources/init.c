@@ -23,10 +23,6 @@ t_rt				*init_data()
 	!(data->texture) ? error(TEXTURE_LOAD_ERROR, SDL_GetError()) : 0;
 	data->cl_path = return_path();
 	data->cl->kernel_source = get_kernel_source(data->cl, data->cl_path);
-	for (int i = 0; i < data->cl->count ; ++i)
-	{
-		ft_printf("%s\n", data->cl->kernel_source[i]);
-	}
 	return (data);
 }
 
