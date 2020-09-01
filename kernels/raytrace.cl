@@ -12,7 +12,7 @@ typedef struct	s_material
 
 typedef struct		s_sphere
 {
-	const char		*type;
+	int				type;
 	t_vector3		c;
 	float			r;
 	t_material		material;
@@ -20,7 +20,7 @@ typedef struct		s_sphere
 
 typedef struct	s_plane
 {
-	const char	*type;
+	int			type;
 	t_vector3	p_point;
 	t_vector3	plane_normal;
 }				t_plane;

@@ -4,7 +4,7 @@
 #include "../includes/plane.h"
 
 
-t_obj			*new_obj_list(void		*object, const char *type)
+t_obj			*new_obj_list(void		*object, int type)
 {
 	t_obj		*list;
 	if (!(list = (t_obj*)malloc(sizeof(t_obj))))
@@ -12,7 +12,7 @@ t_obj			*new_obj_list(void		*object, const char *type)
 	if (!object)
 	{
 		list->next = NULL;
-		list->type = NULL;
+		list->type = 0;
 		list->content = NULL;
 	}
 	else
@@ -24,7 +24,7 @@ t_obj			*new_obj_list(void		*object, const char *type)
 	return (list);
 }
 
-void			push_back(t_obj *head, void		*object, const char *type)
+void			push_back(t_obj *head, void		*object, int type)
 {
 	t_obj		*last;
 	t_obj		*tmp;

@@ -6,7 +6,7 @@
 
 typedef struct		s_sphere
 {
-	const char		*type;
+	int 			type;
 	t_vector3		c;
 	float			r;
 	t_material		material;
