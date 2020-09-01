@@ -12,10 +12,18 @@ typedef struct	s_material
 
 typedef struct		s_sphere
 {
+	const char		*type;
 	t_vector3		c;
 	float			r;
 	t_material		material;
 }					t_sphere;
+
+typedef struct	s_plane
+{
+	const char	*type;
+	t_vector3	p_point;
+	t_vector3	plane_normal;
+}				t_plane;
 
 typedef struct		s_light
 {
@@ -85,7 +93,7 @@ static		int		sphere_intersect(float3 orig, float3 dir, t_sphere s, float3 *hit_p
 		return (0);
 }
 
-__kernel void raytrace(float fov, t_obj obj, t_light light, __global float4* output)
+__kernel void raytrace(float fov, t_sphere s, t_light light, __global float4* output)
 {
 	int x = get_global_id(0);
 	int y = get_global_id(1);

@@ -17,6 +17,7 @@
 #include "sphere.h"
 #include "plane.h"
 #include "lights.h"
+#include "objects.h"
 
 typedef struct			s_cl
 {
