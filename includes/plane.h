@@ -5,6 +5,7 @@
 
 typedef struct	s_plane
 {
+	int			type;
 	t_vector3	p_point;
 	t_vector3	plane_normal;
 }				t_plane;

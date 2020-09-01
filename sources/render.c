@@ -21,12 +21,42 @@ float		*render(t_cl *cl, int w, int h)
 {
 	cl_mem		output_buffer;
 	float		*res;
+	t_obj		*objects;
 	t_sphere	s;
+	t_plane		p;
 	t_light		l;
 	float 		fov;
 
 	fov = 90.0f;
 	s = new_sphere(new_vector3(0.0f, 0.0f, -15.0f), 10.0f, new_material(new_vector3(240, 180, 50)));
+	p = new_plane(new_vector3(0.0f, 0.0f, 0.0f), new_vector3(0.0f, -1.0f, 0.0f));
+
+	objects = new_obj_list(&s, s.type);
+	push_back(objects, &p, p.type);
+	push_back(objects, &s, s.type);
+	push_back(objects, &s, s.type);
+	push_back(objects, &p, p.type);
+	push_back(objects, &s, s.type);
+//	del
+//	t_obj	*tmp;
+//	tmp = objects;
+//	int i = 0;
+//	while (tmp != NULL)
+//	{
+//		if (tmp->type == 0)
+//		{
+//			t_sphere *ss = (t_sphere *)tmp->content;
+//			ft_printf("%d type = %d\n", i, ss->type);
+//		}
+//		if (tmp->type == 1)
+//		{
+//			t_plane *ss = (t_plane *)tmp->content;
+//			ft_printf("%d type = %d\n", i, ss->type);
+//		}
+//		tmp = tmp->next;
+//		i++;
+//	}
+
 	l = new_light_source(new_vector3(100.0f, -1000.0f, 100.0f), 1.0f);
 	if (!(res = (float*)malloc(sizeof(float) * w * h * 4)))
 		error(MALLOC_ERROR, "renderer malloc error");

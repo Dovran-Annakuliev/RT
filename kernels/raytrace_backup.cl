@@ -12,18 +12,10 @@ typedef struct	s_material
 
 typedef struct		s_sphere
 {
-	int				type;
 	t_vector3		c;
 	float			r;
 	t_material		material;
 }					t_sphere;
-
-typedef struct	s_plane
-{
-	int			type;
-	t_vector3	p_point;
-	t_vector3	plane_normal;
-}				t_plane;
 
 typedef struct		s_light
 {
