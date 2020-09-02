@@ -14,8 +14,6 @@
 #include "error_codes.h"
 #include "vectors.h"
 #include "rgba.h"
-#include "sphere.h"
-#include "plane.h"
 #include "lights.h"
 #include "objects.h"
 

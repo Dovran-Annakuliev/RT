@@ -10,20 +10,15 @@ typedef struct	s_material
 	t_vector3	diff_color;
 }				t_material;
 
-typedef struct		s_sphere
+typedef struct			s_obj
 {
-	int				type;
-	t_vector3		c;
-	float			r;
-	t_material		material;
-}					t_sphere;
-
-typedef struct	s_plane
-{
-	int			type;
-	t_vector3	p_point;
-	t_vector3	plane_normal;
-}				t_plane;
+	int 				type;
+	float3			s_center;
+	float			s_radius;
+	float3			p_pos;
+	float3			p_normal;
+	t_material			material;
+}				t_obj;
 
 typedef struct		s_light
 {
@@ -61,14 +56,14 @@ static	int			solve_eq(float a, float b, float c, float *x0, float *x1)
 	return (1);
 }
 
-static		int		sphere_intersect(float3 orig, float3 dir, t_sphere s, float3 *hit_pos, float3 *N)
+static		int		sphere_intersect(float3 orig, float3 dir, t_obj object, float3 *hit_pos, float3 *N)
 {
 	float	t0, t1, t;
 	float	dist = FLT_MAX;
 	t = dist;
 
-	float3 center = (float3)(s.c.x, s.c.y, s.c.z);
-	float radius = (float)(s.r);
+	float3 center = (float3)(object.s_center.x, object.s_center.y, object.s_center.z);
+	float radius = (float)(object.s_radius);
 	float3 L = orig - center;
 	float a = dot(dir, dir);
 	float b = 2 * dot(dir, L);
@@ -93,7 +88,7 @@ static		int		sphere_intersect(float3 orig, float3 dir, t_sphere s, float3 *hit_p
 		return (0);
 }
 
-__kernel void raytrace(float fov, t_sphere s, t_light light, __global float4* output)
+__kernel void raytrace(float fov, t_obj object, t_light light, __global float4* output)
 {
 	int x = get_global_id(0);
 	int y = get_global_id(1);
@@ -112,14 +107,14 @@ __kernel void raytrace(float fov, t_sphere s, t_light light, __global float4* ou
     float3 dir = (float3)(Px, Py, -1) - orig;
     dir = normalize(dir);
 
-	if (sphere_intersect(orig, dir, s, &hit_pos, &N))
+	if (sphere_intersect(orig, dir, object, &hit_pos, &N))
 	{
 		float	df_light_int = 0.0f;
 		float3	light_dir = (float3)(light.pos.x, light.pos.y, light.pos.z) - hit_pos;
 		float dot_light_dir = dot(N, light_dir);
 		if (dot_light_dir > 0)
 			df_light_int += light.intensity * dot_light_dir / (length(N) * length(light_dir));
-		output[y * width + x] = (float4)(s.material.diff_color.x, s.material.diff_color.y, s.material.diff_color.z, 0.0f) * df_light_int;
+		output[y * width + x] = (float4)(object.material.diff_color.x, object.material.diff_color.y, object.material.diff_color.z, 0.0f) * df_light_int;
 	}
 	else
 		output[y * width + x] = (float4)(25.0f, 25.0f, 25.0f, 0.0f);

@@ -21,23 +21,25 @@ float		*render(t_cl *cl, int w, int h)
 {
 	cl_mem		output_buffer;
 	float		*res;
-	t_obj		*objects;
-	t_sphere	s;
-	t_plane		p;
+	t_obj		s;
+	t_obj		p;
 	t_light		l;
 	float 		fov;
 
 	fov = 90.0f;
-	s = new_sphere(new_vector3(0.0f, 0.0f, -15.0f), 10.0f, new_material(new_vector3(240, 180, 50)));
-	p = new_plane(new_vector3(0.0f, 0.0f, 0.0f), new_vector3(0.0f, -1.0f, 0.0f));
+//	s = new_sphere((cl_float3)(0.0, 0.0, -15.0), 10.0, new_material(new_vector3(240, 180, 50)));
+//	p = new_plane(new_vector3(0.0f, 0.0f, 0.0f), new_vector3(0.0f, -1.0f, 0.0f));
+	s = new_sphere((cl_float3){0.0f, 0.0f, -15.0f}, 10.0, new_material(new_vector3(240, 180, 50)));
+	p = new_plane((cl_float3){0.0, 0.0, 0.0}, (cl_float3){0.0, -1.0, 0.0}, new_material(new_vector3(0, 255, 0)));
 
-	objects = new_obj_list(&s, s.type);
-	push_back(objects, &p, p.type);
-	push_back(objects, &s, s.type);
-	push_back(objects, &s, s.type);
-	push_back(objects, &p, p.type);
-	push_back(objects, &s, s.type);
-//	del
+//
+//	objects = new_obj_list(&s, s.type);
+//	push_back(objects, &p, p.type);
+//	push_back(objects, &s, s.type);
+//	push_back(objects, &s, s.type);
+//	push_back(objects, &p, p.type);
+//	push_back(objects, &s, s.type);
+////	del
 //	t_obj	*tmp;
 //	tmp = objects;
 //	int i = 0;
@@ -62,7 +64,7 @@ float		*render(t_cl *cl, int w, int h)
 		error(MALLOC_ERROR, "renderer malloc error");
 	output_buffer = clCreateBuffer(cl->context, CL_MEM_WRITE_ONLY, sizeof(float) * w * h * 4, NULL, NULL);
 	clSetKernelArg(cl->kernel, 0, sizeof(float), &fov);
-	clSetKernelArg(cl->kernel, 1, sizeof(t_sphere), &s);
+	clSetKernelArg(cl->kernel, 1, sizeof(t_obj), &s);
 	clSetKernelArg(cl->kernel, 2, sizeof(t_light), &l);
 	clSetKernelArg(cl->kernel, 3, sizeof(cl_mem), &output_buffer);
 	clEnqueueNDRangeKernel(cl->queue, cl->kernel, cl->dim, NULL,
