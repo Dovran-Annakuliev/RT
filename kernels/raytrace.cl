@@ -88,7 +88,7 @@ static		int		sphere_intersect(float3 orig, float3 dir, t_obj object, float3 *hit
 		return (0);
 }
 
-__kernel void raytrace(float fov, t_obj object, t_light light, __global float4* output)
+__kernel void raytrace(float fov, __global t_obj* object, t_light light, __global float4* output)
 {
 	int x = get_global_id(0);
 	int y = get_global_id(1);
@@ -106,15 +106,17 @@ __kernel void raytrace(float fov, t_obj object, t_light light, __global float4* 
     float3 orig = (float3)(0, 0, 0);
     float3 dir = (float3)(Px, Py, -1) - orig;
     dir = normalize(dir);
+    if (x == 0 && y == 0)
+    	printf("type = %d\n", object[0].type);
 
-	if (sphere_intersect(orig, dir, object, &hit_pos, &N))
+	if (sphere_intersect(orig, dir, object[0], &hit_pos, &N))
 	{
 		float	df_light_int = 0.0f;
 		float3	light_dir = (float3)(light.pos.x, light.pos.y, light.pos.z) - hit_pos;
 		float dot_light_dir = dot(N, light_dir);
 		if (dot_light_dir > 0)
 			df_light_int += light.intensity * dot_light_dir / (length(N) * length(light_dir));
-		output[y * width + x] = (float4)(object.material.diff_color.x, object.material.diff_color.y, object.material.diff_color.z, 0.0f) * df_light_int;
+		output[y * width + x] = (float4)(object[0].material.diff_color.x, object[0].material.diff_color.y, object[0].material.diff_color.z, 0.0f) * df_light_int;
 	}
 	else
 		output[y * width + x] = (float4)(25.0f, 25.0f, 25.0f, 0.0f);
