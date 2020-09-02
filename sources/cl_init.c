@@ -55,7 +55,7 @@ void			cl_init(t_cl *cl, int width, int height)
 	cl->program = clCreateProgramWithSource(cl->context, cl->count,
 			(const char **)cl->kernel_source, NULL, &ret);
 	ft_printf("prog = %d\n", ret);
-	ret = clBuildProgram(cl->program, 1, &cl->device_id, NULL, NULL, NULL);
+	ret = clBuildProgram(cl->program, 1, &cl->device_id, "-w -I kernels/", NULL, NULL);
 	ft_printf("build = %d\n", ret);
 	if (ret < 0)
 	{

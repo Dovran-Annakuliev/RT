@@ -1,66 +1,22 @@
 #include "../includes/objects.h"
-#include <stdlib.h>
-#include "../includes/sphere.h"
-#include "../includes/plane.h"
 
 
-t_obj			*new_obj_list(void		*object, int type)
+t_obj					new_sphere(cl_float3 center, cl_float radius, t_material material)
 {
-	t_obj		*list;
-	if (!(list = (t_obj*)malloc(sizeof(t_obj))))
-		return (NULL);
-	if (!object)
-	{
-		list->next = NULL;
-		list->type = 0;
-		list->content = NULL;
-	}
-	else
-	{
-		list->next = NULL;
-		list->type = type;
-		list->content = object;
-	}
-	return (list);
+	t_obj		res;
+	res.type = 0;
+	res.s_center = center;
+	res.s_radius = radius;
+	res.material = material;
+	return (res);
 }
 
-void			push_back(t_obj *head, void		*object, int type)
+t_obj					new_plane(cl_float3 pos, cl_float3 normal, t_material material)
 {
-	t_obj		*last;
-	t_obj		*tmp;
-
-	last = get_last_obj(head);
-	tmp = new_obj_list(object, type);
-	last->next = tmp;
-}
-
-t_obj			*get_last_obj(t_obj *head)
-{
-	if (head == NULL)
-		return (NULL);
-	while (head->next)
-		head = head->next;
-	return (head);
-}
-
-int				pop(t_obj **head)
-{
-	t_obj	*prev;
-
-	prev = NULL;
-	if (head == NULL)
-		return (0);
-	prev = (*head);
-	(*head) = (*head)->next;
-	free(prev);
-	return (1);
-}
-
-void			delete_obj_list(t_obj **head)
-{
-	while ((*head)->next) {
-		pop(head);
-		*head = (*head)->next;
-	}
-	free(*head);
+	t_obj	res;
+	res.type  = 1;
+	res.p_pos = pos;
+	res.p_normal = normal;
+	res.material = material;
+	return (res);
 }
