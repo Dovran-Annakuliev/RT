@@ -22,22 +22,21 @@ float		*render(t_cl *cl, int w, int h)
 	cl_mem		output_buffer;
 	cl_mem		obj_buffer;
 	float		*res;
-	t_obj		o[2];
+	t_obj		o[3];
 	cl_int		e;
 	t_light		l;
 	float 		fov;
 
 	fov = 90.0f;
-//	s = new_sphere((cl_float3)(0.0, 0.0, -15.0), 10.0, new_material(new_vector3(240, 180, 50)));
-//	p = new_plane(new_vector3(0.0f, 0.0f, 0.0f), new_vector3(0.0f, -1.0f, 0.0f));
-	o[0] = new_sphere((cl_float3){0.0f, 0.0f, -15.0f}, 10.0, new_material(new_vector3(255, 0, 0)));
-	o[1] = new_sphere((cl_float3){15.0f, 0.0f, -15.0f}, 10.0, new_material(new_vector3(0, 255, 0)));
+	o[0] = new_sphere((cl_float3){10.0f, 0.0f, -15.0f}, 2.0f, new_material((cl_float4){255, 0, 0, 0}));
+	o[1] = new_sphere((cl_float3){0.0f, 0.0f, -10.0f}, 1.0f, new_material((cl_float4){0, 255, 0, 0}));
+	o[2] = new_sphere((cl_float3){-10.0f, -10.0f, -10.0f}, 4.0f, new_material((cl_float4){0, 0, 255, 0}));
 //	o[1] = new_plane((cl_float3){0.0, 0.0, 0.0}, (cl_float3){0.0, -1.0, 0.0}, new_material(new_vector3(0, 255, 0)));
 //	ft_printf("type = %f\n", o[0].s_center.z);
 //	ft_printf("type = %d\n", o[1].type);
 
 
-	l = new_light_source(new_vector3(100.0f, -1000.0f, 100.0f), 1.0f);
+	l = new_light_source(new_vector3(0.0f, -100.0f, 0.0f), 1.0f);
 	if (!(res = (float*)malloc(sizeof(float) * w * h * 4)))
 		error(MALLOC_ERROR, "renderer malloc error");
 	output_buffer = clCreateBuffer(cl->context, CL_MEM_WRITE_ONLY, sizeof(float) * w * h * 4, NULL, &e);

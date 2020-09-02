@@ -1,8 +1,6 @@
 #ifndef OBJECTS_H
 #define OBJECTS_H
 
-# include <OpenGL/gl.h>
-# include <OpenCL/opencl.h>
 # include "material.h"
 
 typedef struct			s_obj
