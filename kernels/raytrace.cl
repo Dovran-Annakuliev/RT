@@ -86,7 +86,7 @@ static		bool		sphere_intersect(float3 orig, float3 dir, __global t_obj* objects,
 			if (dist_i < spheres_dist)
 			{
 				spheres_dist = dist_i;
-				*hit_pos = orig - dir * dist_i;
+				*hit_pos = orig + dir * dist_i;
 				*N = normalize(*hit_pos - center);
 				*color = objects[i].material.diff_color;
 			}
@@ -101,13 +101,13 @@ static	float4	trace(float3 orig, float3 dir, __global t_obj *objects, t_light li
 	float4	color;
 
 	if (!sphere_intersect(orig, dir, objects, &hit_pos, &N, &color))
-		return((float4)(0.0f, 0.0f, 0.0f, 0.0f));
+		return((float4)(100.0f, 100.0f, 100.0f, 0.0f));
 	float	df_light_int = 0.0f;
 	float3	light_dir = (float3)(light.pos.x, light.pos.y, light.pos.z) - hit_pos;
 	float dot_light_dir = dot(N, light_dir);
 	if (dot_light_dir > 0)
 		df_light_int += light.intensity * dot_light_dir / (length(N) * length(light_dir));
-	return(color);
+	return(color * df_light_int);
 }
 
 __kernel void raytrace(float fov, __global t_obj* objects, t_light light, __global float4* output)
