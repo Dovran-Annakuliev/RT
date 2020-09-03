@@ -131,7 +131,7 @@ __kernel void raytrace(float fov, __global t_obj* objects, t_light light, __glob
 
 	float3 orig = (float3)(0, 0, 0);
 
-	float3 dir = (float3)(Px, Py, -1);
+	float3 dir = (float3)(Px, Py, -0.5);
 	dir = dir - orig;
 	dir = normalize(dir);
 	output[y * width + x] = trace(orig, dir, objects, light);

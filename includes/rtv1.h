@@ -43,6 +43,7 @@ typedef struct			s_rt
 	int 				height;
 	t_cl				*cl;
 	char 				*cl_path;
+	t_obj				o[3];
 }						t_rt;
 
 /*
@@ -64,7 +65,7 @@ char					**get_kernel_source(t_cl *cl, char *path);
  ** ---rendering---
  */
 
-float					*render(t_cl *cl, int w, int h);
+float					*render(t_cl *cl, int w, int h, t_obj o[3]);
 
 /*
  ** ---coloring---
@@ -76,9 +77,9 @@ void					update_texture(SDL_Texture *texture, int width, int height, float *r);
  ** ---controls---
  */
 
-void					controller(SDL_Event *e);
-void					keyboard_controller(SDL_Event *e);
-void					mouse_controller(SDL_Event *e);
+void					controller(SDL_Event *e, t_rt *data);
+void					keyboard_controller(SDL_Event *e, t_rt *data);
+void					mouse_controller(SDL_Event *e, t_rt *data);
 
 /*
  ** ---error---
