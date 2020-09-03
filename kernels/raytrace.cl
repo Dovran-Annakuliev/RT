@@ -117,15 +117,18 @@ __kernel void raytrace(float fov, __global t_obj* objects, t_light light, __glob
 	int width = get_global_size(0);
 	int height = get_global_size(1);
 
-	float imageAspectRatio = width / (float)height;
-	float scale = tan(fov / 2 * M_PI_F / 180);
+	/* float imageAspectRatio = width / (float)height;*/
+	/*float scale = tan(fov / 2 * M_PI_F / 180);*/
 
-    float Px = (2 * (x + 0.5) / width - 1) * scale * imageAspectRatio;
-    float Py = (1 - 2 * (y + 0.5) / height) * scale;
+    /*float Px = (2 * (x + 0.5) / width - 1) * scale * imageAspectRatio; */
+    /*float Py = 1 - (2 * (y + 0.5) / height) * scale; */
+    float Px = x - width / 2;
+    float Py = height / 2 - y;
+    float Pz = -(height / 2) / tan(fov / 2  * M_PI_F/ 180);
 
 
     float3 orig = (float3)(0, 0, 0);
-    float3 dir = (float3)(Px, Py, -1) - orig;
+    float3 dir = (float3)(Px, Py, Pz) - orig;
     dir = normalize(dir);
 
 	output[y * width + x] = trace(orig, dir, objects, light);
