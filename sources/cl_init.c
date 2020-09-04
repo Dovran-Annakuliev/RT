@@ -23,8 +23,9 @@ char			**get_kernel_source(t_cl *cl, char *path)
 	char	*line;
 
 	line = NULL;
-	if (((fd = open(path, O_RDONLY)) < 0) || ((read(fd, line, 0)) < 0))
-		error(0, "");
+	fd = open(path, O_RDONLY);
+	if ((fd  < 0) || ((read(fd, line, 0)) < 0))
+		error(KERNEL_FILE_OPEN_ERROR, "Cannot open kernel file");
 
 	cl->count = get_lines(fd);
 	close(fd);

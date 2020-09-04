@@ -8,9 +8,7 @@ int main(int argc, char **argv)
 	float *res;
 
 	data = init_data();
-	ft_printf("init\n");
-//	data->cl->kernel_source = get_kernel_source(data->cl, data->cl_path);
-//	ft_printf("kernel_source\n");
+	data->cl->kernel_source = get_kernel_source(data->cl, data->cl_path);
 	cl_init(data->cl, data->width, data->height);
 	quit = 0;
 	while (quit != 1)

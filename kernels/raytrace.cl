@@ -26,34 +26,19 @@ typedef struct		s_light
 	float			intensity;
 }					t_light;
 
-static void change_places(float *x0, float *x1)
-{
-	float temp;
-
-	temp = *x0;
-	*x0 = *x1;
-	*x1 = temp;
-}
-
-static	int			solve_eq(float a, float b, float c, float *x0, float *x1)
+static	float		solve_eq(float a, float b, float c)
 {
 	float dis = b * b - 4 * a * c;
-	if (dis < 0)
-		return (0);
-	else if (dis == 0)
-	{
-		*x0 = -0.5 * b / a;
-		*x1 = -0.5 * b / a;
-	}
-	else
-	{
-		float q = (b > 0) ? -0.5 * (b + sqrt(dis)) : -0.5 * (b - sqrt(dis));
-		*x0 = q / a;
-		*x1 = c / q;
-	}
-	if ((*x0) > (*x1))
-		change_places(x0, x1);
-	return (1);
+	if (dis < 0.0f)
+		return (0.0f);
+	dis = sqrt(dis);
+	float x1 = (-b - dis) * (1 / (2 * a));
+	float x2 = (-b + dis) * (1 / (2 * a));
+	if (x1 > 0.001f && x2 > 0.001f)
+		return x1 <= x2 ? x1 : x2;
+	if (x1 > 0.001f || x2 > 0.001f)
+		return x1 <= x2 ? x2 : x1;
+	return (0.f);
 }
 
 static		bool		sphere_intersect(float3 orig, float3 dir, __global t_obj* objects, float3 *hit_pos, float3 *N, float4 *color)
@@ -67,29 +52,19 @@ static		bool		sphere_intersect(float3 orig, float3 dir, __global t_obj* objects,
 
 		float3 center = (float3)(objects[i].s_center.x, objects[i].s_center.y, objects[i].s_center.z);
 		float radius = (float)(objects[i].s_radius);
-		float3 L = orig - center;
-		float a = dot(dir, dir);
-		float b = 2 * dot(dir, L);
-		float c = dot(L, L) - radius * radius;
 
-		if (solve_eq(a, b, c, &t0, &t1))
+		float3 L = orig - center;
+		float a = 1;
+		float b = 2 * dot(L, dir);
+		float c = dot(L, L) - radius * radius;
+		dist_i = solve_eq(a, b, c);
+
+		if (dist_i != 0.0f && dist_i < spheres_dist)
 		{
-			if (t0 > t1)
-				change_places(&t0, &t1);
-			if (t0 < 0)
-			{
-				t0 = t1;
-				if (t0 < 0)
-					return (0);
-			}
-			dist_i = t0;
-			if (dist_i < spheres_dist)
-			{
-				spheres_dist = dist_i;
-				*hit_pos = orig + dir * dist_i;
-				*N = normalize(*hit_pos - center);
-				*color = objects[i].material.diff_color;
-			}
+			spheres_dist = dist_i;
+			*hit_pos = orig + dir * dist_i;
+			*N = normalize(*hit_pos - center);
+			*color = objects[i].material.diff_color;
 		}
 	}
 	return (spheres_dist < 1000);
@@ -131,7 +106,7 @@ __kernel void raytrace(float fov, __global t_obj* objects, t_light light, __glob
 
 	float3 orig = (float3)(0, 0, 0);
 
-	float3 dir = (float3)(Px, Py, -0.5);
+	float3 dir = (float3)(Px, Py, -1);
 	dir = dir - orig;
 	dir = normalize(dir);
 	output[y * width + x] = trace(orig, dir, objects, light);

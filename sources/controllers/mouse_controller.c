@@ -8,5 +8,5 @@ void		mouse_controller(SDL_Event *e, t_rt *data)
 	if (e && data)
 		;
 	SDL_GetMouseState(&x, &y);
-	ft_printf("x = %d, y = %d\n", x, y);
+//	ft_printf("x = %d, y = %d\n", x, y);
 }

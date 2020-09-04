@@ -12,6 +12,4 @@ void 		keyboard_controller(SDL_Event *e, t_rt *data)
 		e->key.keysym.sym == SDLK_f ? data->o[2].s_center.z-- : 0;
 	}
 
-	ft_printf("key_number = %d\n", e->key.keysym.sym);
-
 }
