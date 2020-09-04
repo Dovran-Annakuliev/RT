@@ -23,8 +23,10 @@ char			**get_kernel_source(t_cl *cl, char *path)
 	char	*line;
 
 	line = NULL;
-	if (((fd = open(path, O_RDONLY)) < 0) || ((read(fd, line, 0)) < 0))
-		error(0, "");
+	fd = open(path, O_RDONLY);
+	if ((fd  < 0) || ((read(fd, line, 0)) < 0))
+		error(KERNEL_FILE_OPEN_ERROR, "Cannot open kernel file");
+
 	cl->count = get_lines(fd);
 	close(fd);
 	if (!(source = (char **)malloc(sizeof(char *) * cl->count)))
@@ -55,7 +57,7 @@ void			cl_init(t_cl *cl, int width, int height)
 	cl->program = clCreateProgramWithSource(cl->context, cl->count,
 			(const char **)cl->kernel_source, NULL, &ret);
 	ft_printf("prog = %d\n", ret);
-	ret = clBuildProgram(cl->program, 1, &cl->device_id, "-w -I kernels/", NULL, NULL);
+	ret = clBuildProgram(cl->program, 1, &cl->device_id, NULL, NULL, NULL);
 	ft_printf("build = %d\n", ret);
 	if (ret < 0)
 	{

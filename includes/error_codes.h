@@ -8,5 +8,6 @@
 # define RENDER_INIT_ERROR -5
 # define TEXTURE_LOAD_ERROR -6
 # define TEXTURE_LOCK_ERROR -7
+# define KERNEL_FILE_OPEN_ERROR -8
 
 #endif
