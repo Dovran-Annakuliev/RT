@@ -13,7 +13,7 @@ t_rt				*init_data()
 	!data ? error(MALLOC_ERROR, "Malloc error") : 0;
 	SDL_Init(SDL_INIT_EVERYTHING) < 0 ? error(SDL_INIT_ERROR, SDL_GetError()) : 0;
 	IMG_Init(IMG_INIT_PNG) < 0 ? error(IMG_INIT_ERROR, IMG_GetError()) : 0;
-	data->window = SDL_CreateWindow("RTv1", 0, 0, 0, 0,  SDL_WINDOW_FULLSCREEN_DESKTOP);
+	data->window = SDL_CreateWindow("RTv1",SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1000, 1000, SDL_WINDOW_SHOWN);
 	!(data->window) ? error(WINDOW_CREATE_ERROR, SDL_GetError()) : 0;
 	SDL_GetWindowSize(data->window, &data->width, &data->height);
 	ft_printf("width = %d, height = %d\n", data->width, data->height);

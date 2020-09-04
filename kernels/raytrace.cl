@@ -43,7 +43,6 @@ static	float		solve_eq(float a, float b, float c)
 
 static		bool		sphere_intersect(float3 orig, float3 dir, __global t_obj* objects, float3 *hit_pos, float3 *N, float4 *color)
 {
-	float	t0, t1;
 	float	spheres_dist = FLT_MAX;
 
 	for(int i = 0; i < 3; i++)
@@ -97,7 +96,6 @@ __kernel void raytrace(float fov, __global t_obj* objects, t_light light, __glob
 
 	float Px = (2 * (x + 0.5) / width - 1) * scale * imageAspectRatio;
 	float Py = 1 - (2 * (y + 0.5) / height) * scale;
-
 
 	/*float Px = x - width / 2;*/
 	/*float Py = height / 2 - y;*/

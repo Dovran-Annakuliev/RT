@@ -28,8 +28,6 @@ float		*render(t_cl *cl, int w, int h, t_obj o[3])
 
 	fov = 90.0f;
 
-
-
 	l = new_light_source(new_vector3(100.0f, 100.0f, 100.0f), 0.7f);
 	if (!(res = (float*)malloc(sizeof(float) * w * h * 4)))
 		error(MALLOC_ERROR, "result buffer malloc error");
