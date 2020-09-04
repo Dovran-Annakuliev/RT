@@ -69,6 +69,17 @@ static		bool		sphere_intersect(float3 orig, float3 dir, __global t_obj* objects,
 	return (spheres_dist < 1000);
 }
 
+static	float4  get_light(float3 hit_pos, float3 N, t_light light, float4 color)
+{
+	float	df_light_int = 0.0f;
+	float3	light_dir = (float3)(light.pos.x, light.pos.y, light.pos.z) - hit_pos;
+	float dot_light_dir = dot(N, light_dir);
+	if (dot_light_dir > 0)
+		df_light_int += light.intensity * dot_light_dir / (length(N) * length(light_dir));
+	return(color * df_light_int);
+
+}
+
 static	float4	trace(float3 orig, float3 dir, __global t_obj *objects, t_light light)
 {
 	float3	hit_pos, N;
@@ -76,12 +87,10 @@ static	float4	trace(float3 orig, float3 dir, __global t_obj *objects, t_light li
 
 	if (!sphere_intersect(orig, dir, objects, &hit_pos, &N, &color))
 		return((float4)(100.0f, 100.0f, 100.0f, 0.0f));
-	float	df_light_int = 0.0f;
-	float3	light_dir = (float3)(light.pos.x, light.pos.y, light.pos.z) - hit_pos;
-	float dot_light_dir = dot(N, light_dir);
-	if (dot_light_dir > 0)
-		df_light_int += light.intensity * dot_light_dir / (length(N) * length(light_dir));
-	return(color * df_light_int);
+
+	color = get_light(hit_pos, N, light, color);
+
+	return(color);
 }
 
 __kernel void raytrace(float fov, __global t_obj* objects, t_light light, __global float4* output)
