@@ -31,6 +31,23 @@ typedef struct			s_cl
 	size_t				global_size[2];
 }						t_cl;
 
+typedef struct			s_camera
+{
+	float				viewport_width;
+	float				viewport_height;
+	float				image_aspect_ratio;
+	float				vertical_fov;
+	float				h_angle;
+	cl_float3			look_from;
+	cl_float3			look_at;
+	cl_float3			vec_up;
+	cl_float3			origin;
+	cl_float3			horizontal;
+	cl_float3			vertical;
+	cl_float3			lower_left_corner;
+
+}						t_camera;
+
 typedef struct			s_rt
 {
 	SDL_Window			*window;
@@ -41,9 +58,10 @@ typedef struct			s_rt
 	int 				pitch;
 	int 				width;
 	int 				height;
-	t_cl				*cl;
+	t_cl				cl;
+	t_camera			camera;
 	char 				*cl_path;
-	t_obj				o[3];
+	t_obj				o[4];
 }						t_rt;
 
 /*
@@ -52,6 +70,8 @@ typedef struct			s_rt
 
 t_rt					*init_data();
 void					close_rt(t_rt *data);
+void					init_viewport(t_camera *viewport, int width, int height);
+
 
 /*
 ** ---OpenCl functions---
@@ -65,7 +85,7 @@ char					**get_kernel_source(t_cl *cl, char *path);
  ** ---rendering---
  */
 
-float					*render(t_cl *cl, int w, int h, t_obj o[3]);
+float					*render(t_rt *rt);
 
 /*
  ** ---coloring---

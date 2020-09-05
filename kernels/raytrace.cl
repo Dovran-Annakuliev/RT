@@ -1,14 +1,24 @@
-typedef struct			s_vector3
-{
-	float x;
-	float y;
-	float z;
-}						t_vector3;
-
 typedef struct	s_material
 {
 	float4		diff_color;
 }				t_material;
+
+
+typedef struct			s_camera
+{
+	float				viewport_width;
+	float				viewport_height;
+	float				image_aspect_ratio;
+	float				vertical_fov;
+	float				h_angle;
+	float3				look_from;
+	float3				look_at;
+	float3				vec_up;
+	float3				origin;
+	float3				horizontal;
+	float3				vertical;
+	float3				lower_left_corner;
+}						t_camera;
 
 typedef struct			s_obj
 {
@@ -22,7 +32,7 @@ typedef struct			s_obj
 
 typedef struct		s_light
 {
-	t_vector3		pos;
+	float3			pos;
 	float			intensity;
 }					t_light;
 
@@ -33,19 +43,19 @@ static	float		solve_eq(float a, float b, float c)
 		return (0.0f);
 	dis = sqrt(dis);
 	float x1 = (-b - dis) * (1 / (2 * a));
+	if (x1 > 0.001f && x1 < FLT_MAX)
+		return (x1);
 	float x2 = (-b + dis) * (1 / (2 * a));
-	if (x1 > 0.001f && x2 > 0.001f)
-		return x1 <= x2 ? x1 : x2;
-	if (x1 > 0.001f || x2 > 0.001f)
-		return x1 <= x2 ? x2 : x1;
-	return (0.f);
+	if (x2 > 0.001f && x2 < FLT_MAX)
+		return (x2);
+	return (0.0f);
 }
 
 static		bool		sphere_intersect(float3 orig, float3 dir, __global t_obj* objects, float3 *hit_pos, float3 *N, float4 *color)
 {
 	float	spheres_dist = FLT_MAX;
 
-	for(int i = 0; i < 3; i++)
+	for(int i = 0; i < 4; i++)
 	{
 		float	dist_i;
 
@@ -53,7 +63,7 @@ static		bool		sphere_intersect(float3 orig, float3 dir, __global t_obj* objects,
 		float radius = (float)(objects[i].s_radius);
 
 		float3 L = orig - center;
-		float a = 1;
+		float a = dot(dir, dir);
 		float b = 2 * dot(L, dir);
 		float c = dot(L, L) - radius * radius;
 		dist_i = solve_eq(a, b, c);
@@ -66,7 +76,7 @@ static		bool		sphere_intersect(float3 orig, float3 dir, __global t_obj* objects,
 			*color = objects[i].material.diff_color;
 		}
 	}
-	return (spheres_dist < 1000);
+	return (spheres_dist < 100);
 }
 
 static	float4  get_light(float3 hit_pos, float3 N, t_light light, float4 color)
@@ -93,36 +103,26 @@ static	float4	trace(float3 orig, float3 dir, __global t_obj *objects, t_light li
 	return (color);
 }
 
-__kernel void raytrace(float fov, __global t_obj* objects, t_light light, __global float4* output)
+__kernel void raytrace(t_camera camera, __global t_obj* objects, t_light light, __global float4* output)
 {
 	int x = get_global_id(0);
 	int y = get_global_id(1);
 	int width = get_global_size(0);
 	int height = get_global_size(1);
 
-	/*
-	float imageAspectRatio = width / (float)height;
-	float scale = tan(fov / 2 * M_PI_F / 180);
+	float Px = (float)x / (width - 1);
+	float Py = (float)y / (height - 1);
 
-	float Px = (2 * ((x + 0.5) / (float)(width)) - 1) * imageAspectRatio * scale;
-	float Py = (1 - 2 * (y + 0.5) / (float)(height)) * scale;
-	*/
+	float3 w = normalize(camera.look_from - camera.look_at);
+	float3 u = normalize(cross(camera.vec_up, w));
+	float3 v = cross(w, u);
 
-	/*float Px = x - width / 2;*/
-	/*float Py = height / 2 - y;*/
-	/*float Pz = -(height / 2) / tan(fov / 2  * M_PI_F/ 180);*/
+	camera.origin = camera.look_from;
+	camera.horizontal = camera.viewport_width * u;
+	camera.vertical = camera.viewport_height * v;
+	camera.lower_left_corner = camera.origin - camera.horizontal/2 - camera.vertical/2 - w;
 
-
-	float Px = x - (width/2);
-	float Py = y - (height/2);
-
-	Px = Px * width / height / width;
-	Py = Py * 1 / height;
-
-	float3 orig = (float3)(0, 0, 0);
-
-	float3 dir = (float3)(Px, Py, -1);
-	dir = dir - orig;
+	float3 dir = camera.lower_left_corner + Px * camera.horizontal + Py * camera.vertical - camera.origin;
 	dir = normalize(dir);
-	output[y * width + x] = trace(orig, dir, objects, light);
+	output[y * width + x] = trace(camera.origin, dir, objects, light);
 }
