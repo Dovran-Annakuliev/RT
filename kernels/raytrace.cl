@@ -43,12 +43,12 @@ static	float		solve_eq(float a, float b, float c)
 		return (0.0f);
 	dis = sqrt(dis);
 	float x1 = (-b - dis) * (1 / (2 * a));
+	if (x1 > 0.001f && x1 < FLT_MAX)
+		return (x1);
 	float x2 = (-b + dis) * (1 / (2 * a));
-	if (x1 > 0.001f && x2 > 0.001f)
-		return x1 <= x2 ? x1 : x2;
-	if (x1 > 0.001f || x2 > 0.001f)
-		return x1 <= x2 ? x2 : x1;
-	return (0.f);
+	if (x2 > 0.001f && x2 < FLT_MAX)
+		return (x2);
+	return (0.0f);
 }
 
 static		bool		sphere_intersect(float3 orig, float3 dir, __global t_obj* objects, float3 *hit_pos, float3 *N, float4 *color)
@@ -76,7 +76,7 @@ static		bool		sphere_intersect(float3 orig, float3 dir, __global t_obj* objects,
 			*color = objects[i].material.diff_color;
 		}
 	}
-	return (spheres_dist < 1000);
+	return (spheres_dist < 100);
 }
 
 static	float4  get_light(float3 hit_pos, float3 N, t_light light, float4 color)
@@ -109,21 +109,6 @@ __kernel void raytrace(t_camera camera, __global t_obj* objects, t_light light, 
 	int y = get_global_id(1);
 	int width = get_global_size(0);
 	int height = get_global_size(1);
-
-	/*
-	float imageAspectRatio = width / (float)height;
-	float scale = tan(fov / 2 * M_PI_F / 180);
-	*/
-
-	/*
-	float Px = (2 * ((x + 0.5) / (float)(width)) - 1) * imageAspectRatio * scale;
-	float Py = (1 - 2 * (y + 0.5) / (float)(height)) * scale;
-	*/
-
-
-	/*float Px = x - width / 2;*/
-	/*float Py = height / 2 - y;*/
-	/*float Pz = -(height / 2) / tan(fov / 2  * M_PI_F/ 180);*/
 
 	float Px = (float)x / (width - 1);
 	float Py = (float)y / (height - 1);
