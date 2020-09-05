@@ -55,7 +55,7 @@ static		bool		sphere_intersect(float3 orig, float3 dir, __global t_obj* objects,
 {
 	float	spheres_dist = FLT_MAX;
 
-	for(int i = 0; i < 3; i++)
+	for(int i = 0; i < 4; i++)
 	{
 		float	dist_i;
 
@@ -63,7 +63,7 @@ static		bool		sphere_intersect(float3 orig, float3 dir, __global t_obj* objects,
 		float radius = (float)(objects[i].s_radius);
 
 		float3 L = orig - center;
-		float a = 1;
+		float a = dot(dir, dir);
 		float b = 2 * dot(L, dir);
 		float c = dot(L, L) - radius * radius;
 		dist_i = solve_eq(a, b, c);

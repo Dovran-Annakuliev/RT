@@ -61,7 +61,7 @@ typedef struct			s_rt
 	t_cl				cl;
 	t_camera			camera;
 	char 				*cl_path;
-	t_obj				o[3];
+	t_obj				o[4];
 }						t_rt;
 
 /*

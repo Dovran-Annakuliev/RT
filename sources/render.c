@@ -30,9 +30,9 @@ float		*render(t_rt *rt)
 		error(MALLOC_ERROR, "result buffer malloc error");
 	output_buffer = clCreateBuffer(rt->cl.context, CL_MEM_WRITE_ONLY, sizeof(float) * rt->width * rt->height * 4, NULL, &e);
 //	ft_printf("out_buff = %d\n", e);
-	obj_buffer = clCreateBuffer(rt->cl.context, CL_MEM_READ_ONLY, sizeof(t_obj) * 3, NULL, &e);
+	obj_buffer = clCreateBuffer(rt->cl.context, CL_MEM_READ_ONLY, sizeof(t_obj) * 4, NULL, &e);
 //	ft_printf("obj_buff = %d\n", e);;
-	e = clEnqueueWriteBuffer(rt->cl.queue, obj_buffer, CL_TRUE, 0, sizeof(t_obj) * 3, rt->o, 0, NULL, NULL);
+	e = clEnqueueWriteBuffer(rt->cl.queue, obj_buffer, CL_TRUE, 0, sizeof(t_obj) * 4, rt->o, 0, NULL, NULL);
 //	ft_printf("write_obj_buff = %d\n", e);
 	e = clSetKernelArg(rt->cl.kernel, 0, sizeof(t_camera), &rt->camera);
 //	ft_printf("arg0 = %d\n", e);
