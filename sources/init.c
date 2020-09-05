@@ -12,8 +12,8 @@ void 		init_viewport(t_camera *viewport, int width, int height)
 	viewport->h_angle = (float)tan(viewport->vertical_fov / 2 * M_PI / 180);
 	viewport->viewport_height = 2.0f * viewport->h_angle;
 	viewport->viewport_width = viewport->viewport_height * viewport->image_aspect_ratio;
-	viewport->look_from = (cl_float3){0.0f, 0.0f, 1.0f};
-	viewport->look_at = (cl_float3){0.0f, 0.0f, 0.0f};
+	viewport->look_from = (cl_float3){0.0f, 0.0f, 0.0f};
+	viewport->look_at = (cl_float3){0.0f, 0.0f, -1.0f};
 	viewport->vec_up = (cl_float3){0.0f, 1.0f, 0.0f};
 	viewport->origin = (cl_float3){0.0f, 0.0f, 0.0f};
 	viewport->horizontal = (cl_float3){0.0f, 0.0f, 0.0f};
@@ -45,7 +45,7 @@ t_rt				*init_data()
 	data->o[0] = new_sphere((cl_float3){0.0f, 0.0f, -10.0f}, 0.5f, new_material((cl_float4){0, 255, 0, 0}));
 	data->o[1] = new_sphere((cl_float3){-2.0f, 0.0f, -10.0f}, 0.5f, new_material((cl_float4){255, 0, 0, 0}));
 	data->o[2] = new_sphere((cl_float3){2.0f, 0.0f, -10.0f}, 0.5f, new_material((cl_float4){0, 0, 255, 0}));
-	data->o[3] = new_sphere((cl_float3){0.0f, -3.5f, -1.0f}, 3.0f, new_material((cl_float4){0, 255, 255, 0}));
+	data->o[3] = new_sphere((cl_float3){0.0f, 10.0f, -30.0f}, 10.0f, new_material((cl_float4){0, 255, 255, 0}));
 	return (data);
 }
 
