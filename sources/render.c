@@ -26,7 +26,7 @@ float		*render(t_cl *cl, int w, int h, t_obj o[3])
 	t_light		l;
 	float 		fov;
 
-	fov = 90.0f;
+	fov = 25.0f;
 
 	l = new_light_source(new_vector3(2.0f, 1.0f, 1.0f), 0.7f);
 	if (!(res = (float*)malloc(sizeof(float) * w * h * 4)))
