@@ -1,14 +1,24 @@
-typedef struct			s_vector3
-{
-	float x;
-	float y;
-	float z;
-}						t_vector3;
-
 typedef struct	s_material
 {
 	float4		diff_color;
 }				t_material;
+
+
+typedef struct			s_camera
+{
+	float				viewport_width;
+	float				viewport_height;
+	float				image_aspect_ratio;
+	float				vertical_fov;
+	float				h_angle;
+	float3				look_from;
+	float3				look_at;
+	float3				vec_up;
+	float3				origin;
+	float3				horizontal;
+	float3				vertical;
+	float3				lower_left_corner;
+}						t_camera;
 
 typedef struct			s_obj
 {
@@ -22,7 +32,7 @@ typedef struct			s_obj
 
 typedef struct		s_light
 {
-	t_vector3		pos;
+	float3			pos;
 	float			intensity;
 }					t_light;
 
@@ -93,29 +103,41 @@ static	float4	trace(float3 orig, float3 dir, __global t_obj *objects, t_light li
 	return (color);
 }
 
-__kernel void raytrace(float fov, __global t_obj* objects, t_light light, __global float4* output)
+__kernel void raytrace(t_camera camera, __global t_obj* objects, t_light light, __global float4* output)
 {
 	int x = get_global_id(0);
 	int y = get_global_id(1);
 	int width = get_global_size(0);
 	int height = get_global_size(1);
 
-
+	/*
 	float imageAspectRatio = width / (float)height;
 	float scale = tan(fov / 2 * M_PI_F / 180);
+	*/
 
+	/*
 	float Px = (2 * ((x + 0.5) / (float)(width)) - 1) * imageAspectRatio * scale;
 	float Py = (1 - 2 * (y + 0.5) / (float)(height)) * scale;
+	*/
 
 
 	/*float Px = x - width / 2;*/
 	/*float Py = height / 2 - y;*/
 	/*float Pz = -(height / 2) / tan(fov / 2  * M_PI_F/ 180);*/
 
-	float3 orig = (float3)(0, 0, 0);
+	float Px = (float)x / (width - 1);
+	float Py = (float)y / (height - 1);
 
-	float3 dir = (float3)(Px, Py, -1);
-	dir = dir - orig;
+	float3 w = normalize(camera.look_from - camera.look_at);
+	float3 u = normalize(cross(camera.vec_up, w));
+	float3 v = cross(w, u);
+
+	camera.origin = camera.look_from;
+	camera.horizontal = camera.viewport_width * u;
+	camera.vertical = camera.viewport_height * v;
+	camera.lower_left_corner = camera.origin - camera.horizontal/2 - camera.vertical/2 - w;
+
+	float3 dir = camera.lower_left_corner + Px * camera.horizontal + Py * camera.vertical - camera.origin;
 	dir = normalize(dir);
-	output[y * width + x] = trace(orig, dir, objects, light);
+	output[y * width + x] = trace(camera.origin, dir, objects, light);
 }
