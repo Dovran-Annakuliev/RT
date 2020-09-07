@@ -11,6 +11,7 @@
 #include "../libft/includes/libft.h"
 #include "../SDL2.framework/Headers/SDL.h"
 #include "../SDL2_image.framework/Headers/SDL_image.h"
+#include <time.h>
 #include "error_codes.h"
 #include "vectors.h"
 #include "rgba.h"
@@ -55,26 +56,37 @@ typedef struct			s_rt
 	SDL_Surface			*surface;
 	SDL_Texture			*texture;
 	Uint32				*pixels;
-	int 				pitch;
-	int 				width;
-	int 				height;
+	int					pitch;
+	int					width;
+	int					height;
 	t_cl				cl;
 	t_camera			camera;
 	char 				*cl_path;
 	t_obj				o[4];
+	t_light				lights[1];
+	int					samples;
+	float				*randoms;
+
 }						t_rt;
 
 /*
- ** ---init_functions---
- */
+** ---init_functions---
+*/
 
 t_rt					*init_data();
 void					close_rt(t_rt *data);
-void					init_viewport(t_camera *viewport, int width, int height);
+float					*new_random_array(int w, int h, int samples);
 
 
 /*
-** ---OpenCl functions---
+** ---camera_functions---
+*/
+void					init_camera(t_camera *viewport, int width, int height);
+void					update_camera(t_camera *camera);
+
+
+/*
+** ---OpenCl_functions---
 */
 
 void					cl_init(t_cl *cl, int width, int height);
@@ -82,28 +94,28 @@ void					cl_free(t_cl *cl);
 char					**get_kernel_source(t_cl *cl, char *path);
 
 /*
- ** ---rendering---
- */
+** ---rendering---
+*/
 
 float					*render(t_rt *rt);
 
 /*
- ** ---coloring---
- */
+** ---coloring---
+*/
 
 void					update_texture(SDL_Texture *texture, int width, int height, float *r);
 
 /*
- ** ---controls---
- */
+** ---controls---
+*/
 
 void					controller(SDL_Event *e, t_rt *data);
 void					keyboard_controller(SDL_Event *e, t_rt *data);
 void					mouse_controller(SDL_Event *e, t_rt *data);
 
 /*
- ** ---error---
- */
+** ---error---
+*/
 
 void					error(int err, const char *message);
 
