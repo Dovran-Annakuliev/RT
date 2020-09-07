@@ -113,6 +113,7 @@ __kernel void raytrace(t_camera camera, __global t_obj* objects, t_light light, 
 	float Px = (float)x / (width - 1);
 	float Py = (float)y / (height - 1);
 
+	/*
 	float3 w = normalize(camera.look_from - camera.look_at);
 	float3 u = normalize(cross(camera.vec_up, w));
 	float3 v = cross(w, u);
@@ -121,6 +122,7 @@ __kernel void raytrace(t_camera camera, __global t_obj* objects, t_light light, 
 	camera.horizontal = camera.viewport_width * u;
 	camera.vertical = camera.viewport_height * v;
 	camera.lower_left_corner = camera.origin - camera.horizontal/2 - camera.vertical/2 - w;
+	*/
 
 	float3 dir = camera.lower_left_corner + Px * camera.horizontal + Py * camera.vertical - camera.origin;
 	dir = normalize(dir);

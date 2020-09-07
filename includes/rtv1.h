@@ -65,16 +65,21 @@ typedef struct			s_rt
 }						t_rt;
 
 /*
- ** ---init_functions---
- */
+** ---init_functions---
+*/
 
 t_rt					*init_data();
 void					close_rt(t_rt *data);
-void					init_viewport(t_camera *viewport, int width, int height);
+
+/*
+** ---camera_functions---
+*/
+void					init_camera(t_camera *viewport, int width, int height);
+void					update_camera(t_camera *camera);
 
 
 /*
-** ---OpenCl functions---
+** ---OpenCl_functions---
 */
 
 void					cl_init(t_cl *cl, int width, int height);
@@ -82,28 +87,28 @@ void					cl_free(t_cl *cl);
 char					**get_kernel_source(t_cl *cl, char *path);
 
 /*
- ** ---rendering---
- */
+** ---rendering---
+*/
 
 float					*render(t_rt *rt);
 
 /*
- ** ---coloring---
- */
+** ---coloring---
+*/
 
 void					update_texture(SDL_Texture *texture, int width, int height, float *r);
 
 /*
- ** ---controls---
- */
+** ---controls---
+*/
 
 void					controller(SDL_Event *e, t_rt *data);
 void					keyboard_controller(SDL_Event *e, t_rt *data);
 void					mouse_controller(SDL_Event *e, t_rt *data);
 
 /*
- ** ---error---
- */
+** ---error---
+*/
 
 void					error(int err, const char *message);
 

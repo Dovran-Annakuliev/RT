@@ -2,7 +2,8 @@ GCC = gcc -Wall -Wextra -Werror
 NAME = RTv1
 SRC_DIR = sources/
 CONTROLLERS_DIR = $(SRC_DIR)controllers/
-SRCS = $(SRC_DIR)cl_init.c\
+SRCS = $(SRC_DIR)camera.c\
+		$(SRC_DIR)cl_init.c\
 		$(SRC_DIR)coloring.c\
 		$(SRC_DIR)error.c\
 		$(SRC_DIR)init.c\

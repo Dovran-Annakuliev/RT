@@ -10,6 +10,7 @@ void 		keyboard_controller(SDL_Event *e, t_rt *data)
 		e->key.keysym.sym == SDLK_s ? data->camera.look_from.y += 0.2 : 0;
 		e->key.keysym.sym == SDLK_r ? data->camera.look_from.z += 0.2 : 0;
 		e->key.keysym.sym == SDLK_f ? data->camera.look_from.z -= 0.2 : 0;
+		update_camera(&data->camera);
 	}
 
 }
