@@ -55,13 +55,17 @@ typedef struct			s_rt
 	SDL_Surface			*surface;
 	SDL_Texture			*texture;
 	Uint32				*pixels;
-	int 				pitch;
-	int 				width;
-	int 				height;
+	int					pitch;
+	int					width;
+	int					height;
 	t_cl				cl;
 	t_camera			camera;
 	char 				*cl_path;
 	t_obj				o[4];
+	t_light				lights[1];
+	int					samples;
+	float				*randoms;
+
 }						t_rt;
 
 /*
