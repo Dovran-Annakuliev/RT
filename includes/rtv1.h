@@ -11,6 +11,7 @@
 #include "../libft/includes/libft.h"
 #include "../SDL2.framework/Headers/SDL.h"
 #include "../SDL2_image.framework/Headers/SDL_image.h"
+#include <time.h>
 #include "error_codes.h"
 #include "vectors.h"
 #include "rgba.h"
@@ -74,6 +75,8 @@ typedef struct			s_rt
 
 t_rt					*init_data();
 void					close_rt(t_rt *data);
+float					*new_random_array(int w, int h, int samples);
+
 
 /*
 ** ---camera_functions---

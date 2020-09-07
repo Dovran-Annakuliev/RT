@@ -144,6 +144,4 @@ __kernel void raytrace(t_camera camera, __global t_obj* objects, __global float*
 	}
 
 	output[y * width + x] /= samples;
-	if (x == width/ 2 && y == height / 2)
-		printf("r = %f, g = %f, b = %f, a = %f\n", output[y * width + x].x, output[y * width + x].y, output[y * width + x].z, output[y * width + x].w);
 }

@@ -1,23 +1,4 @@
 #include "../includes/rtv1.h"
-#include <time.h>
-
-static float	*new_random_array(int w, int h, int samples)
-{
-	float		*res;
-	int			i;
-
-	srand((unsigned int)time(NULL));
-	if (!(res = (float*)malloc(sizeof(float) * w * h * samples)))
-		error(MALLOC_ERROR, "renderer malloc error");
-	i = 0;
-
-	while (i < h * w * samples)
-	{
-		res[i] = (float)rand() / (float)RAND_MAX;
-		i++;
-	}
-	return (res);
-}
 
 float		*render(t_rt *rt)
 {
@@ -26,8 +7,6 @@ float		*render(t_rt *rt)
 	cl_mem		rand_buffer;
 	float		*res;
 	cl_int		e;
-
-	rt->randoms = new_random_array(rt->width, rt->height, rt->samples);
 
 	if (!(res = (float*)malloc(sizeof(float) * rt->width * rt->height * 4)))
 		error(MALLOC_ERROR, "result buffer malloc error");
@@ -66,6 +45,5 @@ float		*render(t_rt *rt)
 	clReleaseMemObject(output_buffer);
 	clReleaseMemObject(obj_buffer);
 	clReleaseMemObject(rand_buffer);
-	free(rt->randoms);
 	return (res);
 }
