@@ -47,7 +47,7 @@ t_rt				*init_data()
 	data->o[0] = new_sphere((cl_float3){0.0f, 0.0f, -10.0f}, 0.5f, new_material((cl_float4){0, 255, 0, 0}));
 	data->o[1] = new_sphere((cl_float3){-2.0f, 0.0f, -10.0f}, 0.5f, new_material((cl_float4){255, 0, 0, 0}));
 	data->o[2] = new_sphere((cl_float3){2.0f, 0.0f, -10.0f}, 0.5f, new_material((cl_float4){0, 0, 255, 0}));
-	data->o[3] = new_sphere((cl_float3){0.0f, 10.0f, -30.0f}, 10.0f, new_material((cl_float4){0, 255, 255, 0}));
+	data->o[3] = new_sphere((cl_float3){0.0f, 11.0f, -13.0f}, 10.0f, new_material((cl_float4){0, 255, 255, 0}));
 	data->lights[0] = new_light_source((cl_float3){10.0f, -10.0f, 1.0f}, 0.7f);
 	data->samples = 1;
 	data->randoms = new_random_array(data->width, data->height, data->samples);

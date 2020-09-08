@@ -22,12 +22,12 @@ typedef struct			s_camera
 typedef struct			s_obj
 {
 	int 				type;
-	float3			s_center;
-	float			s_radius;
-	float3			p_pos;
-	float3			p_normal;
+	float3				s_center;
+	float				s_radius;
+	float3				p_pos;
+	float3				p_normal;
 	t_material			material;
-}				t_obj;
+}						t_obj;
 
 typedef struct		s_light
 {
@@ -50,7 +50,7 @@ static	float		solve_eq(float a, float b, float c, float t_min, float t_max)
 	return (0.0f);
 }
 
-static		bool		sphere_intersect(float3 orig, float3 dir, __global t_obj* objects, float3 *hit_pos, float3 *N, float4 *color)
+static		bool		intersect(float3 orig, float3 dir, __global t_obj* objects, float3 *hit_pos, float3 *N, float4 *color)
 {
 	float	closest_dist = FLT_MAX;
 
@@ -78,27 +78,62 @@ static		bool		sphere_intersect(float3 orig, float3 dir, __global t_obj* objects,
 	return (closest_dist < 100);
 }
 
-static	float4  get_light(float3 hit_pos, float3 N, t_light light, float4 color)
+static	float  get_light(float3 L, float3 N, t_light light)
 {
 	float	df_light_int = 0.0f;
-	float3	light_dir =  (float3)(light.pos.x, light.pos.y, light.pos.z) - hit_pos;
-	float dot_light_dir = dot(N, light_dir);
-	if (dot_light_dir > 0)
-		df_light_int += light.intensity * dot_light_dir / (length(N) * length(light_dir));
-	return(color * df_light_int);
 
+	float dot_light_dir = dot(N, L);
+	if (dot_light_dir > 0)
+		df_light_int += light.intensity * dot_light_dir / (length(N) * length(L));
+	return(df_light_int);
+}
+
+static	float3	get_light_dir(float3 hit_pos, t_light light)
+{
+	float3	light_dir =  (float3)(light.pos.x, light.pos.y, light.pos.z) - hit_pos;
+	return (light_dir);
+}
+
+static	bool	shadow_intersect(float3 orig, float3 dir, __global t_obj* objects, float3 *hit_pos, float3 *N)
+{
+	float	closest_dist = FLT_MAX;
+
+	for(int i = 0; i < 4; i++)
+	{
+		float	dist_i;
+
+		float3 center = (float3)(objects[i].s_center.x, objects[i].s_center.y, objects[i].s_center.z);
+		float radius = (float)(objects[i].s_radius);
+
+		float3 L = orig - center;
+		float a = dot(dir, dir);
+		float b = 2 * dot(L, dir);
+		float c = dot(L, L) - radius * radius;
+		dist_i = solve_eq(a, b, c, 0.001f, FLT_MAX);
+
+		if (dist_i != 0.0f && dist_i < closest_dist)
+		{
+			closest_dist = dist_i;
+			*hit_pos = orig + dir * dist_i;
+			*N = normalize(*hit_pos - center);
+		}
+	}
+	return (closest_dist < 100);
 }
 
 static	float4	trace(float3 orig, float3 dir, __global t_obj *objects, t_light light)
 {
 	float3	hit_pos, N;
+	float3	shadow_hit_pos, shadow_N;
 	float4	color;
+	float3	light_dir;
 
-	if (!sphere_intersect(orig, dir, objects, &hit_pos, &N, &color))
-		return((float4)(100.0f, 100.0f, 100.0f, 0.0f));
-
-	color = get_light(hit_pos, N, light, color);
-
+	if (!intersect(orig, dir, objects, &hit_pos, &N, &color))
+		return ((float4)(100.0f, 100.0f, 100.0f, 0.0f));
+	light_dir = get_light_dir(hit_pos, light);
+	if (shadow_intersect(hit_pos, light_dir, objects, &shadow_hit_pos, &shadow_N))
+		return (color *= 0.001f);
+	color *= get_light(light_dir, N, light);
 	return (color);
 }
 
@@ -152,5 +187,6 @@ __kernel void raytrace(t_camera camera, __global t_obj* objects, __global float*
 		}
 	}
 
+	/* is there is only one sample we do not need to divide the color. Maybe move this in the end of the if-statement above */
 	output[y * width + x] /= samples == 1 ? 1 : samples + 1;
 }
