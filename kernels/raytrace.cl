@@ -1,6 +1,7 @@
 typedef struct	s_material
 {
 	float4		diff_color;
+	float		specular;
 }				t_material;
 
 typedef struct			s_camera
@@ -52,7 +53,7 @@ static	float		solve_eq(float a, float b, float c, float t_min, float t_max)
 	return (0.0f);
 }
 
-static		bool		intersect(float3 orig, float3 dir, __global t_obj* objects, float3 *hit_pos, float3 *N, float4 *color)
+static		bool		intersect(float3 orig, float3 dir, __global t_obj* objects, float3 *hit_pos, float3 *N, float4 *color, int *id)
 {
 	float	closest_dist = FLT_MAX;
 
@@ -75,6 +76,7 @@ static		bool		intersect(float3 orig, float3 dir, __global t_obj* objects, float3
 			*hit_pos = orig + dir * dist_i;
 			*N = normalize(*hit_pos - center);
 			*color = objects[i].material.diff_color;
+			*id = i;
 		}
 	}
 	return (closest_dist < 100);
@@ -130,12 +132,13 @@ static	bool	shadow_intersect(float3 orig, float3 dir, __global t_obj* objects, f
 static	float4	trace(float3 orig, float3 dir, __global t_obj *objects, __global t_light *lights)
 {
 	float3	hit_pos, N;
+	int		id = -1;
 	float3	shadow_hit_pos, shadow_N;
 	float4	color;
 	float3	light_dir;
 	float	intensity = 0;
 
-	if (!intersect(orig, dir, objects, &hit_pos, &N, &color))
+	if (!intersect(orig, dir, objects, &hit_pos, &N, &color, &id))
 		return ((float4)(100.0f, 100.0f, 100.0f, 0.0f));
 	for (int i = 0; i < 3; i++)
 	{
@@ -145,8 +148,15 @@ static	float4	trace(float3 orig, float3 dir, __global t_obj *objects, __global t
 		{
 			light_dir = get_light_dir(hit_pos, lights[i]);
 			if (shadow_intersect(hit_pos, light_dir, objects, &shadow_hit_pos, &shadow_N))
-				break;
+				continue;
 			intensity += get_light(light_dir, N, lights[i]);
+			if (objects[id].material.specular != 0)
+			{
+				float3 R = 2 * N * dot(N, light_dir) - light_dir;
+				float r_dot_dir = dot(R, -dir);
+				if (r_dot_dir > 0)
+					intensity += lights[i].intensity * pow(r_dot_dir / (length(R) * length(-dir)), objects[id].material.specular);
+			}
 		}
 	}
 	return (color * intensity);
