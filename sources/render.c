@@ -1,16 +1,13 @@
 #include "../includes/rtv1.h"
 
-float		*render(t_rt *rt)
+void		render(t_rt *rt)
 {
 	cl_mem		output_buffer;
 	cl_mem		obj_buffer;
 	cl_mem		light_buffer;
 	cl_mem		rand_buffer;
-	float		*res;
 	cl_int		e;
 
-	if (!(res = (float*)malloc(sizeof(float) * rt->width * rt->height * 4)))
-		error(MALLOC_ERROR, "result buffer malloc error");
 	output_buffer = clCreateBuffer(rt->cl.context, CL_MEM_WRITE_ONLY, sizeof(float) * rt->width * rt->height * 4, NULL, &e);
 //	ft_printf("out_buff = %d\n", e);
 
@@ -47,10 +44,9 @@ float		*render(t_rt *rt)
 						   rt->cl.global_size, NULL, 0, NULL, NULL);
 	clFinish(rt->cl.queue);
 	clEnqueueReadBuffer(rt->cl.queue, output_buffer, CL_TRUE, 0, sizeof(float) * rt->width * rt->height * 4,
-						res, 0, NULL, NULL);
+						rt->res, 0, NULL, NULL);
 	clFinish(rt->cl.queue);
 	clReleaseMemObject(output_buffer);
 	clReleaseMemObject(obj_buffer);
 	clReleaseMemObject(rand_buffer);
-	return (res);
 }

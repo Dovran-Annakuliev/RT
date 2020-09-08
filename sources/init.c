@@ -53,6 +53,8 @@ t_rt				*init_data()
 	data->lights[2] = new_directional_light((cl_float3){-10.0f, 0.0f, -1.0f}, 0.3f);
 	data->samples = 1;
 	data->randoms = new_random_array(data->width, data->height, data->samples);
+	if (!(data->res = (float*)malloc(sizeof(float) * data->width * data->height * 4)))
+		error(MALLOC_ERROR, "result buffer malloc error");
 	return (data);
 }
 
@@ -64,6 +66,7 @@ void 	close_rt(t_rt *data)
 	SDL_DestroyWindow(data->window);
 	SDL_Quit();
 	free(data->randoms);
+	free(data->res);
 	free(data);
 	data = NULL;
 }

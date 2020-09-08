@@ -66,6 +66,7 @@ typedef struct			s_rt
 	t_light				lights[3];
 	int					samples;
 	float				*randoms;
+	float				*res;
 
 }						t_rt;
 
@@ -97,7 +98,7 @@ char					**get_kernel_source(t_cl *cl, char *path);
 ** ---rendering---
 */
 
-float					*render(t_rt *rt);
+void					render(t_rt *rt);
 
 /*
 ** ---coloring---
