@@ -150,15 +150,16 @@ static	float4	trace(float3 orig, float3 dir, __global t_obj *objects, __global t
 			if (shadow_intersect(hit_pos, light_dir, objects, &shadow_hit_pos, &shadow_N))
 				continue;
 			intensity += get_light(light_dir, N, lights[i]);
-			if (objects[id].material.specular != 0)
+			if (objects[id].material.specular > 0)
 			{
 				float3 R = 2 * N * dot(N, light_dir) - light_dir;
 				float r_dot_dir = dot(R, -dir);
 				if (r_dot_dir > 0)
-					intensity += lights[i].intensity * pow(r_dot_dir / (length(R) * length(-dir)), objects[id].material.specular);
+					intensity += lights[i].intensity * pow(r_dot_dir / (length(R) * length(dir)), objects[id].material.specular);
 			}
 		}
 	}
+	intensity = intensity > 1 ? 1 : intensity;
 	return (color * intensity);
 }
 
