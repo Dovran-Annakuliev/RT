@@ -133,7 +133,13 @@ __kernel void raytrace(t_camera camera, __global t_obj* objects, __global float*
     output[y * width + x] = trace(camera.origin, dir, objects, light);
     */
 
-	output[y * width + x] = (float4)(0.0f, 0.0f, 0.0f, 0.0f);
+    /* 0 sample */
+	Px = (float)x / (width - 1);
+	Py = (float)y / (height - 1);
+	dir = camera.lower_left_corner + Px * camera.horizontal + Py * camera.vertical - camera.origin;
+	dir = normalize(dir);
+	output[y * width + x] = trace(camera.origin, dir, objects, light);
+
 	for (int i = 0; i < samples; i++)
 	{
 		Px = ((float)x + randoms[(y * width + x) * samples + i]) / (width - 1);
@@ -143,5 +149,5 @@ __kernel void raytrace(t_camera camera, __global t_obj* objects, __global float*
 		output[y * width + x] += trace(camera.origin, dir, objects, light);
 	}
 
-	output[y * width + x] /= samples;
+	output[y * width + x] /= samples + 1;
 }
