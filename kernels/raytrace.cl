@@ -31,7 +31,9 @@ typedef struct			s_obj
 
 typedef struct		s_light
 {
+	int				type;
 	float3			pos;
+	float3			dir;
 	float			intensity;
 }					t_light;
 
@@ -90,7 +92,11 @@ static	float  get_light(float3 L, float3 N, t_light light)
 
 static	float3	get_light_dir(float3 hit_pos, t_light light)
 {
-	float3	light_dir =  (float3)(light.pos.x, light.pos.y, light.pos.z) - hit_pos;
+	float3	light_dir;
+	if (light.type == 2)
+		light_dir = (float3)(light.pos.x, light.pos.y, light.pos.z) - hit_pos;
+	if (light.type == 3)
+		light_dir = light.dir;
 	return (light_dir);
 }
 
@@ -121,23 +127,32 @@ static	bool	shadow_intersect(float3 orig, float3 dir, __global t_obj* objects, f
 	return (closest_dist < 100);
 }
 
-static	float4	trace(float3 orig, float3 dir, __global t_obj *objects, t_light light)
+static	float4	trace(float3 orig, float3 dir, __global t_obj *objects, __global t_light *lights)
 {
 	float3	hit_pos, N;
 	float3	shadow_hit_pos, shadow_N;
 	float4	color;
 	float3	light_dir;
+	float	intensity = 0;
 
 	if (!intersect(orig, dir, objects, &hit_pos, &N, &color))
 		return ((float4)(100.0f, 100.0f, 100.0f, 0.0f));
-	light_dir = get_light_dir(hit_pos, light);
-	if (shadow_intersect(hit_pos, light_dir, objects, &shadow_hit_pos, &shadow_N))
-		return (color *= 0.001f);
-	color *= get_light(light_dir, N, light);
-	return (color);
+	for (int i = 0; i < 3; i++)
+	{
+		if (lights[i].type == 1)
+			intensity += lights[i].intensity;
+		else
+		{
+			light_dir = get_light_dir(hit_pos, lights[i]);
+			if (shadow_intersect(hit_pos, light_dir, objects, &shadow_hit_pos, &shadow_N))
+				break;
+			intensity += get_light(light_dir, N, lights[i]);
+		}
+	}
+	return (color * intensity);
 }
 
-__kernel void raytrace(t_camera camera, __global t_obj* objects, __global float* randoms, int samples, t_light light, __global float4* output)
+__kernel void raytrace(t_camera camera, __global t_obj* objects, __global float* randoms, int samples, __global t_light *lights, __global float4* output)
 {
 	int x = get_global_id(0);
 	int y = get_global_id(1);
@@ -160,20 +175,12 @@ __kernel void raytrace(t_camera camera, __global t_obj* objects, __global float*
 	camera.lower_left_corner = camera.origin - camera.horizontal/2 - camera.vertical/2 - w;
 	*/
 
-	/*
-	Px = ((float)x) / (width - 1);
-    Py = ((float)y) / (height - 1);
-    dir = camera.lower_left_corner + Px * camera.horizontal + Py * camera.vertical - camera.origin;
-    dir = normalize(dir);
-    output[y * width + x] = trace(camera.origin, dir, objects, light);
-    */
-
     /* 0 sample */
 	Px = (float)x / (width - 1);
 	Py = (float)y / (height - 1);
 	dir = camera.lower_left_corner + Px * camera.horizontal + Py * camera.vertical - camera.origin;
 	dir = normalize(dir);
-	output[y * width + x] = trace(camera.origin, dir, objects, light);
+	output[y * width + x] = trace(camera.origin, dir, objects, lights);
 
 	if (samples > 1)
 	{
@@ -183,7 +190,7 @@ __kernel void raytrace(t_camera camera, __global t_obj* objects, __global float*
 			Py = ((float)y + randoms[(y * width + x) * samples + i]) / (height - 1);
 			dir = camera.lower_left_corner + Px * camera.horizontal + Py * camera.vertical - camera.origin;
 			dir = normalize(dir);
-			output[y * width + x] += trace(camera.origin, dir, objects, light);
+			output[y * width + x] += trace(camera.origin, dir, objects, lights);
 		}
 	}
 
