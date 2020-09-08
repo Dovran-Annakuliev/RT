@@ -139,11 +139,11 @@ static	float4	trace(float3 orig, float3 dir, __global t_obj *objects, __global t
 {
 	float3	hit_pos, N;
 	int		id = -1;
-	int		is_reflective;
+	flaot	is_reflective;
 	float3	shadow_hit_pos, shadow_N;
 	float4	color, ref_color;
 	float3	light_dir;
-	float3	reflected_ray
+	float3	reflected_ray;
 	float	intensity = 0;
 
 	if (!intersect(orig, dir, objects, &hit_pos, &N, &color, &id))
@@ -169,14 +169,17 @@ static	float4	trace(float3 orig, float3 dir, __global t_obj *objects, __global t
 	}
 	intensity = intensity > 1 ? 1 : intensity;
 	color = color * intensity;
+	return (color);
+	/*
 	is_reflective = objects[id].material.reflection;
-
+	
 	if (depth <= 0 || is_reflective <= 0)
 		return (color);
 
 	reflected_ray = reflect_ray(-dir, N);
 	ref_color = trace(hit_pos, reflected_ray, objects, lights, depth - 1);
 	return (color * (1 - is_reflective) + ref_color * is_reflective);
+	*/
 }
 
 __kernel void raytrace(t_camera camera, __global t_obj* objects, __global float* randoms, int samples, __global t_light *lights, __global float4* output)
