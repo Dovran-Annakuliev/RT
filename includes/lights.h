@@ -6,10 +6,16 @@
 
 typedef struct		s_light
 {
+	int				type;
 	cl_float3		pos;
+	cl_float3		dir;
 	float			intensity;
 }					t_light;
 
-t_light			new_light_source(cl_float3 pos, float intensity);
+t_light				new_ambient_light(float intensity);
+t_light				new_point_light(cl_float3 pos, float intensity);
+t_light				new_directional_light(cl_float3 dir, float intensity);
+
+
 
 #endif

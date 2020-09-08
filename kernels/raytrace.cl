@@ -1,6 +1,7 @@
 typedef struct	s_material
 {
 	float4		diff_color;
+	float		specular;
 }				t_material;
 
 typedef struct			s_camera
@@ -22,16 +23,18 @@ typedef struct			s_camera
 typedef struct			s_obj
 {
 	int 				type;
-	float3			s_center;
-	float			s_radius;
-	float3			p_pos;
-	float3			p_normal;
+	float3				s_center;
+	float				s_radius;
+	float3				p_pos;
+	float3				p_normal;
 	t_material			material;
-}				t_obj;
+}						t_obj;
 
 typedef struct		s_light
 {
+	int				type;
 	float3			pos;
+	float3			dir;
 	float			intensity;
 }					t_light;
 
@@ -50,7 +53,7 @@ static	float		solve_eq(float a, float b, float c, float t_min, float t_max)
 	return (0.0f);
 }
 
-static		bool		sphere_intersect(float3 orig, float3 dir, __global t_obj* objects, float3 *hit_pos, float3 *N, float4 *color)
+static		bool		intersect(float3 orig, float3 dir, __global t_obj* objects, float3 *hit_pos, float3 *N, float4 *color, int *id)
 {
 	float	closest_dist = FLT_MAX;
 
@@ -73,36 +76,94 @@ static		bool		sphere_intersect(float3 orig, float3 dir, __global t_obj* objects,
 			*hit_pos = orig + dir * dist_i;
 			*N = normalize(*hit_pos - center);
 			*color = objects[i].material.diff_color;
+			*id = i;
 		}
 	}
 	return (closest_dist < 100);
 }
 
-static	float4  get_light(float3 hit_pos, float3 N, t_light light, float4 color)
+static	float  get_light(float3 L, float3 N, t_light light)
 {
 	float	df_light_int = 0.0f;
-	float3	light_dir =  (float3)(light.pos.x, light.pos.y, light.pos.z) - hit_pos;
-	float dot_light_dir = dot(N, light_dir);
-	if (dot_light_dir > 0)
-		df_light_int += light.intensity * dot_light_dir / (length(N) * length(light_dir));
-	return(color * df_light_int);
 
+	float dot_light_dir = dot(N, L);
+	if (dot_light_dir > 0)
+		df_light_int += light.intensity * dot_light_dir / (length(N) * length(L));
+	return(df_light_int);
 }
 
-static	float4	trace(float3 orig, float3 dir, __global t_obj *objects, t_light light)
+static	float3	get_light_dir(float3 hit_pos, t_light light)
+{
+	float3	light_dir;
+	if (light.type == 2)
+		light_dir = (float3)(light.pos.x, light.pos.y, light.pos.z) - hit_pos;
+	if (light.type == 3)
+		light_dir = light.dir;
+	return (light_dir);
+}
+
+static	bool	shadow_intersect(float3 orig, float3 dir, __global t_obj* objects, float3 *hit_pos, float3 *N)
+{
+	float	closest_dist = FLT_MAX;
+
+	for(int i = 0; i < 4; i++)
+	{
+		float	dist_i;
+
+		float3 center = (float3)(objects[i].s_center.x, objects[i].s_center.y, objects[i].s_center.z);
+		float radius = (float)(objects[i].s_radius);
+
+		float3 L = orig - center;
+		float a = dot(dir, dir);
+		float b = 2 * dot(L, dir);
+		float c = dot(L, L) - radius * radius;
+		dist_i = solve_eq(a, b, c, 0.001f, FLT_MAX);
+
+		if (dist_i != 0.0f && dist_i < closest_dist)
+		{
+			closest_dist = dist_i;
+			*hit_pos = orig + dir * dist_i;
+			*N = normalize(*hit_pos - center);
+		}
+	}
+	return (closest_dist < 100);
+}
+
+static	float4	trace(float3 orig, float3 dir, __global t_obj *objects, __global t_light *lights)
 {
 	float3	hit_pos, N;
+	int		id = -1;
+	float3	shadow_hit_pos, shadow_N;
 	float4	color;
+	float3	light_dir;
+	float	intensity = 0;
 
-	if (!sphere_intersect(orig, dir, objects, &hit_pos, &N, &color))
-		return((float4)(100.0f, 100.0f, 100.0f, 0.0f));
-
-	color = get_light(hit_pos, N, light, color);
-
-	return (color);
+	if (!intersect(orig, dir, objects, &hit_pos, &N, &color, &id))
+		return ((float4)(100.0f, 100.0f, 100.0f, 0.0f));
+	for (int i = 0; i < 3; i++)
+	{
+		if (lights[i].type == 1)
+			intensity += lights[i].intensity;
+		else
+		{
+			light_dir = get_light_dir(hit_pos, lights[i]);
+			if (shadow_intersect(hit_pos, light_dir, objects, &shadow_hit_pos, &shadow_N))
+				continue;
+			intensity += get_light(light_dir, N, lights[i]);
+			if (objects[id].material.specular > 0)
+			{
+				float3 R = 2 * N * dot(N, light_dir) - light_dir;
+				float r_dot_dir = dot(R, -dir);
+				if (r_dot_dir > 0)
+					intensity += lights[i].intensity * pow(r_dot_dir / (length(R) * length(dir)), objects[id].material.specular);
+			}
+		}
+	}
+	intensity = intensity > 1 ? 1 : intensity;
+	return (color * intensity);
 }
 
-__kernel void raytrace(t_camera camera, __global t_obj* objects, __global float* randoms, int samples, t_light light, __global float4* output)
+__kernel void raytrace(t_camera camera, __global t_obj* objects, __global float* randoms, int samples, __global t_light *lights, __global float4* output)
 {
 	int x = get_global_id(0);
 	int y = get_global_id(1);
@@ -125,23 +186,25 @@ __kernel void raytrace(t_camera camera, __global t_obj* objects, __global float*
 	camera.lower_left_corner = camera.origin - camera.horizontal/2 - camera.vertical/2 - w;
 	*/
 
-	/*
-	Px = ((float)x) / (width - 1);
-    Py = ((float)y) / (height - 1);
-    dir = camera.lower_left_corner + Px * camera.horizontal + Py * camera.vertical - camera.origin;
-    dir = normalize(dir);
-    output[y * width + x] = trace(camera.origin, dir, objects, light);
-    */
+    /* 0 sample */
+	Px = (float)x / (width - 1);
+	Py = (float)y / (height - 1);
+	dir = camera.lower_left_corner + Px * camera.horizontal + Py * camera.vertical - camera.origin;
+	dir = normalize(dir);
+	output[y * width + x] = trace(camera.origin, dir, objects, lights);
 
-	output[y * width + x] = (float4)(0.0f, 0.0f, 0.0f, 0.0f);
-	for (int i = 0; i < samples; i++)
+	if (samples > 1)
 	{
-		Px = ((float)x + randoms[(y * width + x) * samples + i]) / (width - 1);
-		Py = ((float)y + randoms[(y * width + x) * samples + i]) / (height - 1);
-		dir = camera.lower_left_corner + Px * camera.horizontal + Py * camera.vertical - camera.origin;
-		dir = normalize(dir);
-		output[y * width + x] += trace(camera.origin, dir, objects, light);
+		for (int i = 0; i < samples; i++)
+		{
+			Px = ((float)x + randoms[(y * width + x) * samples + i]) / (width - 1);
+			Py = ((float)y + randoms[(y * width + x) * samples + i]) / (height - 1);
+			dir = camera.lower_left_corner + Px * camera.horizontal + Py * camera.vertical - camera.origin;
+			dir = normalize(dir);
+			output[y * width + x] += trace(camera.origin, dir, objects, lights);
+		}
 	}
 
-	output[y * width + x] /= samples;
+	/* is there is only one sample we do not need to divide the color. Maybe move this in the end of the if-statement above */
+	output[y * width + x] /= samples == 1 ? 1 : samples + 1;
 }

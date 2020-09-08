@@ -7,8 +7,9 @@
 typedef struct	s_material
 {
 	cl_float4	diff_color;
+	float		specular;
 }				t_material;
 
-t_material		new_material(cl_float4 color);
+t_material		new_material(cl_float4 color, float specular);
 
 #endif
