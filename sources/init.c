@@ -17,11 +17,12 @@ float	*new_random_array(int w, int h, int samples)
 
 	while (i < h * w * samples)
 	{
-		res[i] = (float)rand() / (float)RAND_MAX;
+		res[i] = samples == 1 ? 0 : ((float)rand() / (float)RAND_MAX);
 		i++;
 	}
 	return (res);
 }
+
 
 t_rt				*init_data()
 {
