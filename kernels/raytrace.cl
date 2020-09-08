@@ -2,6 +2,7 @@ typedef struct	s_material
 {
 	float4		diff_color;
 	float		specular;
+	float		reflection;
 }				t_material;
 
 typedef struct			s_camera
@@ -129,13 +130,20 @@ static	bool	shadow_intersect(float3 orig, float3 dir, __global t_obj* objects, f
 	return (closest_dist < 100);
 }
 
-static	float4	trace(float3 orig, float3 dir, __global t_obj *objects, __global t_light *lights)
+static		float3 reflect_ray(float3 R, float3 N)
+{
+	return (2 * N * dot(N, R) - R);
+}
+
+static	float4	trace(float3 orig, float3 dir, __global t_obj *objects, __global t_light *lights, int depth)
 {
 	float3	hit_pos, N;
 	int		id = -1;
+	int		is_reflective;
 	float3	shadow_hit_pos, shadow_N;
-	float4	color;
+	float4	color, ref_color;
 	float3	light_dir;
+	float3	reflected_ray
 	float	intensity = 0;
 
 	if (!intersect(orig, dir, objects, &hit_pos, &N, &color, &id))
@@ -160,7 +168,15 @@ static	float4	trace(float3 orig, float3 dir, __global t_obj *objects, __global t
 		}
 	}
 	intensity = intensity > 1 ? 1 : intensity;
-	return (color * intensity);
+	color = color * intensity;
+	is_reflective = objects[id].material.reflection;
+
+	if (depth <= 0 || is_reflective <= 0)
+		return (color);
+
+	reflected_ray = reflect_ray(-dir, N);
+	ref_color = trace(hit_pos, reflected_ray, objects, lights, depth - 1);
+	return (color * (1 - is_reflective) + ref_color * is_reflective);
 }
 
 __kernel void raytrace(t_camera camera, __global t_obj* objects, __global float* randoms, int samples, __global t_light *lights, __global float4* output)
@@ -191,7 +207,7 @@ __kernel void raytrace(t_camera camera, __global t_obj* objects, __global float*
 	Py = (float)y / (height - 1);
 	dir = camera.lower_left_corner + Px * camera.horizontal + Py * camera.vertical - camera.origin;
 	dir = normalize(dir);
-	output[y * width + x] = trace(camera.origin, dir, objects, lights);
+	output[y * width + x] = trace(camera.origin, dir, objects, lights, 0);
 
 	if (samples > 1)
 	{
@@ -201,7 +217,7 @@ __kernel void raytrace(t_camera camera, __global t_obj* objects, __global float*
 			Py = ((float)y + randoms[(y * width + x) * samples + i]) / (height - 1);
 			dir = camera.lower_left_corner + Px * camera.horizontal + Py * camera.vertical - camera.origin;
 			dir = normalize(dir);
-			output[y * width + x] += trace(camera.origin, dir, objects, lights);
+			output[y * width + x] += trace(camera.origin, dir, objects, lights, 0);
 		}
 	}
 
