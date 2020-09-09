@@ -26,5 +26,6 @@ int main(int argc, char **argv)
 		}
 	}
 	close_rt(data);
+
 	return (0);
 }
