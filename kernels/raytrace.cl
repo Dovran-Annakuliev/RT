@@ -174,11 +174,11 @@ static	float4	trace(float3 orig, float3 dir, __global t_obj *objects, __global t
 	is_reflective = objects[id].material.reflection;
 
 	ref_color = (float4)(0.0f, 0.0f, 0.0f, 0.0f);
-	while (depth < 2 && is_reflective > 0)
+	while (depth < 3 && is_reflective > 0)
 	{
-		dir = reflect_ray(-dir, N);
-        orig = dir * N < 0 ? hit_pos - N * 0.001f : hit_pos + N * 0.001f;
-		if (!intersect(orig, dir, objects, &hit_pos, &N, &ref_color, &id))
+		float3 ref_dir = reflect_ray(-dir, N);
+		float3 ref_orig = ref_dir * N < 0 ? hit_pos - N * 0.001f : hit_pos + N * 0.001f;
+		if (!intersect(ref_orig, ref_dir, objects, &hit_pos, &N, &ref_color, &id))
 			ref_color = (float4)(100.0f, 100.0f, 100.0f, 0.0f);
 		for (int i = 0; i < 3; i++)
 		{
@@ -202,7 +202,7 @@ static	float4	trace(float3 orig, float3 dir, __global t_obj *objects, __global t
 		intensity = intensity > 1 ? 1 : intensity;
 		ref_color = ref_color * intensity;
 		depth++;
-		if (depth == 2 || objects[id].material.reflection < 0)
+		if (depth == 3 || objects[id].material.reflection < 0)
         	break;
         is_reflective = objects[id].material.reflection;
 	}
@@ -226,7 +226,7 @@ __kernel void raytrace(t_camera camera, __global t_obj* objects, __global float*
 	Py = (float)y / (height - 1);
 	dir = camera.lower_left_corner + Px * camera.horizontal + Py * camera.vertical - camera.origin;
 	dir = normalize(dir);
-	output[y * width + x] = trace(camera.origin, dir, objects, lights, 1);
+	output[y * width + x] = trace(camera.origin, dir, objects, lights, 2);
 
 	if (samples > 1)
 	{
@@ -236,7 +236,7 @@ __kernel void raytrace(t_camera camera, __global t_obj* objects, __global float*
 			Py = ((float)y + randoms[(y * width + x) * samples + i]) / (height - 1);
 			dir = camera.lower_left_corner + Px * camera.horizontal + Py * camera.vertical - camera.origin;
 			dir = normalize(dir);
-			output[y * width + x] += trace(camera.origin, dir, objects, lights, 1);
+			output[y * width + x] += trace(camera.origin, dir, objects, lights, 2);
 		}
 	}
 
