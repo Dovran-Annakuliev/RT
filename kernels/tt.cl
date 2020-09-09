@@ -2,7 +2,6 @@ typedef struct	s_material
 {
 	float4		diff_color;
 	float		specular;
-	float		reflection;
 }				t_material;
 
 typedef struct			s_camera
@@ -69,7 +68,7 @@ static		bool		intersect(float3 orig, float3 dir, __global t_obj* objects, float3
 		float a = dot(dir, dir);
 		float b = 2 * dot(L, dir);
 		float c = dot(L, L) - radius * radius;
-		dist_i = solve_eq(a, b, c, 0.001f, FLT_MAX);
+		dist_i = solve_eq(a, b, c, 0.001f, closest_dist);
 
 		if (dist_i != 0.0f && dist_i < closest_dist)
 		{
@@ -130,26 +129,17 @@ static	bool	shadow_intersect(float3 orig, float3 dir, __global t_obj* objects, f
 	return (closest_dist < 100);
 }
 
-static		float3 reflect_ray(float3 R, float3 N)
-{
-	return (2 * N * dot(N, R) - R);
-}
-
-static	float4	trace(float3 orig, float3 dir, __global t_obj *objects, __global t_light *lights, int depth)
+static	float4	trace(float3 orig, float3 dir, __global t_obj *objects, __global t_light *lights)
 {
 	float3	hit_pos, N;
 	int		id = -1;
-	float	is_reflective = 0.0f;
 	float3	shadow_hit_pos, shadow_N;
-	float4	color, ref_color;
+	float4	color;
 	float3	light_dir;
-	float3	reflected_ray;
 	float	intensity = 0;
 
-
-	/* get first color */
 	if (!intersect(orig, dir, objects, &hit_pos, &N, &color, &id))
-		return ((float4)(55.0f, 55.0f, 55.0f, 0.0f));
+		return ((float4)(100.0f, 100.0f, 100.0f, 0.0f));
 	for (int i = 0; i < 3; i++)
 	{
 		if (lights[i].type == 1)
@@ -170,44 +160,7 @@ static	float4	trace(float3 orig, float3 dir, __global t_obj *objects, __global t
 		}
 	}
 	intensity = intensity > 1 ? 1 : intensity;
-	color = color * intensity;
-	is_reflective = objects[id].material.reflection;
-
-	ref_color = (float4)(0.0f, 0.0f, 0.0f, 0.0f);
-	while (depth < 2 && is_reflective > 0)
-	{
-		float3 ref_dir = reflect_ray(-dir, N);
-		float3 ref_orig = ref_dir * N < 0 ? hit_pos - N * 0.001f : hit_pos + N * 0.001f;
-		if (!intersect(ref_orig, ref_dir, objects, &hit_pos, &N, &ref_color, &id))
-			ref_color = (float4)(55.0f, 55.0f, 55.0f, 0.0f);
-		for (int i = 0; i < 3; i++)
-		{
-			if (lights[i].type == 1)
-				intensity += lights[i].intensity;
-			else
-			{
-				light_dir = get_light_dir(hit_pos, lights[i]);
-				if (shadow_intersect(hit_pos, light_dir, objects, &shadow_hit_pos, &shadow_N))
-					continue;
-				intensity += get_light(light_dir, N, lights[i]);
-				if (objects[id].material.specular > 0)
-				{
-					float3 R = 2 * N * dot(N, light_dir) - light_dir;
-					float r_dot_dir = dot(R, -ref_dir);
-					if (r_dot_dir > 0)
-						intensity += lights[i].intensity * pow(r_dot_dir / (length(R) * length(ref_dir)), objects[id].material.specular);
-				}
-			}
-		}
-		intensity = intensity > 1 ? 1 : intensity;
-		ref_color = ref_color * intensity;
-		depth++;
-		if (depth == 2 || objects[id].material.reflection < 0)
-        	break;
-        is_reflective = objects[id].material.reflection;
-	}
-	color = color * (1 - is_reflective) + ref_color * is_reflective;
-	return (color);
+	return (color * intensity);
 }
 
 __kernel void raytrace(t_camera camera, __global t_obj* objects, __global float* randoms, int samples, __global t_light *lights, __global float4* output)
@@ -226,7 +179,7 @@ __kernel void raytrace(t_camera camera, __global t_obj* objects, __global float*
 	Py = (float)y / (height - 1);
 	dir = camera.lower_left_corner + Px * camera.horizontal + Py * camera.vertical - camera.origin;
 	dir = normalize(dir);
-	output[y * width + x] = trace(camera.origin, dir, objects, lights, 1);
+	output[y * width + x] = trace(camera.origin, dir, objects, lights);
 
 	if (samples > 1)
 	{
@@ -236,11 +189,10 @@ __kernel void raytrace(t_camera camera, __global t_obj* objects, __global float*
 			Py = ((float)y + randoms[(y * width + x) * samples + i]) / (height - 1);
 			dir = camera.lower_left_corner + Px * camera.horizontal + Py * camera.vertical - camera.origin;
 			dir = normalize(dir);
-			output[y * width + x] += trace(camera.origin, dir, objects, lights, 1);
+			output[y * width + x] += trace(camera.origin, dir, objects, lights);
 		}
 	}
 
 	/* is there is only one sample we do not need to divide the color. Maybe move this in the end of the if-statement above */
 	output[y * width + x] /= samples == 1 ? 1 : samples + 1;
 }
-
