@@ -138,29 +138,66 @@ static	float4	trace(float3 orig, float3 dir, __global t_obj *objects, __global t
 	float3	light_dir;
 	float	intensity = 0;
 
-	if (!intersect(orig, dir, objects, &hit_pos, &N, &color, &id))
-		return ((float4)(100.0f, 100.0f, 100.0f, 0.0f));
-	for (int i = 0; i < 3; i++)
-	{
-		if (lights[i].type == 1)
-			intensity += lights[i].intensity;
-		else
-		{
-			light_dir = get_light_dir(hit_pos, lights[i]);
-			if (shadow_intersect(hit_pos, light_dir, objects, &shadow_hit_pos, &shadow_N))
-				continue;
-			intensity += get_light(light_dir, N, lights[i]);
-			if (objects[id].material.specular > 0)
-			{
-				float3 R = 2 * N * dot(N, light_dir) - light_dir;
-				float r_dot_dir = dot(R, -dir);
-				if (r_dot_dir > 0)
-					intensity += lights[i].intensity * pow(r_dot_dir / (length(R) * length(dir)), objects[id].material.specular);
-			}
-		}
-	}
-	intensity = intensity > 1 ? 1 : intensity;
-	return (color * intensity);
+	/* get first color */
+    	if (!intersect(orig, dir, objects, &hit_pos, &N, &color, &id))
+    		return ((float4)(55.0f, 55.0f, 55.0f, 0.0f));
+    	for (int i = 0; i < 3; i++)
+    	{
+    		if (lights[i].type == 1)
+    			intensity += lights[i].intensity;
+    		else
+    		{
+    			light_dir = get_light_dir(hit_pos, lights[i]);
+    			if (shadow_intersect(hit_pos, light_dir, objects, &shadow_hit_pos, &shadow_N))
+    				continue;
+    			intensity += get_light(light_dir, N, lights[i]);
+    			if (objects[id].material.specular > 0)
+    			{
+    				float3 R = 2 * N * dot(N, light_dir) - light_dir;
+    				float r_dot_dir = dot(R, -dir);
+    				if (r_dot_dir > 0)
+    					intensity += lights[i].intensity * pow(r_dot_dir / (length(R) * length(dir)), objects[id].material.specular);
+    			}
+    		}
+    	}
+    	intensity = intensity > 1 ? 1 : intensity;
+    	color = color * intensity;
+
+    	is_reflective = objects[id].material.reflection;
+    	ref_color = (float4)(0.0f, 0.0f, 0.0f, 0.0f);
+    	while (depth < 2 && is_reflective > 0)
+    	{
+    		float3 ref_dir = reflect_ray(-dir, N);
+    		float3 ref_orig = hit_pos + N * 0.001f;
+    		if (!intersect(ref_orig, ref_dir, objects, &hit_pos, &N, &ref_color, &id))
+    			ref_color = (float4)(55.0f, 55.0f, 55.0f, 0.0f);
+    		for (int i = 0; i < 3; i++)
+    		{
+    			if (lights[i].type == 1)
+    				intensity += lights[i].intensity;
+    			else
+    			{
+    				light_dir = get_light_dir(hit_pos, lights[i]);
+    				if (shadow_intersect(hit_pos, light_dir, objects, &shadow_hit_pos, &shadow_N))
+    					continue;
+    				intensity += get_light(light_dir, N, lights[i]);
+    				if (objects[id].material.specular > 0)
+    				{
+    					float3 R = 2 * N * dot(N, light_dir) - light_dir;
+    					float r_dot_dir = dot(R, -ref_dir);
+    					if (r_dot_dir > 0)
+    						intensity += lights[i].intensity * pow(r_dot_dir / (length(R) * length(ref_dir)), objects[id].material.specular);
+    				}
+    			}
+    		}
+    		intensity = intensity > 1 ? 1 : intensity;
+    		ref_color = ref_color * intensity;
+    		depth++;
+    		if (depth == 2 || objects[id].material.reflection < 0)
+            	break;
+            is_reflective = objects[id].material.reflection;
+    	}
+    	color = color * (1 - is_reflective) + ref_color * is_reflective;
 }
 
 __kernel void raytrace(t_camera camera, __global t_obj* objects, __global float* randoms, int samples, __global t_light *lights, __global float4* output)
