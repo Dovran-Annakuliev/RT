@@ -20,3 +20,14 @@ t_obj					new_plane(cl_float3 pos, cl_float3 normal, t_material material)
 	res.material = material;
 	return (res);
 }
+
+t_obj					new_cone(cl_float3 pos, cl_float radius, cl_float3 normal, t_material material)
+{
+	t_obj	res;
+	res.type  = 2;
+	res.cone_pos = pos;
+	res.cone_radius = radius;
+	res.cone_normal = normal;
+	res.material = material;
+	return (res);
+}

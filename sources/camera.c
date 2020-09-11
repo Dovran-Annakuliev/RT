@@ -8,7 +8,7 @@ void 		init_camera(t_camera *camera, int width, int height)
 	camera->h_angle = (float)tan(camera->vertical_fov / 2 * M_PI / 180);
 	camera->viewport_height = 2.0f * camera->h_angle;
 	camera->viewport_width = camera->viewport_height * camera->image_aspect_ratio;
-	camera->look_from = (cl_float3){0.0f, 0.0f, 0.0f};
+	camera->look_from = (cl_float3){0.0f, 0.0f, 10.0f};
 	camera->look_at = (cl_float3){0.0f, 0.0f, -1.0f};
 	camera->vec_up = (cl_float3){0.0f, 1.0f, 0.0f};
 	camera->origin = (cl_float3){0.0f, 0.0f, 0.0f};

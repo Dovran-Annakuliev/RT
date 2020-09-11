@@ -28,6 +28,9 @@ typedef struct			s_obj
 	float				s_radius;
 	float3				p_pos;
 	float3				p_normal;
+	float3				cone_pos;
+   	float				cone_radius;
+    float3				cone_normal;
 	t_material			material;
 }						t_obj;
 
@@ -38,9 +41,6 @@ typedef struct		s_light
 	float3			dir;
 	float			intensity;
 }					t_light;
-
-
-
 
 static	float		solve_eq(float a, float b, float c, float t_min, float t_max)
 {
@@ -57,29 +57,60 @@ static	float		solve_eq(float a, float b, float c, float t_min, float t_max)
 	return (0.0f);
 }
 
+static	float	intersect_sphere(t_obj	sphere, float3 orig, float3 dir)
+{
+	float dist;
+	float3 center = (float3)(sphere.s_center.x, sphere.s_center.y, sphere.s_center.z);
+	float radius = (float)(sphere.s_radius);
+
+	float3 L = orig - center;
+	float a = dot(dir, dir);
+	float b = 2 * dot(L, dir);
+	float c = dot(L, L) - radius * radius;
+	dist = solve_eq(a, b, c, 0.001f, FLT_MAX);
+	return (dist);
+}
+
+static	float	intersect_plane(t_obj	plane, float3 orig, float3 dir)
+{
+	float dist;
+	float a = dot(plane.p_normal, dir);
+	if (fabs(a) < 0.001f)
+		return (0);
+	float b = -(dot(orig - plane.p_pos, plane.p_normal)) / a;
+	dist = b < 0.001f ? 0 : b;
+	return (dist);
+}
+
+static	float3	get_normal(t_obj object, float3 hit_pos)
+{
+	float3 normal;
+
+	if (object.type == 0)
+		normal = normalize(hit_pos - object.s_center);
+	if (object.type == 1)
+		normal = normalize(object.p_normal);
+	return (normal);
+}
 static		bool		intersect(float3 orig, float3 dir, __global t_obj* objects, float3 *hit_pos, float3 *N, float4 *color, int *id)
 {
 	float	closest_dist = FLT_MAX;
+	float	dist_i;
 
 	for(int i = 0; i < 4; i++)
 	{
-		float	dist_i;
-
-		float3 center = (float3)(objects[i].s_center.x, objects[i].s_center.y, objects[i].s_center.z);
-		float radius = (float)(objects[i].s_radius);
-
-		float3 L = orig - center;
-		float a = dot(dir, dir);
-		float b = 2 * dot(L, dir);
-		float c = dot(L, L) - radius * radius;
-		dist_i = solve_eq(a, b, c, 0.001f, FLT_MAX);
+		t_obj object = objects[i];
+		if (object.type == 0)
+			dist_i = intersect_sphere(object, orig, dir);
+		if (object.type == 1)
+			dist_i = intersect_plane(object, orig, dir);
 
 		if (dist_i != 0.0f && dist_i < closest_dist)
 		{
 			closest_dist = dist_i;
 			*hit_pos = orig + dir * dist_i;
-			*N = normalize(*hit_pos - center);
-			*color = objects[i].material.diff_color;
+			*N = get_normal(object, *hit_pos);
+			*color = object.material.diff_color;
 			*id = i;
 		}
 	}
@@ -109,25 +140,21 @@ static	float3	get_light_dir(float3 hit_pos, t_light light)
 static	bool	shadow_intersect(float3 orig, float3 dir, __global t_obj* objects, float3 *hit_pos, float3 *N)
 {
 	float	closest_dist = FLT_MAX;
+	float	dist_i;
 
 	for(int i = 0; i < 4; i++)
 	{
-		float	dist_i;
-
-		float3 center = (float3)(objects[i].s_center.x, objects[i].s_center.y, objects[i].s_center.z);
-		float radius = (float)(objects[i].s_radius);
-
-		float3 L = orig - center;
-		float a = dot(dir, dir);
-		float b = 2 * dot(L, dir);
-		float c = dot(L, L) - radius * radius;
-		dist_i = solve_eq(a, b, c, 0.001f, FLT_MAX);
+		t_obj object = objects[i];
+		if (object.type == 0)
+			dist_i = intersect_sphere(object, orig, dir);
+		if (object.type == 1)
+			dist_i = intersect_plane(object, orig, dir);
 
 		if (dist_i != 0.0f && dist_i < closest_dist)
 		{
 			closest_dist = dist_i;
 			*hit_pos = orig + dir * dist_i;
-			*N = normalize(*hit_pos - center);
+			*N = get_normal(object, *hit_pos);;
 		}
 	}
 	return (closest_dist < 100);
@@ -153,12 +180,10 @@ static	float4	trace(float3 orig, float3 dir, __global t_obj *objects, __global t
 {
 	float3	hit_pos, N;
 	int		id = -1;
-	float	is_reflective = 0.0f;
 	float	prev_reflection = 0.0f;
 	float3	shadow_hit_pos, shadow_N;
 	float4	color, acum_color;
 	float3	light_dir;
-	float3	reflected_ray;
 	float	intensity = 0;
 
 
@@ -203,7 +228,7 @@ __kernel void raytrace(t_camera camera, __global t_obj* objects, __global float*
 {
 	int x = get_global_id(0);
 	int y = get_global_id(1);
-	int width = get_global_size(0);
+ 	int width = get_global_size(0);
 	int height = get_global_size(1);
 	float Px, Py;
 	float3 dir;
@@ -229,7 +254,7 @@ __kernel void raytrace(t_camera camera, __global t_obj* objects, __global float*
 		}
 	}
 
-	/* is there is only one sample we do not need to divide the color. Maybe move this in the end of the if-statement above */
+	/* is there is only one sample we do not need to divide the color */
 	output[y * width + x] /= samples == 1 ? 1 : samples + 1;
 }
 

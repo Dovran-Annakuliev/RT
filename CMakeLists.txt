@@ -407,4 +407,5 @@ add_executable(RTv1
         sources/objects.c
         sources/render.c
         sources/rgba.c
-        sources/vectors.c)
+        sources/vectors.c
+        sources/camera.c)
