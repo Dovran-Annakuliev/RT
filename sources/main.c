@@ -1,12 +1,15 @@
 #include "../includes/rtv1.h"
 
-int main(int argc, char **argv)
+int main(int ac, char **av)
 {
 	t_rt *data;
 	SDL_Event e;
 	int quit;
 
+	if (ac != 2)
+		error(INVALID_ARGUMENTS, "INVALID_ARGUMENTS");
 	data = init_data();
+	read_arg(av[1], data);
 	data->cl.kernel_source = get_kernel_source(&data->cl, data->cl_path);
 	cl_init(&data->cl, data->width, data->height);
 	quit = 0;

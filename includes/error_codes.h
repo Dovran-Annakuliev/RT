@@ -10,4 +10,6 @@
 # define TEXTURE_LOCK_ERROR -7
 # define KERNEL_FILE_OPEN_ERROR -8
 
+#define INVALID_ARGUMENTS -11
+
 #endif

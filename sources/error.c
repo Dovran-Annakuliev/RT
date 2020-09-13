@@ -3,13 +3,8 @@
 void	error(int err, const char *message)
 {
 	if (err == 1)
-	{
 		ft_printf("It's been fun. Don't come back.\n");
-		exit(0);
-	}
 	else
-	{
 		ft_printf("SDL init fail: %s[%d]\n", message, err);
-		exit(0);
-	}
+	exit(0);
 }

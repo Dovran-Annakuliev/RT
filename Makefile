@@ -2,6 +2,7 @@ GCC = gcc -Wall -Wextra -Werror
 NAME = RTv1
 SRC_DIR = sources/
 CONTROLLERS_DIR = $(SRC_DIR)controllers/
+PARSER_DIR = $(SRC_DIR)parser/
 SRCS = $(SRC_DIR)camera.c\
 		$(SRC_DIR)cl_init.c\
 		$(SRC_DIR)coloring.c\
@@ -17,7 +18,12 @@ SRCS = $(SRC_DIR)camera.c\
 		$(SRC_DIR)vectors_2.c\
 		$(CONTROLLERS_DIR)controller.c\
 		$(CONTROLLERS_DIR)keyboard_controller.c\
-		$(CONTROLLERS_DIR)mouse_controller.c
+		$(CONTROLLERS_DIR)mouse_controller.c\
+		$(PARSER_DIR)ft_atof.c\
+		$(PARSER_DIR)read_arg.c\
+		$(PARSER_DIR)parse.c\
+		$(PARSER_DIR)parse_2.c\
+		$(PARSER_DIR)parse_utilities.c
 
 INC = includes/
 OBJS = $(SRCS:.c=.o)

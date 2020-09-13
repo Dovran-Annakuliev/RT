@@ -6,6 +6,7 @@
 # include <OpenCL/opencl.h>
 #else
 # include <GL/opengl.h>
+# include <CL/opencl.h>
 #endif
 
 #include "../libft/includes/libft.h"
@@ -17,6 +18,7 @@
 #include "rgba.h"
 #include "lights.h"
 #include "objects.h"
+#include "parser.h"
 
 typedef struct			s_cl
 {
@@ -69,6 +71,8 @@ typedef struct			s_rt
 	float				*randoms;
 	float				*res;
 
+	t_parse				parse;
+
 }						t_rt;
 
 /*
@@ -79,6 +83,28 @@ t_rt					*init_data();
 void					close_rt(t_rt *data);
 float					*new_random_array(int w, int h, int samples);
 
+/*
+** ---parse_functions---
+*/
+
+void					read_arg(char *source, t_rt *data);
+float					ft_atof(const char *str);
+void					parse_sphere(int fd, t_rt *data);
+void					parse_plane(int fd, t_rt *data);
+void parce_ambient_light(int fd, t_rt *data);
+void parce_point_light(int fd, t_rt *data);
+void parce_directional_light(int fd, t_rt *data);
+
+/*
+** ---parse_utilities---
+*/
+
+float					parse_float(char *line);
+cl_float				parse_cl_float(char *line);
+cl_float3				parse_cl_float3(char *line);
+cl_float4				parse_cl_float4(char *line);
+void					parse_material(int fd, t_obj *obj);
+void					free_split(char ***split);
 
 /*
 ** ---camera_functions---
