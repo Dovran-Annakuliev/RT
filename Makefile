@@ -1,10 +1,23 @@
 GCC = gcc -Wall -Wextra -Werror
 NAME = RTv1
 SRC_DIR = sources/
-SRCS = $(SRC_DIR)main.c\
+CONTROLLERS_DIR = $(SRC_DIR)controllers/
+SRCS = $(SRC_DIR)camera.c\
 		$(SRC_DIR)cl_init.c\
+		$(SRC_DIR)coloring.c\
 		$(SRC_DIR)error.c\
-		$(SRC_DIR)init.c
+		$(SRC_DIR)init.c\
+		$(SRC_DIR)lights.c\
+		$(SRC_DIR)main.c\
+		$(SRC_DIR)material.c\
+		$(SRC_DIR)objects.c\
+		$(SRC_DIR)render.c\
+		$(SRC_DIR)rgba.c\
+		$(SRC_DIR)vectors.c\
+		$(SRC_DIR)vectors_2.c\
+		$(CONTROLLERS_DIR)controller.c\
+		$(CONTROLLERS_DIR)keyboard_controller.c\
+		$(CONTROLLERS_DIR)mouse_controller.c
 
 INC = includes/
 OBJS = $(SRCS:.c=.o)
@@ -19,7 +32,7 @@ ifeq ($(detected_OS),Linux)
     	-lXxf86vm -lXext -lX11 -lpthread -lxcb -lXau -lXdmcp -lm -lOpenCL -lrt
 endif
 ifeq ($(detected_OS),Darwin)  
-	LIB = -L libft -lft -framework OpenGL -framework Appkit -framework OpenCL -I SDL2.framework/Headers -F ./ -framework SDL2
+	LIB = -L libft -lft -framework OpenGL -framework Appkit -framework OpenCL -I SDL2.framework/Headers -F ./ -framework SDL2 -I SDL2_image.framework/Headers -F ./ -framework SDL2_image
 endif
 
 all: $(NAME)
@@ -32,8 +45,9 @@ lib: install
 
 install:
 		cp -r SDL2.framework ~/Library/Frameworks/
+		cp -r SDL2_image.framework ~/Library/Frameworks/
 
-$(NAME): $(OBJS) $(INC)rtv1.h lib
+$(NAME): lib $(OBJS) $(INC)rtv1.h
 		 $(GCC) $(OBJS) $(LIB) -o $(NAME)
 
 clean:
@@ -48,3 +62,4 @@ re: fclean all
 
 uninstall:
 		rm -rf ~/Library/Frameworks/SDL2.framework
+		rm -rf ~/Library/Frameworks/SDL2_image.framework

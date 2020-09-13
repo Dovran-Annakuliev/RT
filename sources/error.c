@@ -1,15 +1,15 @@
 #include "../includes/rtv1.h"
 
-void	error(int err)
+void	error(int err, const char *message)
 {
 	if (err == 1)
 	{
-		write(1, "It's been fun. Don't come back.\n", 32);
+		ft_printf("It's been fun. Don't come back.\n");
 		exit(0);
 	}
 	else
 	{
-		ft_putnbr(err);
+		ft_printf("SDL init fail: %s[%d]\n", message, err);
 		exit(0);
 	}
 }

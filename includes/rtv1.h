@@ -8,27 +8,15 @@
 # include <GL/opengl.h>
 #endif
 
-
 #include "../libft/includes/libft.h"
 #include "../SDL2.framework/Headers/SDL.h"
+#include "../SDL2_image.framework/Headers/SDL_image.h"
+#include <time.h>
 #include "error_codes.h"
-
-//# define WIDTH 800
-//# define HEIGHT 600
-# define WINPOS_X 200
-# define WINPOS_Y 200
-
-typedef union			u_rgb
-{
-	unsigned int		c;
-	struct				s_rgba
-	{
-		unsigned char	b;
-		unsigned char	g;
-		unsigned char	r;
-		unsigned char	a;
-	}					t_rgba;
-}						t_rgb;
+#include "vectors.h"
+#include "rgba.h"
+#include "lights.h"
+#include "objects.h"
 
 typedef struct			s_cl
 {
@@ -44,33 +32,93 @@ typedef struct			s_cl
 	size_t				global_size[2];
 }						t_cl;
 
+typedef struct			s_camera
+{
+	float				viewport_width;
+	float				viewport_height;
+	float				image_aspect_ratio;
+	float				vertical_fov;
+	float				h_angle;
+	cl_float3			look_from;
+	cl_float3			look_at;
+	cl_float3			vec_up;
+	cl_float3			origin;
+	cl_float3			horizontal;
+	cl_float3			vertical;
+	cl_float3			upper_left_corner;
+
+}						t_camera;
+
 typedef struct			s_rt
 {
 	SDL_Window			*window;
+	SDL_Renderer		*renderer;
 	SDL_Surface			*surface;
-	int 				width;
-	int 				height;
+	SDL_Texture			*texture;
+	Uint32				*pixels;
+	int					update_status;
+	int					pitch;
+	int					width;
+	int					height;
+	t_cl				cl;
+	t_camera			camera;
+	char 				*cl_path;
+	t_obj				o[4];
+	t_light				lights[3];
+	int					samples;
+	float				*randoms;
+	float				*res;
+
 }						t_rt;
 
 /*
- ** ---init_functions---
- */
+** ---init_functions---
+*/
 
 t_rt					*init_data();
 void					close_rt(t_rt *data);
+float					*new_random_array(int w, int h, int samples);
+
 
 /*
-** ---OpenCl functions---
+** ---camera_functions---
+*/
+void					init_camera(t_camera *viewport, int width, int height);
+void					update_camera(t_camera *camera);
+
+
+/*
+** ---OpenCl_functions---
 */
 
 void					cl_init(t_cl *cl, int width, int height);
 void					cl_free(t_cl *cl);
-char					**get_kernel_source(t_cl *cl, char *type);
+char					**get_kernel_source(t_cl *cl, char *path);
 
 /*
- ** ---error---
- */
+** ---rendering---
+*/
 
-void					error(int err);
+void					render(t_rt *rt);
+
+/*
+** ---coloring---
+*/
+
+void					update_texture(SDL_Texture *texture, int width, int height, float *r);
+
+/*
+** ---controls---
+*/
+
+void					controller(SDL_Event *e, t_rt *data);
+void					keyboard_controller(SDL_Event *e, t_rt *data);
+void					mouse_controller(SDL_Event *e, t_rt *data);
+
+/*
+** ---error---
+*/
+
+void					error(int err, const char *message);
 
 #endif
