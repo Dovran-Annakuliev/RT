@@ -8,6 +8,7 @@ void		render(t_rt *rt)
 	cl_mem		rand_buffer;
 	cl_int		e;
 
+	printf("rendering\n");
 	output_buffer = clCreateBuffer(rt->cl.context, CL_MEM_WRITE_ONLY, sizeof(float) * rt->width * rt->height * 4, NULL, &e);
 //	ft_printf("out_buff = %d\n", e);
 
@@ -49,4 +50,5 @@ void		render(t_rt *rt)
 	clReleaseMemObject(output_buffer);
 	clReleaseMemObject(obj_buffer);
 	clReleaseMemObject(rand_buffer);
+	rt->update_status = 0;
 }

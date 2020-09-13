@@ -5,6 +5,7 @@
 # include <OpenCL/opencl.h>
 
 cl_float3				new_vector3(float x, float y, float z);
+cl_float3				vec_add(cl_float3 v1, cl_float3 v2);
 cl_float3				vec_sub(cl_float3 v1, cl_float3 v2);
 cl_float3				vec_cross(cl_float3 v1, cl_float3 v2);
 cl_float3				vec_normalize(cl_float3 v);

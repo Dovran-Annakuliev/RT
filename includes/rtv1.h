@@ -45,7 +45,7 @@ typedef struct			s_camera
 	cl_float3			origin;
 	cl_float3			horizontal;
 	cl_float3			vertical;
-	cl_float3			lower_left_corner;
+	cl_float3			upper_left_corner;
 
 }						t_camera;
 
@@ -56,6 +56,7 @@ typedef struct			s_rt
 	SDL_Surface			*surface;
 	SDL_Texture			*texture;
 	Uint32				*pixels;
+	int					update_status;
 	int					pitch;
 	int					width;
 	int					height;
