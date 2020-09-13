@@ -113,7 +113,28 @@ static	float3	get_plane_normal(t_obj *plane)
 	return (normalize(plane->p_normal));
 }
 
-static	float3	get_normal(t_obj *object, float3 hit_pos)
+static	float3	get_cone_normal(t_obj *cone, float3 hit_pos, float3 dir, float3 orig, float t)
+{
+	float3	pos_to_hitpoint;
+	float3 tang;
+	float3 res;
+	pos_to_hitpoint = hit_pos - cone->cone_pos;
+	tang = cross(pos_to_hitpoint, cone->cone_axis);
+	res = cross(tang, pos_to_hitpoint);
+	/*
+	float3	X = orig - cone->cone_pos;
+	float	d_v = dot(dir, cone->cone_axis);
+    float	x_v = dot(X, cone->cone_axis);
+	float	m = d_v * t + x_v;
+	float	k = tan(cone->cone_angle * M_PI_F / 180);
+	float	a = m * k * k;
+	return (normalize(pos_to_hitpoint - (1 + k * k) * cone->cone_axis * m));
+	*/
+
+	return (normalize(res));
+}
+
+static	float3	get_normal(t_obj *object, float3 hit_pos, float3 dir, float3 orig, float t)
 {
 	float3 normal;
 
@@ -121,7 +142,8 @@ static	float3	get_normal(t_obj *object, float3 hit_pos)
 		normal = get_sphere_normal(object, hit_pos);
 	if (object->type == 1)
 		normal = get_plane_normal(object);
-
+	if (object->type == 2)
+        normal = get_cone_normal(object, hit_pos, dir, orig, t);
 	return (normal);
 }
 static		bool		intersect(float3 orig, float3 dir, __global t_obj* objects, float3 *hit_pos, float3 *N, float4 *color, int *id)
@@ -143,7 +165,7 @@ static		bool		intersect(float3 orig, float3 dir, __global t_obj* objects, float3
 		{
 			closest_dist = dist_i;
 			*hit_pos = orig + dir * dist_i;
-			*N = get_normal(&object, *hit_pos);
+			*N = get_normal(&object, *hit_pos, dir, orig, dist_i);
 			*color = object.material.diff_color;
 			*id = i;
 		}
@@ -190,7 +212,7 @@ static	bool	shadow_intersect(float3 orig, float3 dir, __global t_obj* objects, f
 		{
 			closest_dist = dist_i;
 			*hit_pos = orig + dir * dist_i;
-			*N = get_normal(&object, *hit_pos);;
+			*N = get_normal(&object, *hit_pos, dir, orig, dist_i);
 		}
 	}
 	return (closest_dist < 100);
