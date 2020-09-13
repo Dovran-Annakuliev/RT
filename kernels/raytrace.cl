@@ -29,8 +29,8 @@ typedef struct			s_obj
 	float3				p_pos;
 	float3				p_normal;
 	float3				cone_pos;
-   	float				cone_radius;
-    float3				cone_normal;
+   	float				cone_angle;
+    float3				cone_axis;
 	t_material			material;
 }						t_obj;
 
@@ -57,39 +57,71 @@ static	float		solve_eq(float a, float b, float c, float t_min, float t_max)
 	return (0.0f);
 }
 
-static	float	intersect_sphere(t_obj	sphere, float3 orig, float3 dir)
+static	float	intersect_sphere(t_obj	*sphere, float3 orig, float3 dir)
 {
 	float dist;
-	float3 center = (float3)(sphere.s_center.x, sphere.s_center.y, sphere.s_center.z);
-	float radius = (float)(sphere.s_radius);
+
+	float3 center = (float3)(sphere->s_center.x, sphere->s_center.y, sphere->s_center.z);
+	float radius = (float)(sphere->s_radius);
 
 	float3 L = orig - center;
 	float a = dot(dir, dir);
 	float b = 2 * dot(L, dir);
 	float c = dot(L, L) - radius * radius;
+
 	dist = solve_eq(a, b, c, 0.001f, FLT_MAX);
 	return (dist);
 }
 
-static	float	intersect_plane(t_obj	plane, float3 orig, float3 dir)
+static	float	intersect_plane(t_obj	*plane, float3 orig, float3 dir)
 {
 	float dist;
-	float a = dot(plane.p_normal, dir);
+
+	float a = dot(plane->p_normal, dir);
 	if (fabs(a) < 0.001f)
 		return (0);
-	float b = -(dot(orig - plane.p_pos, plane.p_normal)) / a;
+	float b = -(dot(orig - plane->p_pos, plane->p_normal)) / a;
 	dist = b < 0.001f ? 0 : b;
 	return (dist);
 }
 
-static	float3	get_normal(t_obj object, float3 hit_pos)
+static	float	intersect_cone(t_obj	*cone, float3 orig, float3 dir)
+{
+	float dist;
+
+	float3	X = orig - cone->cone_pos;
+	float	d_v = dot(dir, cone->cone_axis);
+	float	x_v = dot(X, cone->cone_axis);
+	float	k = tan(cone->cone_angle * M_PI_F / 180);
+	float	temp = 1 + k * k;
+
+	float a = dot(dir, dir) - temp * d_v * d_v;
+	float b = 2.0 * (dot(dir, X) - temp * d_v * x_v);
+	float c = dot(X,X) - temp * x_v * x_v;
+
+	dist = solve_eq(a, b, c, 0.001f, FLT_MAX);
+	return (dist);
+}
+
+static	float3	get_sphere_normal(t_obj *sphere, float3 hit_pos)
+{
+	return (normalize(hit_pos - sphere->s_center));
+}
+
+static	float3	get_plane_normal(t_obj *plane)
+{
+	return (normalize(plane->p_normal));
+}
+
+static	float3	get_normal(t_obj *object, float3 hit_pos)
 {
 	float3 normal;
 
-	if (object.type == 0)
-		normal = normalize(hit_pos - object.s_center);
-	if (object.type == 1)
-		normal = normalize(object.p_normal);
+	if (object->type == 0)
+		normal = get_sphere_normal(object, hit_pos);
+	if (object->type == 1)
+		normal = get_plane_normal(object);
+
 	return (normal);
 }
 static		bool		intersect(float3 orig, float3 dir, __global t_obj* objects, float3 *hit_pos, float3 *N, float4 *color, int *id)
@@ -101,15 +133,17 @@ static		bool		intersect(float3 orig, float3 dir, __global t_obj* objects, float3
 	{
 		t_obj object = objects[i];
 		if (object.type == 0)
-			dist_i = intersect_sphere(object, orig, dir);
+			dist_i = intersect_sphere(&object, orig, dir);
 		if (object.type == 1)
-			dist_i = intersect_plane(object, orig, dir);
+			dist_i = intersect_plane(&object, orig, dir);
+		if (object.type == 2)
+			dist_i = intersect_cone(&object, orig, dir);
 
 		if (dist_i != 0.0f && dist_i < closest_dist)
 		{
 			closest_dist = dist_i;
 			*hit_pos = orig + dir * dist_i;
-			*N = get_normal(object, *hit_pos);
+			*N = get_normal(&object, *hit_pos);
 			*color = object.material.diff_color;
 			*id = i;
 		}
@@ -146,15 +180,17 @@ static	bool	shadow_intersect(float3 orig, float3 dir, __global t_obj* objects, f
 	{
 		t_obj object = objects[i];
 		if (object.type == 0)
-			dist_i = intersect_sphere(object, orig, dir);
+			dist_i = intersect_sphere(&object, orig, dir);
 		if (object.type == 1)
-			dist_i = intersect_plane(object, orig, dir);
+			dist_i = intersect_plane(&object, orig, dir);
+		if (object.type == 2)
+        	dist_i = intersect_cone(&object, orig, dir);
 
 		if (dist_i != 0.0f && dist_i < closest_dist)
 		{
 			closest_dist = dist_i;
 			*hit_pos = orig + dir * dist_i;
-			*N = get_normal(object, *hit_pos);;
+			*N = get_normal(&object, *hit_pos);;
 		}
 	}
 	return (closest_dist < 100);
