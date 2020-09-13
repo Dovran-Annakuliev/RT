@@ -48,9 +48,9 @@ t_rt				*init_data()
 	data->o[0] = new_sphere((cl_float3){0.0f, 0.0f, -10.0f}, 0.5f, new_material((cl_float4){255, 255, 255, 0}, 0, 0.3f));
 	data->o[1] = new_sphere((cl_float3){-2.0f, 0.0f, -10.0f}, 0.5f, new_material((cl_float4){255, 255, 0, 0}, 50, 0.3f));
 	data->o[2] = new_sphere((cl_float3){2.0f, 0.0f, -10.0f}, 0.5f, new_material((cl_float4){0, 0, 255, 0}, 500, 0.3f));
-	data->o[3] = new_plane((cl_float3){0.0f, 1.0f, 0.0f}, (cl_float3){0.0f, -1.0f, 0.0f}, new_material((cl_float4){0, 255, 255, 0}, 500, 0.3f));
+	data->o[3] = new_plane((cl_float3){0.0f, -1.0f, 0.0f}, (cl_float3){0.0f, 1.0f, 0.0f}, new_material((cl_float4){0, 255, 255, 0}, 500, 0.3f));
 	data->lights[0] = new_ambient_light(0.3f);
-	data->lights[1] = new_point_light((cl_float3){10.0f, -10.0f, 1.0f}, 0.4f);
+	data->lights[1] = new_point_light((cl_float3){10.0f, 10.0f, 1.0f}, 0.4f);
 	data->lights[2] = new_directional_light((cl_float3){-10.0f, 0.0f, -1.0f}, 0.3f);
 	data->samples = 1;
 	data->randoms = new_random_array(data->width, data->height, data->samples);

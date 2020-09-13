@@ -14,7 +14,7 @@ void 		init_camera(t_camera *camera, int width, int height)
 	camera->origin = (cl_float3){0.0f, 0.0f, 0.0f};
 	camera->horizontal = (cl_float3){0.0f, 0.0f, 0.0f};
 	camera->vertical = (cl_float3){0.0f, 0.0f, 0.0f};
-	camera->lower_left_corner = (cl_float3){0.0f, 0.0f, 0.0f};
+	camera->upper_left_corner = (cl_float3){0.0f, 0.0f, 0.0f};
 }
 
 void		update_camera(t_camera *camera)
@@ -32,6 +32,7 @@ void		update_camera(t_camera *camera)
 	camera->origin = camera->look_from;
 	camera->horizontal = mult_vec_scal(u, camera->viewport_width);
 	camera->vertical = mult_vec_scal(v, camera->viewport_height);
-	camera->lower_left_corner = vec_sub(vec_sub(camera->origin, mult_vec_scal(camera->horizontal, 0.5)), mult_vec_scal(camera->vertical, 0.5));
-	camera->lower_left_corner = vec_sub(camera->lower_left_corner, w);
+	camera->upper_left_corner = vec_sub(camera->origin, mult_vec_scal(camera->horizontal, 0.5));
+	camera->upper_left_corner = vec_add(camera->upper_left_corner, mult_vec_scal(camera->vertical, 0.5));
+	camera->upper_left_corner = vec_sub(camera->upper_left_corner, w);
 }

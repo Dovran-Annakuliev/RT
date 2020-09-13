@@ -18,7 +18,7 @@ typedef struct			s_camera
 	float3				origin;
 	float3				horizontal;
 	float3				vertical;
-	float3				lower_left_corner;
+	float3				upper_left_corner;
 }						t_camera;
 
 typedef struct			s_obj
@@ -238,7 +238,7 @@ __kernel void raytrace(t_camera camera, __global t_obj* objects, __global float*
     /* 0 sample */
 	Px = (float)x / (width - 1);
 	Py = (float)y / (height - 1);
-	dir = camera.lower_left_corner + Px * camera.horizontal + Py * camera.vertical - camera.origin;
+	dir = camera.upper_left_corner + Px * camera.horizontal - Py * camera.vertical - camera.origin;
 	dir = normalize(dir);
 	output[y * width + x] = trace(camera.origin, dir, objects, lights, 1);
 
@@ -248,7 +248,7 @@ __kernel void raytrace(t_camera camera, __global t_obj* objects, __global float*
 		{
 			Px = ((float)x + randoms[(y * width + x) * samples + i]) / (width - 1);
 			Py = ((float)y + randoms[(y * width + x) * samples + i]) / (height - 1);
-			dir = camera.lower_left_corner + Px * camera.horizontal + Py * camera.vertical - camera.origin;
+			dir = camera.upper_left_corner + Px * camera.horizontal - Py * camera.vertical - camera.origin;
 			dir = normalize(dir);
 			output[y * width + x] += trace(camera.origin, dir, objects, lights, 1);
 		}
