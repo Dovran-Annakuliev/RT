@@ -44,7 +44,6 @@ t_rt				*init_data()
 	data->cl_path = return_path();
 	init_camera(&data->camera, data->width, data->height);
 	update_camera(&data->camera);
-//	data->o[0] = new_cone((cl_float3){0.0f, 0.0f, -10.0f}, 0.5f, (cl_float3){0.0f, 0.0f, 1.0f}, new_material((cl_float4){255, 255, 255, 0}, 0, 0.3f));
 	data->o[0] = new_sphere((cl_float3){0.0f, 0.0f, -10.0f}, 0.5f, new_material((cl_float4){255, 255, 255, 0}, 0, 0.3f));
 	data->o[1] = new_sphere((cl_float3){-2.0f, 0.0f, -10.0f}, 0.5f, new_material((cl_float4){255, 255, 0, 0}, 50, 0.3f));
 	data->o[2] = new_sphere((cl_float3){2.0f, 0.0f, -10.0f}, 0.5f, new_material((cl_float4){0, 0, 255, 0}, 500, 0.3f));
@@ -56,6 +55,7 @@ t_rt				*init_data()
 	data->randoms = new_random_array(data->width, data->height, data->samples);
 	if (!(data->res = (float*)malloc(sizeof(float) * data->width * data->height * 4)))
 		error(MALLOC_ERROR, "result buffer malloc error");
+	data->update_status = 1;
 	return (data);
 }
 

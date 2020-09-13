@@ -56,6 +56,7 @@ typedef struct			s_rt
 	SDL_Surface			*surface;
 	SDL_Texture			*texture;
 	Uint32				*pixels;
+	int					update_status;
 	int					pitch;
 	int					width;
 	int					height;

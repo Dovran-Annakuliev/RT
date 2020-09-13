@@ -13,7 +13,7 @@ int main(int argc, char **argv)
 	while (quit != 1)
 	{
 		SDL_RenderClear(data->renderer);
-		render(data);
+		data->update_status == 1 ? render(data) : 0;
 		update_texture(data->texture, data->width, data->height, data->res);
 		SDL_RenderCopy(data->renderer, data->texture, NULL, NULL);
 		SDL_RenderPresent(data->renderer);
