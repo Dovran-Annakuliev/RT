@@ -139,6 +139,10 @@ static	float	intersect_cone(t_obj	*cone, t_ray *ray)
 	float b = 2.0f * (d_v * x_v - dot(ray->dir, X) * angle2);
 	float c = x_v * x_v - dot(X, X) * angle2;
 	dist = solve_eq(a, b, c, 0.001f, FLT_MAX);
+	float3 cp = ray->orig + ray->dir * dist - cone->cone_pos;
+	float h = dot(cp, cone->cone_axis);
+    if (h < 0 || h > 3)
+    	return (0.0f);
     return (dist);
 }
 
@@ -167,11 +171,17 @@ static	float3	get_cone_normal(t_obj *cone, float3 hit_pos, t_ray *ray)
 	float	a = m * k * k;
 	return (normalize(pos_to_hitpoint - (1 + k * k) * cone->cone_axis * m));
 	*/
-
+	/*
 	float3 c_to_p = hit_pos - cone->cone_pos;
 	float3 tangent = cross(c_to_p, cone->cone_axis);
 	float3 res = cross(tangent, c_to_p);
 	return (normalize(res));
+	*/
+
+	float3 cp = hit_pos - cone->cone_pos;
+	float axis_dot_cp = dot(cone->cone_axis, cp);
+	float cp2 = dot(cp, cp);
+	float3 normal = normalize(cp * (axis_dot_cp / cp2) - cone->cone_axis);
 }
 
 static	float3	get_normal(t_obj *object, hit_record hit, t_ray *ray)
@@ -254,7 +264,6 @@ static	bool	shadow_intersect(t_ray *ray, __global t_obj* objects)
 	}
 	return (closest_dist < 100);
 }
-
 
 static	float4	trace(t_ray *ray, __global t_obj *objects, __global t_light *lights)
 {
