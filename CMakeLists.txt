@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.17)
 project(RTv1 C)
 
 set(CMAKE_CXX_STANDARD 14)
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -framework OpenGL -framework OpenCl -framework AppKit -I ~/Library/Frameworks/SDL2.framework/Headers -F /Users/ltammie/Library/Frameworks/ -framework SDL2 -I ~/Library/Frameworks/SDL2_image.framework/Headers -F /Users/ltammie/Library/Frameworks/ -framework SDL2_image")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -framework OpenGL -framework OpenCl -framework AppKit -I ~/Library/Frameworks/SDL2.framework/Headers -F /Users/rfork/Library/Frameworks/ -framework SDL2 -I ~/Library/Frameworks/SDL2_image.framework/Headers -F /Users/rfork/Library/Frameworks/ -framework SDL2_image")
 
 include_directories(includes)
 include_directories(libft/includes)
@@ -408,4 +408,13 @@ add_executable(RTv1
         sources/render.c
         sources/rgba.c
         sources/vectors.c
-        sources/camera.c)
+        sources/vectors_2.c
+        sources/camera.c
+        includes/parser.h
+        sources/parser/read_arg.c
+        sources/parser/parse.c
+        sources/parser/ft_atof.c
+        sources/parser/ft_strsplit_space.c
+        sources/parser/parse_utilities.c
+        sources/parser/parse_2.c
+        )

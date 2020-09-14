@@ -11,5 +11,8 @@
 # define KERNEL_FILE_OPEN_ERROR -8
 
 #define INVALID_ARGUMENTS -11
+#define INVALID_TYPE -12
+#define INVALID_ARGUMENTS_IN_LINE -13
+
 
 #endif

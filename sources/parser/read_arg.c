@@ -3,7 +3,7 @@
 void check_type(int fd, char *line, t_rt *data)
 {
 	if (ft_strcmp(line, "sphere:") == 0)
-		parse_sphere(fd, line);
+		parse_sphere(fd, data);
 	else if (ft_strcmp(line, "plane:") == 0)
 		parse_plane(fd, data);
 	else if (ft_strcmp(line, "ambient_light:") == 0)
@@ -13,7 +13,7 @@ void check_type(int fd, char *line, t_rt *data)
 	else if (ft_strcmp(line, "directional_light:") == 0)
 		parce_directional_light(fd, data);
 	else
-		error(11, "lox");
+		error(INVALID_TYPE, line);
 }
 
 static void	read_size(int fd, char *line, t_rt *data)
@@ -23,7 +23,7 @@ static void	read_size(int fd, char *line, t_rt *data)
 		if (ft_strcmp(line, "sphere:") == 0)
 			data->parse.obj_size++;
 		else if (ft_strcmp(line, "plane:") == 0)
-			data->parse.light_size++;
+			data->parse.obj_size++;
 		else if (ft_strcmp(line, "ambient_light:") == 0)
 			data->parse.light_size++;
 		else if (ft_strcmp(line, "point_light:") == 0)
@@ -42,7 +42,7 @@ void		read_arg(char *source, t_rt *data)
 	line = NULL;
 	if (((fd = open(source, O_RDONLY)) < 0)
 		|| ((read(fd, line, 0)) < 0))
-		error(INVALID_ARGUMENTS, "Bad_file");
+		error(INVALID_ARGUMENTS, source);
 
 	data->parse.obj_size = 0;
 	data->parse.light_size = 0;
@@ -57,6 +57,8 @@ void		read_arg(char *source, t_rt *data)
 	while (get_next_line(fd, &line))
 	{
 		check_type(fd, line, data);
+		ft_strdel(&line);
+		get_next_line(fd, &line);
 		ft_strdel(&line);
 	}
 	free(line);

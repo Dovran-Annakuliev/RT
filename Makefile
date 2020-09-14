@@ -20,6 +20,7 @@ SRCS = $(SRC_DIR)camera.c\
 		$(CONTROLLERS_DIR)keyboard_controller.c\
 		$(CONTROLLERS_DIR)mouse_controller.c\
 		$(PARSER_DIR)ft_atof.c\
+		$(PARSER_DIR)ft_strsplit_space.c\
 		$(PARSER_DIR)read_arg.c\
 		$(PARSER_DIR)parse.c\
 		$(PARSER_DIR)parse_2.c\
