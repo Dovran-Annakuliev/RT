@@ -5,6 +5,30 @@ typedef struct	s_material
 	float		reflection;
 }				t_material;
 
+typedef	struct	s_ray
+{
+	float3		orig;
+	float3		dir;
+	float		t;
+}				t_ray;
+
+static	t_ray		new_ray(float3 orig, float3 dir)
+{
+	t_ray r;
+
+	r.orig = orig;
+	r.dir = dir;
+	return (r);
+}
+
+typedef struct	s_hit_record
+{
+	t_ray		ray;
+	float3		hit_point;
+	float3		N;
+	int			id;
+}				hit_record;
+
 typedef struct			s_camera
 {
 	float				viewport_width;
@@ -42,6 +66,8 @@ typedef struct		s_light
 	float			intensity;
 }					t_light;
 
+static		float4 clamp_color(float4 color);
+
 static	float		solve_eq(float a, float b, float c, float t_min, float t_max)
 {
 	float dis = b * b - 4 * a * c;
@@ -57,7 +83,7 @@ static	float		solve_eq(float a, float b, float c, float t_min, float t_max)
 	return (0.0f);
 }
 
-static	float	intersect_sphere(t_obj	*sphere, float3 orig, float3 dir)
+static	float	intersect_sphere(t_obj	*sphere, t_ray *ray, float3 *hit_pos)
 {
 	float dist;
 
@@ -70,10 +96,11 @@ static	float	intersect_sphere(t_obj	*sphere, float3 orig, float3 dir)
 	float c = dot(L, L) - radius * radius;
 
 	dist = solve_eq(a, b, c, 0.001f, FLT_MAX);
+	*hit_pos = orig + dir * dist;
 	return (dist);
 }
 
-static	float	intersect_plane(t_obj	*plane, float3 orig, float3 dir)
+static	float	intersect_plane(t_obj	*plane, float3 orig, float3 dir, float3 *hit_pos)
 {
 	float dist;
 
@@ -82,28 +109,41 @@ static	float	intersect_plane(t_obj	*plane, float3 orig, float3 dir)
 		return (0);
 	float b = -(dot(orig - plane->p_pos, plane->p_normal)) / a;
 	dist = b < 0.001f ? 0 : b;
+	*hit_pos = orig + dir * dist;
 	return (dist);
 }
 
-static	float	intersect_cone(t_obj	*cone, float3 orig, float3 dir)
+
+/*
+float	temp = 1 + k * k;
+float a = dot(dir, dir) - temp * d_v * d_v;
+float b = 2.0 * (dot(dir, X) - temp * d_v * x_v);
+float c = dot(X,X) - temp * x_v * x_v;
+
+dist = solve_eq(a, b, c, 0.001f, FLT_MAX);
+float3 hit_point = orig + dir * dist;
+if (dot(cone->cone_axis, hit_point) < 0)
+	return (0.0f);
+return (dist);
+*/
+
+static	float	intersect_cone(t_obj	*cone, float3 orig, float3 dir, float3 *hit_pos)
 {
 	float dist;
 
 	float3	X = orig - cone->cone_pos;
 	float	d_v = dot(dir, cone->cone_axis);
 	float	x_v = dot(X, cone->cone_axis);
-	float	k = tan(cone->cone_angle * M_PI_F / 180);
-	float	temp = 1 + k * k;
+	float	k = cos(cone->cone_angle * M_PI_F / 180);
+	float	angle2 = k * k;
 
-	float a = dot(dir, dir) - temp * d_v * d_v;
-	float b = 2.0 * (dot(dir, X) - temp * d_v * x_v);
-	float c = dot(X,X) - temp * x_v * x_v;
-
+	float a = d_v * d_v - angle2;
+	float b = 2.0f * (d_v * x_v - dot(dir, X) * angle2);
+	float c = x_v * x_v - dot(X, X) * angle2;
 	dist = solve_eq(a, b, c, 0.001f, FLT_MAX);
-	float3 hit_point = orig + dir * dist;
-	if (dot(cone->cone_axis, hit_point) < 0)
-		return (0.0f);
-	return (dist);
+
+	*hit_pos = orig + dir * dist;
+    return (dist);
 }
 
 static	float3	get_sphere_normal(t_obj *sphere, float3 hit_pos)
@@ -149,32 +189,6 @@ static	float3	get_normal(t_obj *object, float3 *hit_pos, float3 dir, float3 orig
         normal = get_cone_normal(object, hit_pos, dir, orig, t);
 	return (normal);
 }
-static		bool		intersect(float3 orig, float3 dir, __global t_obj* objects, float3 *hit_pos, float3 *N, float4 *color, int *id)
-{
-	float	closest_dist = FLT_MAX;
-	float	dist_i;
-
-	for(int i = 0; i < 4; i++)
-	{
-		t_obj object = objects[i];
-		if (object.type == 0)
-			dist_i = intersect_sphere(&object, orig, dir);
-		if (object.type == 1)
-			dist_i = intersect_plane(&object, orig, dir);
-		if (object.type == 2)
-			dist_i = intersect_cone(&object, orig, dir);
-
-		if (dist_i != 0.0f && dist_i < closest_dist)
-		{
-			closest_dist = dist_i;
-			*hit_pos = orig + dir * dist_i;
-			*N = get_normal(&object, hit_pos, dir, orig, dist_i);
-			*color = object.material.diff_color;
-			*id = i;
-		}
-	}
-	return (closest_dist < 100);
-}
 
 static	float  get_light(float3 L, float3 N, t_light light)
 {
@@ -196,10 +210,34 @@ static	float3	get_light_dir(float3 hit_pos, t_light light)
 	return (light_dir);
 }
 
-static	bool	shadow_intersect(float3 orig, float3 dir, __global t_obj* objects, float3 *hit_pos, float3 *N)
+static		bool		intersect(t_ray *ray, hit_record *hit, __global t_obj* objects)
+{
+	float	dist_i;
+	ray->t = FLT_MAX:
+
+	for(int i = 0; i < 4; i++)
+	{
+		t_obj object = objects[i];
+		if (object.type == 0)
+			dist_i = intersect_sphere(&object, ray);
+		if (object.type == 1)
+			dist_i = intersect_plane(&object, ray);
+		if (object.type == 2)
+			dist_i = intersect_cone(&object, ray);
+
+		if (dist_i != 0.0f && dist_i < ray->t)
+		{
+			ray-> = dist_i;
+			hit->id = i;
+		}
+	}
+	return (closest_dist < 100);
+}
+
+static	bool	shadow_intersect(float3 orig, float3 dir, __global t_obj* objects)
 {
 	float	closest_dist = FLT_MAX;
-	float	dist_i;
+	float	dist_i = 0;
 
 	for(int i = 0; i < 4; i++)
 	{
@@ -207,15 +245,13 @@ static	bool	shadow_intersect(float3 orig, float3 dir, __global t_obj* objects, f
 		if (object.type == 0)
 			dist_i = intersect_sphere(&object, orig, dir);
 		if (object.type == 1)
-			dist_i = intersect_plane(&object, orig, dir);
+			dist_i = intersect_plane(&object, orig, dir;
 		if (object.type == 2)
         	dist_i = intersect_cone(&object, orig, dir);
 
 		if (dist_i != 0.0f && dist_i < closest_dist)
 		{
 			closest_dist = dist_i;
-			*hit_pos = orig + dir * dist_i;
-			*N = get_normal(&object, hit_pos, dir, orig, dist_i);
 			return (closest_dist < 100);
 		}
 	}
@@ -227,63 +263,39 @@ static		float3 reflect_ray(float3 R, float3 N)
 	return (2 * N * dot(N, R) - R);
 }
 
-static		float4 clamp_color(float4 color)
+static	float4	trace(t_ray *ray, __global t_obj *objects, __global t_light *lights)
 {
-	float4 res;
-
-	res.x = color.x > 255.0f ? 255.0f : color.x;
-	res.y = color.y > 255.0f ? 255.0f : color.y;
-	res.z = color.z > 255.0f ? 255.0f : color.z;
-	res.w = color.w > 255.0f ? 255.0f : color.w;
-	return (res);
-}
-
-static	float4	trace(float3 orig, float3 dir, __global t_obj *objects, __global t_light *lights, int depth)
-{
-	float3	hit_pos, N;
-	int		id = -1;
-	float	prev_reflection = 0.0f;
-	float3	shadow_hit_pos, shadow_N;
-	float4	color, acum_color;
+	hit_record hit;
+	float4	color
 	float3	light_dir;
 	float	intensity = 0;
 
 
-	acum_color = 0.0f;
-	prev_reflection = 0.0f;
-	for (int i = 0; i < depth; i++)
+	if (!intersect(ray, &hit, objects)
+		return ((float4)(55.0f, 55.0f, 55.0f, 0.0f));
+	t_obj object_hit = objects[hit.id];
+	for (int i = 0; i < 3; i++)
 	{
-		if (!intersect(orig, dir, objects, &hit_pos, &N, &color, &id))
-        		return (clamp_color(acum_color + (float4)(55.0f, 55.0f, 55.0f, 0.0f)));
-        for (int i = 0; i < 3; i++)
+		if (lights[i].type == 1)
+			intensity += lights[i].intensity;
+		else
 		{
-			if (lights[i].type == 1)
-				intensity += lights[i].intensity;
-			else
+			light_dir = get_light_dir(hit_pos, lights[i]);
+			if (shadow_intersect(hit_pos + N * 0.0001f, light_dir, objects,))
+				continue;
+			intensity += get_light(light_dir, N, lights[i]);
+			if (objects[id].material.specular > 0)
 			{
-				light_dir = get_light_dir(hit_pos, lights[i]);
-				if (shadow_intersect(hit_pos + N * 0.0001f, light_dir, objects, &shadow_hit_pos, &shadow_N))
-					continue;
-				intensity += get_light(light_dir, N, lights[i]);
-				if (objects[id].material.specular > 0)
-				{
-					float3 R = 2 * N * dot(N, light_dir) - light_dir;
-					float r_dot_dir = dot(R, -dir);
-					if (r_dot_dir > 0)
-						intensity += lights[i].intensity * pow(r_dot_dir / (length(R) * length(dir)), objects[id].material.specular);
-				}
+				float3 R = 2 * N * dot(N, light_dir) - light_dir;
+				float r_dot_dir = dot(R, -dir);
+				if (r_dot_dir > 0)
+					intensity += lights[i].intensity * pow(r_dot_dir / (length(R) * length(dir)), objects[id].material.specular);
 			}
 		}
-		intensity = intensity > 1 ? 1 : intensity;
-		color = color * intensity;
-		if (objects[id].material.reflection == 0 || depth == 1)
-			return (color);
-		acum_color += color * (1 - objects[id].material.reflection) + color * prev_reflection;
-		dir = reflect_ray(-dir, N);
-        orig = hit_pos + N * 0.001f;
-        prev_reflection = objects[id].material.reflection;
 	}
-	return (clamp_color(acum_color));
+	intensity = intensity > 1 ? 1 : intensity;
+	color = color * intensity;
+	return (clamp_color(color));
 }
 
 __kernel void raytrace(t_camera camera, __global t_obj* objects, __global float* randoms, int samples, __global t_light *lights, __global float4* output)
@@ -302,7 +314,8 @@ __kernel void raytrace(t_camera camera, __global t_obj* objects, __global float*
 	Py = (float)y / (height - 1);
 	dir = camera.upper_left_corner + Px * camera.horizontal - Py * camera.vertical - camera.origin;
 	dir = normalize(dir);
-	output[y * width + x] = trace(camera.origin, dir, objects, lights, 1);
+	t_ray ray = new_ray(camera.origin, dir);
+	output[y * width + x] = trace(&ray, objects, lights;
 
 	if (samples > 1)
 	{
@@ -312,7 +325,8 @@ __kernel void raytrace(t_camera camera, __global t_obj* objects, __global float*
 			Py = ((float)y + randoms[(y * width + x) * samples + i]) / (height - 1);
 			dir = camera.upper_left_corner + Px * camera.horizontal - Py * camera.vertical - camera.origin;
 			dir = normalize(dir);
-			output[y * width + x] += trace(camera.origin, dir, objects, lights, 1);
+			t_ray ray = new_ray(camera.origin, dir);
+			output[y * width + x] += trace(&ray, objects, lights);
 		}
 	}
 
@@ -320,3 +334,13 @@ __kernel void raytrace(t_camera camera, __global t_obj* objects, __global float*
 	output[y * width + x] /= samples == 1 ? 1 : samples + 1;
 }
 
+static		float4 clamp_color(float4 color)
+{
+	float4 res;
+
+	res.x = color.x > 255.0f ? 255.0f : color.x;
+	res.y = color.y > 255.0f ? 255.0f : color.y;
+	res.z = color.z > 255.0f ? 255.0f : color.z;
+	res.w = color.w > 255.0f ? 255.0f : color.w;
+	return (res);
+}
