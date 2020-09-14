@@ -12,7 +12,7 @@ typedef	struct	s_ray
 	float		t;
 }				t_ray;
 
-static	t_ray		new_ray(float3 orig, float3 dir)
+static	t_ray	new_ray(float3 orig, float3 dir)
 {
 	t_ray r;
 
@@ -156,7 +156,7 @@ static	float3	get_plane_normal(t_obj *plane)
 	return (normalize(plane->p_normal));
 }
 
-static	float3	get_cone_normal(t_obj *cone, float3 *hit_pos, float3 dir, float3 orig, float t)
+static	float3	get_cone_normal(t_obj *cone, float3 hit_pos, t_ray ray)
 {
 	/*
 	float3	pos_to_hitpoint;
@@ -171,22 +171,22 @@ static	float3	get_cone_normal(t_obj *cone, float3 *hit_pos, float3 dir, float3 o
 	float	a = m * k * k;
 	return (normalize(pos_to_hitpoint - (1 + k * k) * cone->cone_axis * m));
 	*/
-	float3 c_to_p = *hit_pos - cone->cone_pos;
+	float3 c_to_p = hit_pos - cone->cone_pos;
 	float3 tangent = cross(c_to_p, cone->cone_axis);
 	float3 res = cross(tangent, c_to_p);
 	return (normalize(res));
 }
 
-static	float3	get_normal(t_obj *object, float3 *hit_pos, float3 dir, float3 orig, float t)
+static	float3	get_normal(t_obj *object, hit_record hit, t_ray ray)
 {
 	float3 normal;
 
 	if (object->type == 0)
-		normal = get_sphere_normal(object, *hit_pos);
+		normal = get_sphere_normal(object, hit.hit_point);
 	if (object->type == 1)
 		normal = get_plane_normal(object);
 	if (object->type == 2)
-        normal = get_cone_normal(object, hit_pos, dir, orig, t);
+        normal = get_cone_normal(object, hit.hit_point, ray);
 	return (normal);
 }
 
@@ -200,11 +200,11 @@ static	float  get_light(float3 L, float3 N, t_light light)
 	return(df_light_int);
 }
 
-static	float3	get_light_dir(float3 hit_pos, t_light light)
+static	float3	get_light_dir(float3 hit_point, t_light light)
 {
 	float3	light_dir;
 	if (light.type == 2)
-		light_dir = (float3)(light.pos.x, light.pos.y, light.pos.z) - hit_pos;
+		light_dir = (float3)(light.pos.x, light.pos.y, light.pos.z) - hit_point;
 	if (light.type == 3)
 		light_dir = light.dir;
 	return (light_dir);
@@ -258,10 +258,6 @@ static	bool	shadow_intersect(float3 orig, float3 dir, __global t_obj* objects)
 	return (closest_dist < 100);
 }
 
-static		float3 reflect_ray(float3 R, float3 N)
-{
-	return (2 * N * dot(N, R) - R);
-}
 
 static	float4	trace(t_ray *ray, __global t_obj *objects, __global t_light *lights)
 {
@@ -274,15 +270,19 @@ static	float4	trace(t_ray *ray, __global t_obj *objects, __global t_light *light
 	if (!intersect(ray, &hit, objects)
 		return ((float4)(55.0f, 55.0f, 55.0f, 0.0f));
 	t_obj object_hit = objects[hit.id];
+	hit.hit_point = ray.orig + ray.dir * ray.t;
+	hit.N = get_normal(object_hit, hit, ray);
 	for (int i = 0; i < 3; i++)
 	{
 		if (lights[i].type == 1)
 			intensity += lights[i].intensity;
 		else
 		{
-			light_dir = get_light_dir(hit_pos, lights[i]);
-			if (shadow_intersect(hit_pos + N * 0.0001f, light_dir, objects,))
+			light_dir = get_light_dir(hit.hit_point, lights[i]);
+			/*
+			if (shadow_intersect(hit.hit_point + N * 0.0001f, light_dir, objects))
 				continue;
+			*/
 			intensity += get_light(light_dir, N, lights[i]);
 			if (objects[id].material.specular > 0)
 			{
@@ -294,7 +294,7 @@ static	float4	trace(t_ray *ray, __global t_obj *objects, __global t_light *light
 		}
 	}
 	intensity = intensity > 1 ? 1 : intensity;
-	color = color * intensity;
+	color = object_hit.material.diff_color * intensity;
 	return (clamp_color(color));
 }
 
@@ -343,4 +343,10 @@ static		float4 clamp_color(float4 color)
 	res.z = color.z > 255.0f ? 255.0f : color.z;
 	res.w = color.w > 255.0f ? 255.0f : color.w;
 	return (res);
+}
+
+static		float3 reflect_ray(float3 R, float3 N)
+{
+	return (2 * N * dot(N, R) - R);
+	/* maybe R - 2 * N * dot (N, R) */
 }
