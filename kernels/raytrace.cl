@@ -83,33 +83,31 @@ static	float		solve_eq(float a, float b, float c, float t_min, float t_max)
 	return (0.0f);
 }
 
-static	float	intersect_sphere(t_obj	*sphere, t_ray *ray, float3 *hit_pos)
+static	float	intersect_sphere(t_obj	*sphere, t_ray *ray)
 {
 	float dist;
 
 	float3 center = (float3)(sphere->s_center.x, sphere->s_center.y, sphere->s_center.z);
 	float radius = (float)(sphere->s_radius);
 
-	float3 L = orig - center;
-	float a = dot(dir, dir);
-	float b = 2 * dot(L, dir);
+	float3 L = ray->orig - center;
+	float a = dot(ray->dir, ray->dir);
+	float b = 2 * dot(L, ray->dir);
 	float c = dot(L, L) - radius * radius;
 
 	dist = solve_eq(a, b, c, 0.001f, FLT_MAX);
-	*hit_pos = orig + dir * dist;
 	return (dist);
 }
 
-static	float	intersect_plane(t_obj	*plane, float3 orig, float3 dir, float3 *hit_pos)
+static	float	intersect_plane(t_obj	*plane, t_ray *ray)
 {
 	float dist;
 
-	float a = dot(plane->p_normal, dir);
+	float a = dot(plane->p_normal, ray->dir);
 	if (fabs(a) < 0.001f)
 		return (0);
-	float b = -(dot(orig - plane->p_pos, plane->p_normal)) / a;
+	float b = -(dot(ray->orig - plane->p_pos, plane->p_normal)) / a;
 	dist = b < 0.001f ? 0 : b;
-	*hit_pos = orig + dir * dist;
 	return (dist);
 }
 
@@ -127,22 +125,20 @@ if (dot(cone->cone_axis, hit_point) < 0)
 return (dist);
 */
 
-static	float	intersect_cone(t_obj	*cone, float3 orig, float3 dir, float3 *hit_pos)
+static	float	intersect_cone(t_obj	*cone, t_ray *ray)
 {
 	float dist;
 
-	float3	X = orig - cone->cone_pos;
-	float	d_v = dot(dir, cone->cone_axis);
+	float3	X = ray->orig - cone->cone_pos;
+	float	d_v = dot(ray->dir, cone->cone_axis);
 	float	x_v = dot(X, cone->cone_axis);
 	float	k = cos(cone->cone_angle * M_PI_F / 180);
 	float	angle2 = k * k;
 
 	float a = d_v * d_v - angle2;
-	float b = 2.0f * (d_v * x_v - dot(dir, X) * angle2);
+	float b = 2.0f * (d_v * x_v - dot(ray->dir, X) * angle2);
 	float c = x_v * x_v - dot(X, X) * angle2;
 	dist = solve_eq(a, b, c, 0.001f, FLT_MAX);
-
-	*hit_pos = orig + dir * dist;
     return (dist);
 }
 
@@ -156,7 +152,7 @@ static	float3	get_plane_normal(t_obj *plane)
 	return (normalize(plane->p_normal));
 }
 
-static	float3	get_cone_normal(t_obj *cone, float3 hit_pos, t_ray ray)
+static	float3	get_cone_normal(t_obj *cone, float3 hit_pos, t_ray *ray)
 {
 	/*
 	float3	pos_to_hitpoint;
@@ -171,13 +167,14 @@ static	float3	get_cone_normal(t_obj *cone, float3 hit_pos, t_ray ray)
 	float	a = m * k * k;
 	return (normalize(pos_to_hitpoint - (1 + k * k) * cone->cone_axis * m));
 	*/
+
 	float3 c_to_p = hit_pos - cone->cone_pos;
 	float3 tangent = cross(c_to_p, cone->cone_axis);
 	float3 res = cross(tangent, c_to_p);
 	return (normalize(res));
 }
 
-static	float3	get_normal(t_obj *object, hit_record hit, t_ray ray)
+static	float3	get_normal(t_obj *object, hit_record hit, t_ray *ray)
 {
 	float3 normal;
 
@@ -213,7 +210,7 @@ static	float3	get_light_dir(float3 hit_point, t_light light)
 static		bool		intersect(t_ray *ray, hit_record *hit, __global t_obj* objects)
 {
 	float	dist_i;
-	ray->t = FLT_MAX:
+	ray->t = FLT_MAX;
 
 	for(int i = 0; i < 4; i++)
 	{
@@ -227,14 +224,14 @@ static		bool		intersect(t_ray *ray, hit_record *hit, __global t_obj* objects)
 
 		if (dist_i != 0.0f && dist_i < ray->t)
 		{
-			ray-> = dist_i;
+			ray->t = dist_i;
 			hit->id = i;
 		}
 	}
-	return (closest_dist < 100);
+	return (ray->t < 100);
 }
 
-static	bool	shadow_intersect(float3 orig, float3 dir, __global t_obj* objects)
+static	bool	shadow_intersect(t_ray *ray, __global t_obj* objects)
 {
 	float	closest_dist = FLT_MAX;
 	float	dist_i = 0;
@@ -243,11 +240,11 @@ static	bool	shadow_intersect(float3 orig, float3 dir, __global t_obj* objects)
 	{
 		t_obj object = objects[i];
 		if (object.type == 0)
-			dist_i = intersect_sphere(&object, orig, dir);
+			dist_i = intersect_sphere(&object, ray);
 		if (object.type == 1)
-			dist_i = intersect_plane(&object, orig, dir;
+			dist_i = intersect_plane(&object, ray);
 		if (object.type == 2)
-        	dist_i = intersect_cone(&object, orig, dir);
+			dist_i = intersect_cone(&object, ray);
 
 		if (dist_i != 0.0f && dist_i < closest_dist)
 		{
@@ -262,16 +259,16 @@ static	bool	shadow_intersect(float3 orig, float3 dir, __global t_obj* objects)
 static	float4	trace(t_ray *ray, __global t_obj *objects, __global t_light *lights)
 {
 	hit_record hit;
-	float4	color
+	float4	color;
 	float3	light_dir;
 	float	intensity = 0;
 
 
-	if (!intersect(ray, &hit, objects)
+	if (!intersect(ray, &hit, objects))
 		return ((float4)(55.0f, 55.0f, 55.0f, 0.0f));
 	t_obj object_hit = objects[hit.id];
-	hit.hit_point = ray.orig + ray.dir * ray.t;
-	hit.N = get_normal(object_hit, hit, ray);
+	hit.hit_point = ray->orig + ray->dir * ray->t;
+	hit.N = get_normal(&object_hit, hit, ray);
 	for (int i = 0; i < 3; i++)
 	{
 		if (lights[i].type == 1)
@@ -283,13 +280,13 @@ static	float4	trace(t_ray *ray, __global t_obj *objects, __global t_light *light
 			if (shadow_intersect(hit.hit_point + N * 0.0001f, light_dir, objects))
 				continue;
 			*/
-			intensity += get_light(light_dir, N, lights[i]);
-			if (objects[id].material.specular > 0)
+			intensity += get_light(light_dir, hit.N, lights[i]);
+			if (object_hit.material.specular > 0)
 			{
-				float3 R = 2 * N * dot(N, light_dir) - light_dir;
-				float r_dot_dir = dot(R, -dir);
+				float3 R = 2 * hit.N * dot(hit.N, light_dir) - light_dir;
+				float r_dot_dir = dot(R, -ray->dir);
 				if (r_dot_dir > 0)
-					intensity += lights[i].intensity * pow(r_dot_dir / (length(R) * length(dir)), objects[id].material.specular);
+					intensity += lights[i].intensity * pow(r_dot_dir / (length(R) * length(ray->dir)), object_hit.material.specular);
 			}
 		}
 	}
@@ -306,8 +303,6 @@ __kernel void raytrace(t_camera camera, __global t_obj* objects, __global float*
 	int height = get_global_size(1);
 	float Px, Py;
 	float3 dir;
-	if (x == width/ 2 && y == height / 2)
-			printf("\n");
 
     /* 0 sample */
 	Px = (float)x / (width - 1);
@@ -315,7 +310,7 @@ __kernel void raytrace(t_camera camera, __global t_obj* objects, __global float*
 	dir = camera.upper_left_corner + Px * camera.horizontal - Py * camera.vertical - camera.origin;
 	dir = normalize(dir);
 	t_ray ray = new_ray(camera.origin, dir);
-	output[y * width + x] = trace(&ray, objects, lights;
+	output[y * width + x] = trace(&ray, objects, lights);
 
 	if (samples > 1)
 	{
