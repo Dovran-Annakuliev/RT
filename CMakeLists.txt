@@ -55,12 +55,12 @@ include_directories(SDL2_image.framework/Versions/Current/Frameworks/webp.framew
 include_directories(SDL2_image.framework/Versions/Current/Headers)
 
 add_executable(RTv1
+        includes/rtv1.h
         includes/error_codes.h
         includes/lights.h
         includes/material.h
         includes/objects.h
         includes/rgba.h
-        includes/rtv1.h
         includes/vectors.h
         libft/includes/ft_printf.h
         libft/includes/libft.h
@@ -417,4 +417,6 @@ add_executable(RTv1
         sources/parser/ft_strsplit_space.c
         sources/parser/parse_utilities.c
         sources/parser/parse_2.c
+        includes/camera.h
+        sources/parser/parse_utilities_2.c
         )

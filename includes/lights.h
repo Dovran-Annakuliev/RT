@@ -1,8 +1,13 @@
 #ifndef LIGHTS_H
 #define LIGHTS_H
 
+#ifdef __APPLE__
 # include <OpenGL/gl.h>
 # include <OpenCL/opencl.h>
+#else
+# include <GL/opengl.h>
+# include <CL/opencl.h>
+#endif
 
 typedef struct		s_light
 {

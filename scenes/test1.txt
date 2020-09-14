@@ -24,3 +24,9 @@ point_light:
 directional_light:
         direction (0.0f, 10.0f, 0.0f)
         intensity 0.5f
+
+camera:
+      look_from = (cl_float3){0.0f, 0.0f, 10.0f};
+	  look_at = (cl_float3){0.0f, 0.0f, -1.0f};
+      vertical_fov = (float) 25.0f; (меньше 90 - если больше->error)
+      viewport_height = (float)4.0f (мин 2 - макс 10)

@@ -9,15 +9,16 @@
 # include <CL/opencl.h>
 #endif
 
+#include <time.h>
 #include "../libft/includes/libft.h"
 #include "../SDL2.framework/Headers/SDL.h"
 #include "../SDL2_image.framework/Headers/SDL_image.h"
-#include <time.h>
 #include "error_codes.h"
 #include "vectors.h"
 #include "rgba.h"
-#include "lights.h"
 #include "objects.h"
+#include "lights.h"
+#include "camera.h"
 #include "parser.h"
 
 typedef struct			s_cl
@@ -33,23 +34,6 @@ typedef struct			s_cl
 	size_t				dim;
 	size_t				global_size[2];
 }						t_cl;
-
-typedef struct			s_camera
-{
-	float				viewport_width;
-	float				viewport_height;
-	float				image_aspect_ratio;
-	float				vertical_fov;
-	float				h_angle;
-	cl_float3			look_from;
-	cl_float3			look_at;
-	cl_float3			vec_up;
-	cl_float3			origin;
-	cl_float3			horizontal;
-	cl_float3			vertical;
-	cl_float3			upper_left_corner;
-
-}						t_camera;
 
 typedef struct			s_rt
 {
@@ -93,6 +77,7 @@ void					parse_plane(int fd, t_rt *data);
 void					parce_ambient_light(int fd, t_rt *data);
 void					parce_point_light(int fd, t_rt *data);
 void					parce_directional_light(int fd, t_rt *data);
+void					parse_camera(int fd, t_rt *data);
 
 /*
 ** ---parse_utilities---
@@ -107,12 +92,9 @@ void					free_split(char **split);
 char					**ft_strsplit_space(const char *s);
 int						ft_count_words_split(const char **s);
 float					ft_atof(const char *str);
+void					clamp_color(cl_float4 *color);
 
-/*
-** ---camera_functions---
-*/
-void					init_camera(t_camera *viewport, int width, int height);
-void					update_camera(t_camera *camera);
+
 
 
 /*

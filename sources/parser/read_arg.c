@@ -12,6 +12,8 @@ void check_type(int fd, char *line, t_rt *data)
 		parce_point_light(fd, data);
 	else if (ft_strcmp(line, "directional_light:") == 0)
 		parce_directional_light(fd, data);
+	else if (ft_strcmp(line, "camera:") == 0)
+		parse_camera(fd, data);
 	else
 		error(INVALID_TYPE, line);
 }
@@ -30,6 +32,8 @@ static void	read_size(int fd, char *line, t_rt *data)
 			data->parse.light_size++;
 		else if (ft_strcmp(line, "directional_light:") == 0)
 			data->parse.light_size++;
+		else if (ft_strcmp(line, "camera:") == 0)
+			data->parse.camera_size++;
 		free(line);
 	}
 }
@@ -46,11 +50,14 @@ void		read_arg(char *source, t_rt *data)
 
 	data->parse.obj_size = 0;
 	data->parse.light_size = 0;
+	data->parse.camera_size = 0;
 	data->parse.obj_index = 0;
 	data->parse.light_index = 0;
+	data->parse.camera_index = 0;
 	read_size(fd, line, data);
 	data->parse.obj = (t_obj *)malloc(sizeof(t_obj) * data->parse.obj_size);
 	data->parse.light = (t_light *)malloc(sizeof(t_light) * data->parse.light_size);
+	data->parse.camera = (t_camera *)malloc(sizeof(t_camera) * data->parse.camera_size);
 
 	close(fd);
 	fd = open(source, O_RDONLY);
@@ -59,6 +66,8 @@ void		read_arg(char *source, t_rt *data)
 		check_type(fd, line, data);
 		ft_strdel(&line);
 		get_next_line(fd, &line);
+		if (ft_strcmp(line, "") != 0)
+			error(MISS_NEW_LINE, line);
 		ft_strdel(&line);
 	}
 	free(line);

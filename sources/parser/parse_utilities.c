@@ -2,9 +2,6 @@
 
 void free_split(char **split)
 {
-//	for (int i = 0; split[i]; i++)
-//		printf("split2[%d] = %s\n", i, split[i]);
-
 	int i;
 
 	i = -1;
@@ -54,12 +51,7 @@ cl_float3 parse_cl_float3(char *line)
 	res.y = ft_atof(split[2]);
 	res.z = ft_atof(split[3]);
 
-//	for (int i = 0; split[i]; i++)
-//		ft_printf("split1[%d] = %s\n", i, split[i]);
-
 	free_split(split);
-//	for (int i = 0; split[i]; i++)
-//		ft_printf("split1[%d] = %s\n", i, split[i]);
 	return (res);
 }
 

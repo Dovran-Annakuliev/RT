@@ -24,7 +24,8 @@ SRCS = $(SRC_DIR)camera.c\
 		$(PARSER_DIR)read_arg.c\
 		$(PARSER_DIR)parse.c\
 		$(PARSER_DIR)parse_2.c\
-		$(PARSER_DIR)parse_utilities.c
+		$(PARSER_DIR)parse_utilities.c\
+		$(PARSER_DIR)parse_utilities_2.c
 
 INC = includes/
 OBJS = $(SRCS:.c=.o)
