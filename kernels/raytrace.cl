@@ -116,12 +116,7 @@ static	float3	get_plane_normal(t_obj *plane)
 static	float3	get_cone_normal(t_obj *cone, float3 hit_pos, float3 dir, float3 orig, float t)
 {
 	float3	pos_to_hitpoint;
-	float3 tang;
-	float3 res;
 	pos_to_hitpoint = hit_pos - cone->cone_pos;
-	tang = cross(pos_to_hitpoint, cone->cone_axis);
-	res = cross(tang, pos_to_hitpoint);
-	/*
 	float3	X = orig - cone->cone_pos;
 	float	d_v = dot(dir, cone->cone_axis);
     float	x_v = dot(X, cone->cone_axis);
@@ -129,9 +124,6 @@ static	float3	get_cone_normal(t_obj *cone, float3 hit_pos, float3 dir, float3 or
 	float	k = tan(cone->cone_angle * M_PI_F / 180);
 	float	a = m * k * k;
 	return (normalize(pos_to_hitpoint - (1 + k * k) * cone->cone_axis * m));
-	*/
-
-	return (normalize(res));
 }
 
 static	float3	get_normal(t_obj *object, float3 hit_pos, float3 dir, float3 orig, float t)
@@ -183,11 +175,12 @@ static	float  get_light(float3 L, float3 N, t_light light)
 	return(df_light_int);
 }
 
+/* not sure if its right to add a bias to light_dir on case of point_lightm but w\o light looks buggy when we render a cone and a plane */
 static	float3	get_light_dir(float3 hit_pos, t_light light)
 {
 	float3	light_dir;
 	if (light.type == 2)
-		light_dir = (float3)(light.pos.x, light.pos.y, light.pos.z) - hit_pos;
+		light_dir = (float3)(light.pos.x, light.pos.y, light.pos.z) - hit_pos * 0.0001f;
 	if (light.type == 3)
 		light_dir = light.dir;
 	return (light_dir);
@@ -213,6 +206,7 @@ static	bool	shadow_intersect(float3 orig, float3 dir, __global t_obj* objects, f
 			closest_dist = dist_i;
 			*hit_pos = orig + dir * dist_i;
 			*N = get_normal(&object, *hit_pos, dir, orig, dist_i);
+			return (closest_dist < 100);
 		}
 	}
 	return (closest_dist < 100);
