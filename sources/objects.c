@@ -1,4 +1,5 @@
 #include "../includes/objects.h"
+#include "../includes/vectors.h"
 
 
 t_obj					new_sphere(cl_float3 center, cl_float radius, t_material material)
@@ -28,6 +29,7 @@ t_obj					new_cone(cl_float3 pos, cl_float k, cl_float3 axis, t_material materia
 	res.cone_pos = pos;
 	res.cone_angle = k;
 	res.cone_axis= axis;
+	res.cone_axis = vec_normalize(res.cone_axis);
 	res.material = material;
 	return (res);
 }

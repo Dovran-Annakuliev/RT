@@ -100,6 +100,9 @@ static	float	intersect_cone(t_obj	*cone, float3 orig, float3 dir)
 	float c = dot(X,X) - temp * x_v * x_v;
 
 	dist = solve_eq(a, b, c, 0.001f, FLT_MAX);
+	float3 hit_point = orig + dir * dist;
+	if (dot(cone->cone_axis, hit_point) < 0)
+		return (0.0f);
 	return (dist);
 }
 
@@ -113,25 +116,33 @@ static	float3	get_plane_normal(t_obj *plane)
 	return (normalize(plane->p_normal));
 }
 
-static	float3	get_cone_normal(t_obj *cone, float3 hit_pos, float3 dir, float3 orig, float t)
+static	float3	get_cone_normal(t_obj *cone, float3 *hit_pos, float3 dir, float3 orig, float t)
 {
+	/*
 	float3	pos_to_hitpoint;
-	pos_to_hitpoint = hit_pos - cone->cone_pos;
 	float3	X = orig - cone->cone_pos;
 	float	d_v = dot(dir, cone->cone_axis);
-    float	x_v = dot(X, cone->cone_axis);
+	float	x_v = dot(X, cone->cone_axis);
 	float	m = d_v * t + x_v;
+	*hit_pos = cone->cone_pos + cone->cone_axis * m;
+	pos_to_hitpoint = *hit_pos - cone->cone_pos;
+
 	float	k = tan(cone->cone_angle * M_PI_F / 180);
 	float	a = m * k * k;
 	return (normalize(pos_to_hitpoint - (1 + k * k) * cone->cone_axis * m));
+	*/
+	float3 c_to_p = *hit_pos - cone->cone_pos;
+	float3 tangent = cross(c_to_p, cone->cone_axis);
+	float3 res = cross(tangent, c_to_p);
+	return (normalize(res));
 }
 
-static	float3	get_normal(t_obj *object, float3 hit_pos, float3 dir, float3 orig, float t)
+static	float3	get_normal(t_obj *object, float3 *hit_pos, float3 dir, float3 orig, float t)
 {
 	float3 normal;
 
 	if (object->type == 0)
-		normal = get_sphere_normal(object, hit_pos);
+		normal = get_sphere_normal(object, *hit_pos);
 	if (object->type == 1)
 		normal = get_plane_normal(object);
 	if (object->type == 2)
@@ -157,7 +168,7 @@ static		bool		intersect(float3 orig, float3 dir, __global t_obj* objects, float3
 		{
 			closest_dist = dist_i;
 			*hit_pos = orig + dir * dist_i;
-			*N = get_normal(&object, *hit_pos, dir, orig, dist_i);
+			*N = get_normal(&object, hit_pos, dir, orig, dist_i);
 			*color = object.material.diff_color;
 			*id = i;
 		}
@@ -175,12 +186,11 @@ static	float  get_light(float3 L, float3 N, t_light light)
 	return(df_light_int);
 }
 
-/* not sure if its right to add a bias to light_dir on case of point_lightm but w\o light looks buggy when we render a cone and a plane */
 static	float3	get_light_dir(float3 hit_pos, t_light light)
 {
 	float3	light_dir;
 	if (light.type == 2)
-		light_dir = (float3)(light.pos.x, light.pos.y, light.pos.z) - hit_pos * 0.0001f;
+		light_dir = (float3)(light.pos.x, light.pos.y, light.pos.z) - hit_pos;
 	if (light.type == 3)
 		light_dir = light.dir;
 	return (light_dir);
@@ -205,7 +215,7 @@ static	bool	shadow_intersect(float3 orig, float3 dir, __global t_obj* objects, f
 		{
 			closest_dist = dist_i;
 			*hit_pos = orig + dir * dist_i;
-			*N = get_normal(&object, *hit_pos, dir, orig, dist_i);
+			*N = get_normal(&object, hit_pos, dir, orig, dist_i);
 			return (closest_dist < 100);
 		}
 	}
@@ -252,7 +262,7 @@ static	float4	trace(float3 orig, float3 dir, __global t_obj *objects, __global t
 			else
 			{
 				light_dir = get_light_dir(hit_pos, lights[i]);
-				if (shadow_intersect(hit_pos, light_dir, objects, &shadow_hit_pos, &shadow_N))
+				if (shadow_intersect(hit_pos + N * 0.0001f, light_dir, objects, &shadow_hit_pos, &shadow_N))
 					continue;
 				intensity += get_light(light_dir, N, lights[i]);
 				if (objects[id].material.specular > 0)
