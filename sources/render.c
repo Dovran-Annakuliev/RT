@@ -12,19 +12,19 @@ void		render(t_rt *rt)
 	output_buffer = clCreateBuffer(rt->cl.context, CL_MEM_WRITE_ONLY, sizeof(float) * rt->width * rt->height * 4, NULL, &e);
 //	ft_printf("out_buff = %d\n", e);
 
-	obj_buffer = clCreateBuffer(rt->cl.context, CL_MEM_READ_ONLY, sizeof(t_obj) * 4, NULL, &e);
+	obj_buffer = clCreateBuffer(rt->cl.context, CL_MEM_READ_ONLY, sizeof(t_obj) * rt->parse.obj_size, NULL, &e);
 //	ft_printf("obj_buff = %d\n", e);
 
-	light_buffer = clCreateBuffer(rt->cl.context, CL_MEM_READ_ONLY, sizeof(t_light) * 3, NULL, &e);
+	light_buffer = clCreateBuffer(rt->cl.context, CL_MEM_READ_ONLY, sizeof(t_light) * rt->parse.light_size, NULL, &e);
 //	ft_printf("light_buff = %d\n", e);
 
 	rand_buffer = clCreateBuffer(rt->cl.context, CL_MEM_READ_ONLY, sizeof(float) * rt->width * rt->height * rt->samples, NULL, &e);
 //	ft_printf("rand_buff = %d\n", e);;
 
-	e = clEnqueueWriteBuffer(rt->cl.queue, obj_buffer, CL_TRUE, 0, sizeof(t_obj) * 4, rt->o, 0, NULL, NULL);
+	e = clEnqueueWriteBuffer(rt->cl.queue, obj_buffer, CL_TRUE, 0, sizeof(t_obj) * rt->parse.obj_size, rt->parse.obj, 0, NULL, NULL);
 //	ft_printf("write_obj_buff = %d\n", e);
 
-	e = clEnqueueWriteBuffer(rt->cl.queue, light_buffer, CL_TRUE, 0, sizeof(t_light) * 3, rt->lights, 0, NULL, NULL);
+	e = clEnqueueWriteBuffer(rt->cl.queue, light_buffer, CL_TRUE, 0, sizeof(t_light) * rt->parse.light_size, rt->parse.light, 0, NULL, NULL);
 //	ft_printf("write_obj_buff = %d\n", e);
 
 	e = clEnqueueWriteBuffer(rt->cl.queue, rand_buffer, CL_TRUE, 0, sizeof(float) * rt->width * rt->height * rt->samples, rt->randoms, 0, NULL, NULL);
@@ -41,6 +41,10 @@ void		render(t_rt *rt)
 //	ft_printf("arg4 = %d\n", e);
 	e = clSetKernelArg(rt->cl.kernel, 5, sizeof(cl_mem), &output_buffer);
 //	ft_printf("arg5 = %d\n", e);
+	e = clSetKernelArg(rt->cl.kernel, 6, sizeof(int), &rt->parse.obj_size);
+//	ft_printf("arg6 = %d\n", e);
+	e = clSetKernelArg(rt->cl.kernel, 7, sizeof(int), &rt->parse.light_size);
+//	ft_printf("arg7 = %d\n", e);
 	clEnqueueNDRangeKernel(rt->cl.queue, rt->cl.kernel, rt->cl.dim, NULL,
 						   rt->cl.global_size, NULL, 0, NULL, NULL);
 	clFinish(rt->cl.queue);

@@ -49,12 +49,9 @@ typedef struct			s_rt
 	t_cl				cl;
 	t_camera			camera;
 	char 				*cl_path;
-	t_obj				o[4];
-	t_light				lights[3];
 	int					samples;
 	float				*randoms;
 	float				*res;
-
 	t_parse				parse;
 
 }						t_rt;

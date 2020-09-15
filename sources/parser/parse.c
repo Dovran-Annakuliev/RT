@@ -4,7 +4,7 @@ void parse_sphere(int fd, t_rt *data)
 {
 	char *line;
 
-	data->parse.obj[data->parse.obj_index].type = 1;
+	data->parse.obj[data->parse.obj_index].type = 0;
 
 	get_next_line(fd, &line);
 	data->parse.obj[data->parse.obj_index].s_center = parse_cl_float3(line, "position");
@@ -27,7 +27,7 @@ void parse_plane(int fd, t_rt *data)
 {
 	char *line;
 
-	data->parse.obj[data->parse.obj_index].type = 2;
+	data->parse.obj[data->parse.obj_index].type = 1;
 
 	get_next_line(fd, &line);
 	data->parse.obj[data->parse.obj_index].p_pos = parse_cl_float3(line, "position");
