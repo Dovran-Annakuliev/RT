@@ -13,6 +13,9 @@ typedef struct			s_obj
 	cl_float3			cone_pos;
 	cl_float			cone_angle;
 	cl_float3			cone_axis;
+	cl_float3			cyl_pos;
+	cl_float			cyl_r;
+	cl_float3			cyl_axis;
 	t_material			material;
 }						t_obj;
 

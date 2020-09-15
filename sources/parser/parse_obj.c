@@ -59,3 +59,25 @@ void	parse_cone(int fd, t_rt *data)
 	data->parse.obj_index++;
 	ft_strdel(&line);
 }
+
+void	parse_cylinder(int fd, t_rt *data)
+{
+	char *line;
+
+	data->parse.obj[data->parse.obj_index].type = 3;
+	get_next_line(fd, &line);
+	data->parse.obj[data->parse.obj_index].cyl_pos =
+			parse_cl_float3(line, "position");
+	ft_strdel(&line);
+	get_next_line(fd, &line);
+	data->parse.obj[data->parse.obj_index].cyl_r =
+			parse_cl_float(line, "radius");
+	ft_strdel(&line);
+	get_next_line(fd, &line);
+	data->parse.obj[data->parse.obj_index].cyl_axis =
+			parse_cl_float3(line, "axis");
+	ft_strdel(&line);
+	parse_material(fd, &data->parse.obj[data->parse.obj_index]);
+	data->parse.obj_index++;
+	ft_strdel(&line);
+}
