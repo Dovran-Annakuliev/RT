@@ -74,24 +74,12 @@ static	float		solve_eq(float a, float b, float c, float t_min, float t_max)
 	if (dis < 0.0f)
 		return (0.0f);
 	dis = sqrt(dis);
-
-	/*
-  	float t1 = (-b - dis) / (2. * a);
-	float t2 = (-b + dis) / (2. * a);
-	float t = t1;
-	if (t < 0. || t2 > 0. && t2 < t)
-		t = t2;
-	if (t < 0.)
-		return (0.0f);
-	return (t);
-	*/
-
 	float x1 = (-b - dis) / (2 * a);
 	float x2 = (-b + dis) / (2 * a);
-	if (x1 > t_min && x1 < t_max && x1 < x2)
-		return (x1);
-	if (x2 > t_min && x2 < t_max)
-		return (x2);
+	if (x1 > t_min && x2 > t_min)
+		return (x1 <= x2 ? x1 : x2);
+	if (x1 > t_min || x2 > t_min)
+		return (x1 <= x2 ? x2 : x1);
 	return (0.0f);
 
 }
@@ -108,7 +96,7 @@ static	float	intersect_sphere(t_obj	*sphere, t_ray *ray)
 	float b = 2 * dot(L, ray->dir);
 	float c = dot(L, L) - radius * radius;
 
-	dist = solve_eq(a, b, c, 0.001f, FLT_MAX);
+	dist = solve_eq(a, b, c, 0.001f, ray->t);
 	return (dist);
 }
 
@@ -119,30 +107,14 @@ static	float	intersect_plane(t_obj	*plane, t_ray *ray)
 	float a = dot(plane->p_normal, ray->dir);
 	if (fabs(a) < 0.001f)
 		return (0);
-	float b = -(dot(ray->orig - plane->p_pos, plane->p_normal)) / a;
+	float b = dot(plane->p_pos - ray->orig, plane->p_normal) / a;
 	dist = b < 0.001f ? 0 : b;
 	return (dist);
 }
 
-
-/*
-float	temp = 1 + k * k;
-float a = dot(dir, dir) - temp * d_v * d_v;
-float b = 2.0 * (dot(dir, X) - temp * d_v * x_v);
-float c = dot(X,X) - temp * x_v * x_v;
-
-dist = solve_eq(a, b, c, 0.001f, FLT_MAX);
-float3 hit_point = orig + dir * dist;
-if (dot(cone->cone_axis, hit_point) < 0)
-	return (0.0f);
-return (dist);
-*/
-
-static	float	intersect_cone(t_obj	*cone, t_ray *ray)
-{
+	/*
 	float dist;
 
-	/*
 	float3	X = ray->orig - cone->cone_pos;
 	float	d_v = dot(ray->dir, cone->cone_axis);
 	float	x_v = dot(X, cone->cone_axis);
@@ -158,7 +130,6 @@ static	float	intersect_cone(t_obj	*cone, t_ray *ray)
     if (h < 0)
     	return (0.0f);
     return (dist);
-    */
     float3	X = ray->orig - cone->cone_pos;
     float	d_v = dot(ray->dir, cone->cone_axis);
     float	x_v = dot(X, cone->cone_axis);
@@ -167,11 +138,28 @@ static	float	intersect_cone(t_obj	*cone, t_ray *ray)
     float a = dot(ray->dir, ray->dir) - temp * d_v * d_v;
     float b = 2.0 * (dot(ray->dir, X) - temp * d_v * x_v);
     float c = dot(X,X) - temp * x_v * x_v;
-    dist = solve_eq(a, b, c, 0.001f, FLT_MAX);
-    float3 hit_point = ray->orig + ray->dir * dist;
-	if (dot(cone->cone_axis, hit_point) < 0)
-		return (0.0f);
+    dist = solve_eq(a, b, c, 0.001f, ray->t);
     return (dist);
+    */
+
+static	float	intersect_cone(t_obj	*cone, t_ray *ray)
+{
+	float dist;
+
+	float a;
+	float b;
+	float c;
+	float angle = tan(cone->cone_angle * M_PI_F / 180);
+	float temp = 1 + angle * angle;
+
+	float3 x = ray->orig - cone->cone_pos;
+	float d_v = dot(ray->dir, cone->cone_axis);
+	float x_v = dot(x, cone->cone_axis);
+	a = dot(ray->dir, ray->dir) - temp * d_v * d_v;
+	b = 2 * (dot(ray->dir, x) - temp * d_v * x_v);
+	c = dot(x, x) - temp * x_v * x_v;
+	dist = solve_eq(a, b, c, 0.001, ray->t);
+	return (dist);
 }
 
 static	float3	get_sphere_normal(t_obj *sphere, float3 hit_pos)
@@ -179,8 +167,11 @@ static	float3	get_sphere_normal(t_obj *sphere, float3 hit_pos)
 	return (normalize(hit_pos - sphere->s_center));
 }
 
-static	float3	get_plane_normal(t_obj *plane)
+static	float3	get_plane_normal(t_obj *plane, t_ray *ray)
 {
+	float d = dot(plane->p_normal, ray->dir);
+	if (0.001f < d)
+		return (normalize(plane->p_normal * -1.0f));
 	return (normalize(plane->p_normal));
 }
 
@@ -193,11 +184,11 @@ static	float3	get_cone_normal(t_obj *cone, float3 hit_pos, t_ray *ray)
 	float	x_v = dot(X, cone->cone_axis);
 	float	m = d_v * ray->t + x_v;
 	pos_to_hitpoint = hit_pos - cone->cone_pos;
-
 	float	k = cos(cone->cone_angle * M_PI_F / 180);
 	float	a = m * k * k;
 	return (normalize(pos_to_hitpoint - (1 + k * k) * cone->cone_axis * a));
 	*/
+
 	/*
 	float3 c_to_p = hit_pos - cone->cone_pos;
 	float3 tangent = cross(c_to_p, cone->cone_axis);
@@ -205,12 +196,23 @@ static	float3	get_cone_normal(t_obj *cone, float3 hit_pos, t_ray *ray)
 	return (normalize(res));
 	*/
 
+	/*
 	float3 cp = hit_pos - cone->cone_pos;
 	float axis_dot_cp = dot(cone->cone_axis, cp);
 	float cp2 = dot(cp, cp);
 	float3 normal = normalize(cp * (axis_dot_cp / cp2) - cone->cone_axis);
 	return (normal);
+	*/
 
+	float3 cp = hit_pos - cone->cone_pos;
+	float angle = tan(cone->cone_angle * M_PI_F / 180);
+    float temp = 1 + angle * angle;
+	float3 scaled_axis = cone->cone_axis * temp;
+	float dir_dot_axis = dot(ray->dir, cone->cone_axis);
+	float k = dir_dot_axis * ray->t + dot(ray->orig - cone->cone_pos, cone->cone_axis);
+
+	float3 res = cp - scaled_axis * k;
+	return (res);
 }
 
 static	float3	get_normal(t_obj *object, hit_record hit, t_ray *ray)
@@ -220,7 +222,7 @@ static	float3	get_normal(t_obj *object, hit_record hit, t_ray *ray)
 	if (object->type == 0)
 		normal = get_sphere_normal(object, hit.hit_point);
 	if (object->type == 1)
-		normal = get_plane_normal(object);
+		normal = get_plane_normal(object, ray);
 	if (object->type == 2)
         normal = get_cone_normal(object, hit.hit_point, ray);
 	return (normal);
@@ -315,9 +317,11 @@ static	float4	trace(t_ray *ray, __global t_obj *objects, __global t_light *light
 		{
 			light_dir = get_light_dir(hit.hit_point, lights[i]);
 
+			/*
 			t_ray shadow_ray = new_ray(hit.hit_point + hit.N * 0.001f, light_dir);
 			if (shadow_intersect(&shadow_ray, objects))
 				continue;
+			*/
 
 			intensity += get_light(light_dir, hit.N, lights[i]);
 			if (object_hit.material.specular > 0)
