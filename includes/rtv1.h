@@ -71,6 +71,7 @@ float					*new_random_array(int w, int h, int samples);
 void					read_arg(char *source, t_rt *data);
 void					parse_sphere(int fd, t_rt *data);
 void					parse_plane(int fd, t_rt *data);
+void					parse_cone(int fd, t_rt *data);
 void					parce_ambient_light(int fd, t_rt *data);
 void					parce_point_light(int fd, t_rt *data);
 void					parce_directional_light(int fd, t_rt *data);
