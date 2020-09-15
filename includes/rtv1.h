@@ -47,11 +47,9 @@ typedef struct			s_rt
 	int					width;
 	int					height;
 	t_cl				cl;
-	t_camera			camera;
 	char				*cl_path;
-	t_obj				o[4];
-	t_light				lights[3];
 	int					samples;
+	int					current_camera;
 	float				*randoms;
 	float				*res;
 
