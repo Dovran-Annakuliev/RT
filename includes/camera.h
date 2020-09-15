@@ -21,11 +21,7 @@ typedef struct			s_camera
 /*
 ** ---camera_functions---
 */
-
 void					init_camera(t_camera *viewport, int width, int height);
 void					update_camera(t_camera *camera);
-void					set_cameras(t_camera *cameras, int camera_size, int width, int height);
-void					print_camera_info(t_camera camera, int id);
-
 
 #endif
