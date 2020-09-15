@@ -248,12 +248,12 @@ static	float3	get_light_dir(float3 hit_point, t_light light)
 	return (light_dir);
 }
 
-static		bool		intersect(t_ray *ray, hit_record *hit, __global t_obj* objects)
+static		bool		intersect(t_ray *ray, hit_record *hit, __global t_obj* objects, int obj_n)
 {
 	float	dist_i = 0;
 	ray->t = FLT_MAX;
 
-	for(int i = 0; i < 4; i++)
+	for(int i = 0; i < obj_n; i++)
 	{
 		t_obj object = objects[i];
 		if (object.type == 0)
@@ -272,12 +272,12 @@ static		bool		intersect(t_ray *ray, hit_record *hit, __global t_obj* objects)
 	return (ray->t < 100);
 }
 
-static	bool	shadow_intersect(t_ray *ray, __global t_obj* objects, float	min_v, float max_v)
+static	bool	shadow_intersect(t_ray *ray, __global t_obj* objects, float	min_v, float max_v, int obj_n)
 {
 	float	dist_i = 0;
     ray->t = FLT_MAX;
 
-	for(int i = 0; i < 4; i++)
+	for(int i = 0; i < obj_n; i++)
 	{
 		t_obj object = objects[i];
 		if (object.type == 0)
@@ -296,7 +296,7 @@ static	bool	shadow_intersect(t_ray *ray, __global t_obj* objects, float	min_v, f
 	return (ray->t < max_v);
 }
 
-static	float4	trace(t_ray *ray, __global t_obj *objects, __global t_light *lights)
+static	float4	trace(t_ray *ray, __global t_obj *objects, __global t_light *lights, int obj_n, int lights_n)
 {
 	hit_record hit;
 	float4	color;
@@ -304,12 +304,12 @@ static	float4	trace(t_ray *ray, __global t_obj *objects, __global t_light *light
 	float	intensity = 0;
 
 
-	if (!intersect(ray, &hit, objects))
+	if (!intersect(ray, &hit, objects, obj_n))
 		return ((float4)(55.0f, 55.0f, 55.0f, 0.0f));
 	t_obj object_hit = objects[hit.id];
 	hit.hit_point = ray->orig + ray->dir * ray->t;
 	hit.N = get_normal(&object_hit, hit, ray);
-	for (int i = 0; i < 3; i++)
+	for (int i = 0; i < lights_n; i++)
 	{
 		if (lights[i].type == 1)
 			intensity += lights[i].intensity;
@@ -318,7 +318,7 @@ static	float4	trace(t_ray *ray, __global t_obj *objects, __global t_light *light
 			light_dir = get_light_dir(hit.hit_point, lights[i]);
 
 			t_ray shadow_ray = new_ray(hit.hit_point + hit.N * 0.001f, light_dir);
-			if (shadow_intersect(&shadow_ray, objects, 0.0001f, lights[i].type == 2 ? 1.0f : FLT_MAX))
+			if (shadow_intersect(&shadow_ray, objects, 0.0001f, lights[i].type == 2 ? 1.0f : FLT_MAX, obj_n))
 				continue;
 
 			intensity += get_light(light_dir, hit.N, lights[i]);
@@ -336,7 +336,7 @@ static	float4	trace(t_ray *ray, __global t_obj *objects, __global t_light *light
 	return (clamp_color(color));
 }
 
-__kernel void raytrace(t_camera camera, __global t_obj* objects, __global float* randoms, int samples, __global t_light *lights, __global float4* output)
+__kernel void raytrace(t_camera camera, __global t_obj* objects, __global float* randoms, int samples, __global t_light *lights, __global float4* output, int	obj_n, int lights_n)
 {
 	int x = get_global_id(0);
 	int y = get_global_id(1);
@@ -351,7 +351,7 @@ __kernel void raytrace(t_camera camera, __global t_obj* objects, __global float*
 	dir = camera.upper_left_corner + Px * camera.horizontal - Py * camera.vertical - camera.origin;
 	dir = normalize(dir);
 	t_ray ray = new_ray(camera.origin, dir);
-	output[y * width + x] = trace(&ray, objects, lights);
+	output[y * width + x] = trace(&ray, objects, lights, obj_n, lights_n);
 
 	if (samples > 1)
 	{
@@ -362,7 +362,7 @@ __kernel void raytrace(t_camera camera, __global t_obj* objects, __global float*
 			dir = camera.upper_left_corner + Px * camera.horizontal - Py * camera.vertical - camera.origin;
 			dir = normalize(dir);
 			t_ray ray = new_ray(camera.origin, dir);
-			output[y * width + x] += trace(&ray, objects, lights);
+			output[y * width + x] += trace(&ray, objects, lights, obj_n, lights_n);
 		}
 	}
 
