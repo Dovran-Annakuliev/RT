@@ -212,7 +212,7 @@ static	float3	get_cone_normal(t_obj *cone, float3 hit_pos, t_ray *ray)
 	float k = dir_dot_axis * ray->t + dot(ray->orig - cone->cone_pos, cone->cone_axis);
 
 	float3 res = cp - scaled_axis * k;
-	return (res);
+	return (normalize(res));
 }
 
 static	float3	get_normal(t_obj *object, hit_record hit, t_ray *ray)
@@ -250,7 +250,7 @@ static	float3	get_light_dir(float3 hit_point, t_light light)
 
 static		bool		intersect(t_ray *ray, hit_record *hit, __global t_obj* objects)
 {
-	float	dist_i;
+	float	dist_i = 0;
 	ray->t = FLT_MAX;
 
 	for(int i = 0; i < 4; i++)
@@ -272,10 +272,10 @@ static		bool		intersect(t_ray *ray, hit_record *hit, __global t_obj* objects)
 	return (ray->t < 100);
 }
 
-static	bool	shadow_intersect(t_ray *ray, __global t_obj* objects)
+static	bool	shadow_intersect(t_ray *ray, __global t_obj* objects, float	min_v, float max_v)
 {
-	float	closest_dist = FLT_MAX;
 	float	dist_i = 0;
+    ray->t = FLT_MAX;
 
 	for(int i = 0; i < 4; i++)
 	{
@@ -287,13 +287,13 @@ static	bool	shadow_intersect(t_ray *ray, __global t_obj* objects)
 		if (object.type == 2)
 			dist_i = intersect_cone(&object, ray);
 
-		if (dist_i != 0.0f && dist_i < closest_dist)
+		if (dist_i != 0.0f && dist_i < ray->t && dist_i > min_v && dist_i < max_v)
 		{
-			closest_dist = dist_i;
-			return (closest_dist < 100);
+			ray->t = dist_i;
+			return (ray->t < max_v);
 		}
 	}
-	return (closest_dist < 100);
+	return (ray->t < max_v);
 }
 
 static	float4	trace(t_ray *ray, __global t_obj *objects, __global t_light *lights)
@@ -317,11 +317,9 @@ static	float4	trace(t_ray *ray, __global t_obj *objects, __global t_light *light
 		{
 			light_dir = get_light_dir(hit.hit_point, lights[i]);
 
-			/*
 			t_ray shadow_ray = new_ray(hit.hit_point + hit.N * 0.001f, light_dir);
-			if (shadow_intersect(&shadow_ray, objects))
+			if (shadow_intersect(&shadow_ray, objects, 0.0001f, lights[i].type == 2 ? 1.0f : FLT_MAX))
 				continue;
-			*/
 
 			intensity += get_light(light_dir, hit.N, lights[i]);
 			if (object_hit.material.specular > 0)
