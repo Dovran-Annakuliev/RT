@@ -1,25 +1,25 @@
 #ifndef RTV1_H
-#define RTV1_H
+# define RTV1_H
 
-#ifdef __APPLE__
-# include <OpenGL/gl.h>
-# include <OpenCL/opencl.h>
-#else
-# include <GL/opengl.h>
-# include <CL/opencl.h>
-#endif
+# ifdef __APPLE__
+#  include <OpenGL/gl.h>
+#  include <OpenCL/opencl.h>
+# else
+#  include <GL/opengl.h>
+#  include <CL/opencl.h>
+# endif
 
-#include <time.h>
-#include "../libft/includes/libft.h"
-#include "../SDL2.framework/Headers/SDL.h"
-#include "../SDL2_image.framework/Headers/SDL_image.h"
-#include "error_codes.h"
-#include "vectors.h"
-#include "rgba.h"
-#include "objects.h"
-#include "lights.h"
-#include "camera.h"
-#include "parser.h"
+# include <time.h>
+# include "../libft/includes/libft.h"
+# include "../SDL2.framework/Headers/SDL.h"
+# include "../SDL2_image.framework/Headers/SDL_image.h"
+# include "error_codes.h"
+# include "vectors.h"
+# include "rgba.h"
+# include "objects.h"
+# include "lights.h"
+# include "camera.h"
+# include "parser.h"
 
 typedef struct			s_cl
 {
@@ -48,7 +48,7 @@ typedef struct			s_rt
 	int					height;
 	t_cl				cl;
 	t_camera			camera;
-	char 				*cl_path;
+	char				*cl_path;
 	t_obj				o[4];
 	t_light				lights[3];
 	int					samples;
@@ -74,6 +74,7 @@ float					*new_random_array(int w, int h, int samples);
 void					read_arg(char *source, t_rt *data);
 void					parse_sphere(int fd, t_rt *data);
 void					parse_plane(int fd, t_rt *data);
+void					parse_cone(int fd, t_rt *data);
 void					parce_ambient_light(int fd, t_rt *data);
 void					parce_point_light(int fd, t_rt *data);
 void					parce_directional_light(int fd, t_rt *data);
@@ -94,9 +95,6 @@ int						ft_count_words_split(const char **s);
 float					ft_atof(const char *str);
 void					clamp_color(cl_float4 *color);
 
-
-
-
 /*
 ** ---OpenCl_functions---
 */
@@ -115,7 +113,8 @@ void					render(t_rt *rt);
 ** ---coloring---
 */
 
-void					update_texture(SDL_Texture *texture, int width, int height, float *r);
+void					update_texture(SDL_Texture *texture, int width,
+						int height, float *r);
 
 /*
 ** ---controls---

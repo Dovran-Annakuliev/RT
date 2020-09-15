@@ -1,6 +1,6 @@
 #include "../includes/rtv1.h"
 
-void parse_error(int err, const char *message)
+void	parse_error(int err, const char *message)
 {
 	if (err == INVALID_ARGUMENTS_IN_LINE)
 		ft_printf("Invalid arguments in line: %s\n", message);
@@ -22,13 +22,15 @@ void parse_error(int err, const char *message)
 		ft_printf("Wrong name value in line: %s\n", message);
 	else if (err == WRONG_MATERIAL)
 		ft_printf("Wrong material in line: %s\n", message);
+	else if (err == INVALID_CAMERA)
+		ft_printf("camera not found\n");
 }
 
 void	error(int err, const char *message)
 {
 	if (err == 1)
 		ft_printf("It's been fun. Don't come back.\n");
-	else if (err <= INVALID_ARGUMENTS && err >= WRONG_MATERIAL)
+	else if (err <= INVALID_ARGUMENTS && err >= INVALID_CAMERA)
 		parse_error(err, message);
 	else
 		ft_printf("SDL init fail: %s[%d]\n", message, err);

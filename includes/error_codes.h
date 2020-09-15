@@ -14,16 +14,17 @@
 ** ---parse_macro---
 */
 
-#define INVALID_ARGUMENTS -11
-#define INVALID_TYPE -12
-#define INVALID_ARGUMENTS_IN_LINE -13
-#define MISS_NEW_LINE -14
-#define WRONG_FOV -15
-#define WRONG_HEIGHT -16
-#define WRONG_RADIUS -17
-#define WRONG_REFLECTION -18
-#define WRONG_INTENSITY -19
-#define WRONG_NAME_VALUE -20
-#define WRONG_MATERIAL -21
+# define INVALID_ARGUMENTS -11
+# define INVALID_TYPE -12
+# define INVALID_ARGUMENTS_IN_LINE -13
+# define MISS_NEW_LINE -14
+# define WRONG_FOV -15
+# define WRONG_HEIGHT -16
+# define WRONG_RADIUS -17
+# define WRONG_REFLECTION -18
+# define WRONG_INTENSITY -19
+# define WRONG_NAME_VALUE -20
+# define WRONG_MATERIAL -21
+# define INVALID_CAMERA -22
 
 #endif

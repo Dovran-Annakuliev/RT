@@ -1,11 +1,13 @@
 #include "../../includes/rtv1.h"
 
-void check_type(int fd, char *line, t_rt *data)
+static void	check_type(int fd, char *line, t_rt *data)
 {
 	if (ft_strcmp(line, "sphere:") == 0)
 		parse_sphere(fd, data);
 	else if (ft_strcmp(line, "plane:") == 0)
 		parse_plane(fd, data);
+	else if (ft_strcmp(line, "cone:") == 0)
+		parse_cone(fd, data);
 	else if (ft_strcmp(line, "ambient_light:") == 0)
 		parce_ambient_light(fd, data);
 	else if (ft_strcmp(line, "point_light:") == 0)
@@ -26,6 +28,8 @@ static void	read_size(int fd, char *line, t_rt *data)
 			data->parse.obj_size++;
 		else if (ft_strcmp(line, "plane:") == 0)
 			data->parse.obj_size++;
+		else if (ft_strcmp(line, "cone:") == 0)
+			data->parse.obj_size++;
 		else if (ft_strcmp(line, "ambient_light:") == 0)
 			data->parse.light_size++;
 		else if (ft_strcmp(line, "point_light:") == 0)
@@ -36,6 +40,27 @@ static void	read_size(int fd, char *line, t_rt *data)
 			data->parse.camera_size++;
 		free(line);
 	}
+	if (data->parse.camera_size == 0)
+		error(INVALID_CAMERA, "");
+}
+
+static void	default_settings_parse(t_rt *data)
+{
+	data->parse.obj_size = 0;
+	data->parse.light_size = 0;
+	data->parse.camera_size = 0;
+	data->parse.obj_index = 0;
+	data->parse.light_index = 0;
+	data->parse.camera_index = 0;
+}
+
+static void	parse_malloc(t_rt *data)
+{
+	data->parse.obj = (t_obj *)malloc(sizeof(t_obj) * data->parse.obj_size);
+	data->parse.light = (t_light *)malloc(sizeof(t_light)
+			* data->parse.light_size);
+	data->parse.camera = (t_camera *)malloc(sizeof(t_camera)
+			* data->parse.camera_size);
 }
 
 void		read_arg(char *source, t_rt *data)
@@ -44,21 +69,11 @@ void		read_arg(char *source, t_rt *data)
 	int		fd;
 
 	line = NULL;
-	if (((fd = open(source, O_RDONLY)) < 0)
-		|| ((read(fd, line, 0)) < 0))
+	if (((fd = open(source, O_RDONLY)) < 0) || ((read(fd, line, 0)) < 0))
 		error(INVALID_ARGUMENTS, source);
-
-	data->parse.obj_size = 0;
-	data->parse.light_size = 0;
-	data->parse.camera_size = 0;
-	data->parse.obj_index = 0;
-	data->parse.light_index = 0;
-	data->parse.camera_index = 0;
+	default_settings_parse(data);
 	read_size(fd, line, data);
-	data->parse.obj = (t_obj *)malloc(sizeof(t_obj) * data->parse.obj_size);
-	data->parse.light = (t_light *)malloc(sizeof(t_light) * data->parse.light_size);
-	data->parse.camera = (t_camera *)malloc(sizeof(t_camera) * data->parse.camera_size);
-
+	parse_malloc(data);
 	close(fd);
 	fd = open(source, O_RDONLY);
 	while (get_next_line(fd, &line))

@@ -1,13 +1,13 @@
 #include "../../includes/rtv1.h"
 
-int ft_count_words_split(const char **s)
+int				ft_count_words_split(const char **s)
 {
 	int i;
 
 	i = 0;
 	while (s[i])
 		i++;
-	return(i);
+	return (i);
 }
 
 static int		ft_count_words_space(char const *s)

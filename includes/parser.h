@@ -1,5 +1,5 @@
 #ifndef PARSER_H
-#define PARSER_H
+# define PARSER_H
 
 typedef struct	s_parse
 {
@@ -13,6 +13,5 @@ typedef struct	s_parse
 	int			light_index;
 	int			camera_index;
 }				t_parse;
-
 
 #endif

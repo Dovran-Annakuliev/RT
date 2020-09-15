@@ -21,11 +21,11 @@ SRCS = $(SRC_DIR)camera.c\
 		$(CONTROLLERS_DIR)mouse_controller.c\
 		$(PARSER_DIR)ft_atof.c\
 		$(PARSER_DIR)ft_strsplit_space.c\
-		$(PARSER_DIR)read_arg.c\
-		$(PARSER_DIR)parse.c\
-		$(PARSER_DIR)parse_2.c\
+		$(PARSER_DIR)parse_light.c\
+		$(PARSER_DIR)parse_obj.c\
+		$(PARSER_DIR)parse_other.c\
 		$(PARSER_DIR)parse_utilities.c\
-		$(PARSER_DIR)parse_utilities_2.c
+		$(PARSER_DIR)read_arg.c
 
 INC = includes/
 OBJS = $(SRCS:.c=.o)
