@@ -142,6 +142,7 @@ static	float	intersect_cone(t_obj	*cone, t_ray *ray)
 {
 	float dist;
 
+	/*
 	float3	X = ray->orig - cone->cone_pos;
 	float	d_v = dot(ray->dir, cone->cone_axis);
 	float	x_v = dot(X, cone->cone_axis);
@@ -156,6 +157,20 @@ static	float	intersect_cone(t_obj	*cone, t_ray *ray)
 	float h = dot(cp, cone->cone_axis);
     if (h < 0)
     	return (0.0f);
+    return (dist);
+    */
+    float3	X = ray->orig - cone->cone_pos;
+    float	d_v = dot(ray->dir, cone->cone_axis);
+    float	x_v = dot(X, cone->cone_axis);
+    float	k = tan(cone->cone_angle * M_PI_F / 180);
+    float	temp = 1 + k * k;
+    float a = dot(ray->dir, ray->dir) - temp * d_v * d_v;
+    float b = 2.0 * (dot(ray->dir, X) - temp * d_v * x_v);
+    float c = dot(X,X) - temp * x_v * x_v;
+    dist = solve_eq(a, b, c, 0.001f, FLT_MAX);
+    float3 hit_point = ray->orig + ray->dir * dist;
+	if (dot(cone->cone_axis, hit_point) < 0)
+		return (0.0f);
     return (dist);
 }
 
@@ -308,7 +323,7 @@ static	float4	trace(t_ray *ray, __global t_obj *objects, __global t_light *light
 			if (object_hit.material.specular > 0)
 			{
 				float3 R = 2 * hit.N * dot(hit.N, light_dir) - light_dir;
-				float r_dot_dir = dot(R, -ray->dir);
+				float r_dot_dir = dot(R, ray->dir * -1.0f);
 				if (r_dot_dir > 0)
 					intensity += lights[i].intensity * pow(r_dot_dir / (length(R) * length(ray->dir)), object_hit.material.specular);
 			}
