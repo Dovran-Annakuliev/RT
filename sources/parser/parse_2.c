@@ -60,6 +60,6 @@ void parse_camera(int fd, t_rt *data)
 		&& data->parse.camera[data->parse.camera_index].viewport_height < 2.f)
 		error(WRONG_HEIGHT, line);
 
-	data->parse.obj_index++;
+	data->parse.camera_index++;
 	ft_strdel(&line);
 }

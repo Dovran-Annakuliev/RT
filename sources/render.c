@@ -29,7 +29,10 @@ void		render(t_rt *rt)
 
 	e = clEnqueueWriteBuffer(rt->cl.queue, rand_buffer, CL_TRUE, 0, sizeof(float) * rt->width * rt->height * rt->samples, rt->randoms, 0, NULL, NULL);
 //	ft_printf("write_rend_buff = %d\n", e);
-	e = clSetKernelArg(rt->cl.kernel, 0, sizeof(t_camera), &rt->camera);
+//	ft_printf("curr_camera = %d\n", rt->current_camera);
+//	ft_printf("camera_size = %d\n", rt->parse.camera_size);
+//	print_camera_info(rt->parse.camera[rt->current_camera], rt->current_camera);
+	e = clSetKernelArg(rt->cl.kernel, 0, sizeof(t_camera), &rt->parse.camera[rt->current_camera]);
 //	ft_printf("arg0 = %d\n", e);
 	e = clSetKernelArg(rt->cl.kernel, 1, sizeof(cl_mem), &obj_buffer);
 //	ft_printf("arg1 = %d\n", e);

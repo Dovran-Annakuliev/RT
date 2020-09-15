@@ -47,9 +47,9 @@ typedef struct			s_rt
 	int					width;
 	int					height;
 	t_cl				cl;
-	t_camera			camera;
 	char 				*cl_path;
 	int					samples;
+	int					current_camera;
 	float				*randoms;
 	float				*res;
 	t_parse				parse;

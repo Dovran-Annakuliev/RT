@@ -10,6 +10,7 @@ int main(int ac, char **av)
 		error(INVALID_ARGUMENTS, "INVALID_ARGUMENTS");
 	data = init_data();
 	read_arg(av[1], data);
+	set_cameras(data->parse.camera, data->parse.camera_size, data->width, data->height);
 	data->cl.kernel_source = get_kernel_source(&data->cl, data->cl_path);
 	cl_init(&data->cl, data->width, data->height);
 	quit = 0;
