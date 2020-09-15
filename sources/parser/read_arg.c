@@ -66,9 +66,12 @@ void		read_arg(char *source, t_rt *data)
 		check_type(fd, line, data);
 		ft_strdel(&line);
 		get_next_line(fd, &line);
-		if (ft_strcmp(line, "") != 0)
-			error(MISS_NEW_LINE, line);
-		ft_strdel(&line);
+		if (line != NULL)
+		{
+			if (ft_strcmp(line, "") != 0)
+				error(MISS_NEW_LINE, line);
+			ft_strdel(&line);
+		}
 	}
 	free(line);
 	close(fd);

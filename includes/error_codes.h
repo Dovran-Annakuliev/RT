@@ -23,5 +23,7 @@
 #define WRONG_RADIUS -17
 #define WRONG_REFLECTION -18
 #define WRONG_INTENSITY -19
+#define WRONG_NAME_VALUE -20
+#define WRONG_MATERIAL -21
 
 #endif

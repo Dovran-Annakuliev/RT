@@ -7,11 +7,11 @@ void parse_sphere(int fd, t_rt *data)
 	data->parse.obj[data->parse.obj_index].type = 1;
 
 	get_next_line(fd, &line);
-	data->parse.obj[data->parse.obj_index].s_center = parse_cl_float3(line);
+	data->parse.obj[data->parse.obj_index].s_center = parse_cl_float3(line, "position");
 
 	ft_strdel(&line);
 	get_next_line(fd, &line);
-	data->parse.obj[data->parse.obj_index].s_radius = parse_cl_float(line);
+	data->parse.obj[data->parse.obj_index].s_radius = parse_cl_float(line, "radius");
 
 	if (data->parse.obj[data->parse.obj_index].s_radius <= 0.f)
 		error(WRONG_RADIUS, line);
@@ -30,11 +30,11 @@ void parse_plane(int fd, t_rt *data)
 	data->parse.obj[data->parse.obj_index].type = 2;
 
 	get_next_line(fd, &line);
-	data->parse.obj[data->parse.obj_index].p_pos = parse_cl_float3(line);
+	data->parse.obj[data->parse.obj_index].p_pos = parse_cl_float3(line, "position");
 
 	ft_strdel(&line);
 	get_next_line(fd, &line);
-	data->parse.obj[data->parse.obj_index].p_normal = parse_cl_float3(line);
+	data->parse.obj[data->parse.obj_index].p_normal = parse_cl_float3(line, "normal");
 
 	ft_strdel(&line);
 	parse_material(fd, &data->parse.obj[data->parse.obj_index]);
@@ -50,7 +50,7 @@ void parce_ambient_light(int fd, t_rt *data)
 	data->parse.light[data->parse.light_index].type = 1;
 
 	get_next_line(fd, &line);
-	data->parse.light[data->parse.light_index].intensity = parse_float(line);
+	data->parse.light[data->parse.light_index].intensity = parse_float(line, "intensity");
 
 	if (data->parse.light[data->parse.light_index].intensity < 0.f
 	        || data->parse.light[data->parse.light_index].intensity > 1.f)
@@ -67,11 +67,11 @@ void parce_point_light(int fd, t_rt *data)
 	data->parse.light[data->parse.light_index].type = 2;
 
 	get_next_line(fd, &line);
-	data->parse.light[data->parse.light_index].pos = parse_cl_float3(line);
+	data->parse.light[data->parse.light_index].pos = parse_cl_float3(line, "position");
 
 	ft_strdel(&line);
 	get_next_line(fd, &line);
-	data->parse.light[data->parse.light_index].intensity = parse_float(line);
+	data->parse.light[data->parse.light_index].intensity = parse_float(line, "intensity");
 
 	if (data->parse.light[data->parse.light_index].intensity < 0.f
 		|| data->parse.light[data->parse.light_index].intensity > 1.f)
@@ -87,11 +87,11 @@ void parce_directional_light(int fd, t_rt *data)
 	data->parse.light[data->parse.light_index].type = 3;
 
 	get_next_line(fd, &line);
-	data->parse.light[data->parse.light_index].dir = parse_cl_float3(line);
+	data->parse.light[data->parse.light_index].dir = parse_cl_float3(line, "direction");
 
 	ft_strdel(&line);
 	get_next_line(fd, &line);
-	data->parse.light[data->parse.light_index].intensity = parse_float(line);
+	data->parse.light[data->parse.light_index].intensity = parse_float(line, "intensity");
 
 	if (data->parse.light[data->parse.light_index].intensity < 0.f
 		|| data->parse.light[data->parse.light_index].intensity > 1.f)

@@ -68,6 +68,9 @@ void 	close_rt(t_rt *data)
 	SDL_Quit();
 	free(data->randoms);
 	free(data->res);
+	free(data->parse.obj);
+	free(data->parse.light);
+	free(data->parse.camera);
 	free(data);
 	data = NULL;
 }

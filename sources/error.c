@@ -18,13 +18,17 @@ void parse_error(int err, const char *message)
 		ft_printf("Wrong reflection in line: %s\n", message);
 	else if (err == WRONG_INTENSITY)
 		ft_printf("Wrong intensity in line: %s\n", message);
+	else if (err == WRONG_NAME_VALUE)
+		ft_printf("Wrong name value in line: %s\n", message);
+	else if (err == WRONG_MATERIAL)
+		ft_printf("Wrong material in line: %s\n", message);
 }
 
 void	error(int err, const char *message)
 {
 	if (err == 1)
 		ft_printf("It's been fun. Don't come back.\n");
-	else if (err <= INVALID_ARGUMENTS && err >= WRONG_RADIUS)
+	else if (err <= INVALID_ARGUMENTS && err >= WRONG_MATERIAL)
 		parse_error(err, message);
 	else
 		ft_printf("SDL init fail: %s[%d]\n", message, err);

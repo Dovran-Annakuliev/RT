@@ -83,12 +83,12 @@ void					parse_camera(int fd, t_rt *data);
 ** ---parse_utilities---
 */
 
-float					parse_float(char *line);
-cl_float				parse_cl_float(char *line);
-cl_float3				parse_cl_float3(char *line);
-cl_float4				parse_cl_float4(char *line);
+float					parse_float(char *line, char *type);
+cl_float				parse_cl_float(char *line, char *type);
+cl_float3				parse_cl_float3(char *line, char *type);
+cl_float4				parse_cl_float4(char *line, char *type);
 void					parse_material(int fd, t_obj *obj);
-void					free_split(char **split);
+void					free_split(char ***split);
 char					**ft_strsplit_space(const char *s);
 int						ft_count_words_split(const char **s);
 float					ft_atof(const char *str);
