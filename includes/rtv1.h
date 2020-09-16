@@ -55,6 +55,14 @@ typedef struct			s_rt
 
 }						t_rt;
 
+typedef struct		s_buffers
+{
+	cl_mem			output_buffer;
+	cl_mem			obj_buffer;
+	cl_mem			light_buffer;
+	cl_mem			rand_buffer;
+}					t_buffers;
+
 /*
 ** ---init_functions---
 */
