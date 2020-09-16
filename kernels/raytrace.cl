@@ -55,6 +55,9 @@ typedef struct			s_obj
 	float3				cone_pos;
    	float				cone_angle;
     float3				cone_axis;
+    float3				cyl_pos;
+	float				cyl_r;
+	float3				cyl_axis;
 	t_material			material;
 }						t_obj;
 
@@ -100,7 +103,7 @@ static	float	intersect_sphere(t_obj	*sphere, t_ray *ray)
 	return (dist);
 }
 
-static	float	intersect_plane(t_obj	*plane, t_ray *ray)
+static	float	intersect_plane(t_obj *plane, t_ray *ray)
 {
 	float dist;
 
@@ -112,37 +115,7 @@ static	float	intersect_plane(t_obj	*plane, t_ray *ray)
 	return (dist);
 }
 
-	/*
-	float dist;
-
-	float3	X = ray->orig - cone->cone_pos;
-	float	d_v = dot(ray->dir, cone->cone_axis);
-	float	x_v = dot(X, cone->cone_axis);
-	float	k = cos(M_PI_F / 6);
-	float	angle2 = k * k;
-
-	float a = d_v * d_v - angle2;
-	float b = 2.0f * (d_v * x_v - dot(ray->dir, X) * angle2);
-	float c = x_v * x_v - dot(X, X) * angle2;
-	dist = solve_eq(a, b, c, 0.001f, FLT_MAX);
-	float3 cp = ray->orig + ray->dir * dist - cone->cone_pos;
-	float h = dot(cp, cone->cone_axis);
-    if (h < 0)
-    	return (0.0f);
-    return (dist);
-    float3	X = ray->orig - cone->cone_pos;
-    float	d_v = dot(ray->dir, cone->cone_axis);
-    float	x_v = dot(X, cone->cone_axis);
-    float	k = tan(cone->cone_angle * M_PI_F / 180);
-    float	temp = 1 + k * k;
-    float a = dot(ray->dir, ray->dir) - temp * d_v * d_v;
-    float b = 2.0 * (dot(ray->dir, X) - temp * d_v * x_v);
-    float c = dot(X,X) - temp * x_v * x_v;
-    dist = solve_eq(a, b, c, 0.001f, ray->t);
-    return (dist);
-    */
-
-static	float	intersect_cone(t_obj	*cone, t_ray *ray)
+static	float	intersect_cone(t_obj *cone, t_ray *ray)
 {
 	float dist;
 
@@ -158,8 +131,27 @@ static	float	intersect_cone(t_obj	*cone, t_ray *ray)
 	a = dot(ray->dir, ray->dir) - temp * d_v * d_v;
 	b = 2 * (dot(ray->dir, x) - temp * d_v * x_v);
 	c = dot(x, x) - temp * x_v * x_v;
-	dist = solve_eq(a, b, c, 0.001, ray->t);
+	dist = solve_eq(a, b, c, 0.001f, ray->t);
 	return (dist);
+}
+
+static	float	intersect_cylinder(t_obj *cyl, t_ray *ray)
+{
+	float dist;
+
+    float a;
+    float b;
+    float c;
+
+    float3 x = ray->orig - cyl->cyl_pos;
+    float d_v = dot(ray->dir, cyl->cyl_axis);
+    float x_v = dot(x, cyl->cyl_axis);
+
+    a = dot(ray->dir, ray->dir) - d_v * d_v;
+    b = 2 * (dot(ray->dir, x) - d_v * x_v);
+    c = dot(x, x) - x_v * x_v - cyl->cyl_r * cyl->cyl_r;
+    dist = solve_eq(a, b, c, 0.001f, ray->t);
+    return (dist);
 }
 
 static	float3	get_sphere_normal(t_obj *sphere, float3 hit_pos)
@@ -215,6 +207,20 @@ static	float3	get_cone_normal(t_obj *cone, float3 hit_pos, t_ray *ray)
 	return (normalize(res));
 }
 
+static float3	get_cylinder_normal(t_obj *cyl, float3 hit_pos, t_ray *ray)
+{
+	float3 res;
+
+	float3 cp = hit_pos - cyl->cyl_pos;
+	float3 x = ray->orig - cyl->cyl_pos;
+	float d_v = dot(ray->dir, cyl->cyl_axis);
+	float x_v = dot(x, cyl->cyl_axis);
+	float m = d_v * ray->t + x_v;
+	res = cp - cyl->cyl_axis * m;
+
+	return (normalize(res));
+}
+
 static	float3	get_normal(t_obj *object, hit_record hit, t_ray *ray)
 {
 	float3 normal;
@@ -224,7 +230,9 @@ static	float3	get_normal(t_obj *object, hit_record hit, t_ray *ray)
 	if (object->type == 1)
 		normal = get_plane_normal(object, ray);
 	if (object->type == 2)
-        normal = get_cone_normal(object, hit.hit_point, ray);
+		normal = get_cone_normal(object, hit.hit_point, ray);
+	if (object->type == 3)
+		normal = get_cylinder_normal(object, hit.hit_point, ray);
 	return (normal);
 }
 
@@ -262,6 +270,8 @@ static		bool		intersect(t_ray *ray, hit_record *hit, __global t_obj* objects, in
 			dist_i = intersect_plane(&object, ray);
 		if (object.type == 2)
 			dist_i = intersect_cone(&object, ray);
+		if (object.type == 3)
+			dist_i = intersect_cylinder(&object, ray);
 
 		if (dist_i != 0.0f && dist_i < ray->t)
 		{
@@ -286,6 +296,8 @@ static	bool	shadow_intersect(t_ray *ray, __global t_obj* objects, float	min_v, f
 			dist_i = intersect_plane(&object, ray);
 		if (object.type == 2)
 			dist_i = intersect_cone(&object, ray);
+		if (object.type == 3)
+			dist_i = intersect_cylinder(&object, ray);
 
 		if (dist_i != 0.0f && dist_i < ray->t && dist_i > min_v && dist_i < max_v)
 		{
@@ -316,7 +328,6 @@ static	float4	trace(t_ray *ray, __global t_obj *objects, __global t_light *light
 		else
 		{
 			light_dir = get_light_dir(hit.hit_point, lights[i]);
-
 			t_ray shadow_ray = new_ray(hit.hit_point + hit.N * 0.001f, light_dir);
 			if (shadow_intersect(&shadow_ray, objects, 0.0001f, lights[i].type == 2 ? 1.0f : FLT_MAX, obj_n))
 				continue;
