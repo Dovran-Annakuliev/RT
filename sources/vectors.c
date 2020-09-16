@@ -1,9 +1,10 @@
 #include "../includes/vectors.h"
 #include <math.h>
 
-cl_float3				new_vector3(float x, float y, float z)
+cl_float3		new_vector3(float x, float y, float z)
 {
 	cl_float3 res;
+
 	res.x = x;
 	res.y = y;
 	res.z = z;
@@ -37,7 +38,7 @@ cl_float3		vec_normalize(cl_float3 v)
 	l = sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
 	if (l >= .00001f)
 	{
-		return((cl_float3){v.x / l, v.y / l, v.z / l});
+		return ((cl_float3){v.x / l, v.y / l, v.z / l});
 	}
 	return (v);
 }

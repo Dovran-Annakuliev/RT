@@ -8,12 +8,8 @@ SRCS = $(SRC_DIR)camera.c\
 		$(SRC_DIR)coloring.c\
 		$(SRC_DIR)error.c\
 		$(SRC_DIR)init.c\
-		$(SRC_DIR)lights.c\
 		$(SRC_DIR)main.c\
-		$(SRC_DIR)material.c\
-		$(SRC_DIR)objects.c\
 		$(SRC_DIR)render.c\
-		$(SRC_DIR)rgba.c\
 		$(SRC_DIR)vectors.c\
 		$(SRC_DIR)vectors_2.c\
 		$(CONTROLLERS_DIR)controller.c\

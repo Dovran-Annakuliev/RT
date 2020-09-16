@@ -9,7 +9,7 @@ void		render(t_rt *rt)
 	cl_int		e;
 
 	printf("rendering\n");
-	output_buffer = clCreateBuffer(rt->cl.context, CL_MEM_WRITE_ONLY, sizeof(float) * rt->width * rt->height * 4, NULL, &e);
+	output_buffer = clCreateBuffer(rt->cl.context, CL_MEM_WRITE_ONLY, sizeof(float) * rt->w * rt->h * 4, NULL, &e);
 //	ft_printf("out_buff = %d\n", e);
 
 	obj_buffer = clCreateBuffer(rt->cl.context, CL_MEM_READ_ONLY, sizeof(t_obj) * rt->parse.obj_size, NULL, &e);
@@ -18,7 +18,7 @@ void		render(t_rt *rt)
 	light_buffer = clCreateBuffer(rt->cl.context, CL_MEM_READ_ONLY, sizeof(t_light) * rt->parse.light_size, NULL, &e);
 //	ft_printf("light_buff = %d\n", e);
 
-	rand_buffer = clCreateBuffer(rt->cl.context, CL_MEM_READ_ONLY, sizeof(float) * rt->width * rt->height * rt->samples, NULL, &e);
+	rand_buffer = clCreateBuffer(rt->cl.context, CL_MEM_READ_ONLY, sizeof(float) * rt->w * rt->h * rt->samples, NULL, &e);
 //	ft_printf("rand_buff = %d\n", e);;
 
 	e = clEnqueueWriteBuffer(rt->cl.queue, obj_buffer, CL_TRUE, 0, sizeof(t_obj) * rt->parse.obj_size, rt->parse.obj, 0, NULL, NULL);
@@ -27,7 +27,7 @@ void		render(t_rt *rt)
 	e = clEnqueueWriteBuffer(rt->cl.queue, light_buffer, CL_TRUE, 0, sizeof(t_light) * rt->parse.light_size, rt->parse.light, 0, NULL, NULL);
 //	ft_printf("write_obj_buff = %d\n", e);
 
-	e = clEnqueueWriteBuffer(rt->cl.queue, rand_buffer, CL_TRUE, 0, sizeof(float) * rt->width * rt->height * rt->samples, rt->randoms, 0, NULL, NULL);
+	e = clEnqueueWriteBuffer(rt->cl.queue, rand_buffer, CL_TRUE, 0, sizeof(float) * rt->w * rt->h * rt->samples, rt->randoms, 0, NULL, NULL);
 //	ft_printf("write_rend_buff = %d\n", e);
 //	ft_printf("curr_camera = %d\n", rt->current_camera);
 //	ft_printf("camera_size = %d\n", rt->parse.camera_size);
@@ -51,7 +51,7 @@ void		render(t_rt *rt)
 	clEnqueueNDRangeKernel(rt->cl.queue, rt->cl.kernel, rt->cl.dim, NULL,
 						   rt->cl.global_size, NULL, 0, NULL, NULL);
 	clFinish(rt->cl.queue);
-	clEnqueueReadBuffer(rt->cl.queue, output_buffer, CL_TRUE, 0, sizeof(float) * rt->width * rt->height * 4,
+	clEnqueueReadBuffer(rt->cl.queue, output_buffer, CL_TRUE, 0, sizeof(float) * rt->w * rt->h * 4,
 						rt->res, 0, NULL, NULL);
 	clFinish(rt->cl.queue);
 	clReleaseMemObject(output_buffer);

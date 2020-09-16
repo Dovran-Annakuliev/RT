@@ -1,5 +1,5 @@
 #ifndef CAMERA_H
-#define CAMERA_H
+# define CAMERA_H
 
 typedef struct			s_camera
 {
@@ -24,8 +24,7 @@ typedef struct			s_camera
 
 void					init_camera(t_camera *viewport, int width, int height);
 void					update_camera(t_camera *camera);
-void					set_cameras(t_camera *cameras, int camera_size, int width, int height);
-void					print_camera_info(t_camera camera, int id);
-
+void					set_cameras(t_camera *cameras,
+							int camera_size, int width, int height);
 
 #endif

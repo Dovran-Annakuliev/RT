@@ -1,6 +1,7 @@
 #include "../includes/rtv1.h"
 
-void 		update_texture(SDL_Texture *texture, int width, int height, float *r)
+void		update_texture(SDL_Texture *texture,
+							int width, int height, float *r)
 {
 	Uint32				*pixels;
 	int					pitch;
