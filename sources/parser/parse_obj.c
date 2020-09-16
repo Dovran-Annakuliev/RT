@@ -75,7 +75,7 @@ void	parse_cylinder(int fd, t_rt *data)
 	ft_strdel(&line);
 	get_next_line(fd, &line);
 	data->parse.obj[data->parse.obj_index].cyl_axis =
-			parse_cl_float3(line, "axis");
+			vec_normalize(parse_cl_float3(line, "axis"));
 	ft_strdel(&line);
 	parse_material(fd, &data->parse.obj[data->parse.obj_index]);
 	data->parse.obj_index++;

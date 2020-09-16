@@ -232,7 +232,7 @@ static	float3	get_normal(t_obj *object, hit_record hit, t_ray *ray)
 	if (object->type == 2)
 		normal = get_cone_normal(object, hit.hit_point, ray);
 	if (object->type == 3)
-		get_cylinder_normal(object, hit.hit_point, ray);
+		normal = get_cylinder_normal(object, hit.hit_point, ray);
 	return (normal);
 }
 
@@ -328,7 +328,6 @@ static	float4	trace(t_ray *ray, __global t_obj *objects, __global t_light *light
 		else
 		{
 			light_dir = get_light_dir(hit.hit_point, lights[i]);
-
 			t_ray shadow_ray = new_ray(hit.hit_point + hit.N * 0.001f, light_dir);
 			if (shadow_intersect(&shadow_ray, objects, 0.0001f, lights[i].type == 2 ? 1.0f : FLT_MAX, obj_n))
 				continue;
