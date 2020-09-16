@@ -1,6 +1,6 @@
 sphere:
 		position	(0.0f,	0.0f,	-10.0f)
-		radius		(1.0f)
+		radius		(0.9f)
 		material:
                 color (255.0f, 150.0f, 255.0f, 0.0f)
                 specular 500.0f
@@ -12,13 +12,13 @@ plane:
       material:
                 color (112.0f, 72.0f, 60.0f, 0.0f)
                 specular 200.0f
-                reflection 0.5f
+                reflection 0.0f
 
 ambient_light:
         intensity 0.3f
 
 point_light:
-        position (-10.0f, 10.0f, 0.0f)
+        position (10.0f, 10.0f, 10.0f)
         intensity 0.5f
 
 directional_light:

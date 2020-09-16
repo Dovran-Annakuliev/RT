@@ -10,6 +10,7 @@ typedef	struct	s_ray
 	float3		orig;
 	float3		dir;
 	float		t;
+	int			inside;
 }				t_ray;
 
 static	t_ray	new_ray(float3 orig, float3 dir)
@@ -18,6 +19,7 @@ static	t_ray	new_ray(float3 orig, float3 dir)
 
 	r.orig = orig;
 	r.dir = dir;
+	r.inside = 0;
 	return (r);
 }
 
@@ -71,7 +73,7 @@ typedef struct		s_light
 
 static		float4 clamp_color(float4 color);
 
-static	float		solve_eq(float a, float b, float c, float t_min, float t_max)
+static	float		solve_eq(float a, float b, float c, float t_min, float t_max, int	*inside)
 {
 	float dis = b * b - 4 * a * c;
 	if (dis < 0.0f)
@@ -79,6 +81,10 @@ static	float		solve_eq(float a, float b, float c, float t_min, float t_max)
 	dis = sqrt(dis);
 	float x1 = (-b - dis) / (2 * a);
 	float x2 = (-b + dis) / (2 * a);
+	if (x1 < 0 && x2 > t_min)
+		*inside = 1;
+	if (x2 < 0 && x1 > t_min)
+		*inside = 1;
 	if (x1 > t_min && x2 > t_min)
 		return (x1 <= x2 ? x1 : x2);
 	if (x1 > t_min || x2 > t_min)
@@ -99,7 +105,7 @@ static	float	intersect_sphere(t_obj	*sphere, t_ray *ray)
 	float b = 2 * dot(L, ray->dir);
 	float c = dot(L, L) - radius * radius;
 
-	dist = solve_eq(a, b, c, 0.001f, ray->t);
+	dist = solve_eq(a, b, c, 0.001f, ray->t, &ray->inside);
 	return (dist);
 }
 
@@ -131,7 +137,7 @@ static	float	intersect_cone(t_obj *cone, t_ray *ray)
 	a = dot(ray->dir, ray->dir) - temp * d_v * d_v;
 	b = 2 * (dot(ray->dir, x) - temp * d_v * x_v);
 	c = dot(x, x) - temp * x_v * x_v;
-	dist = solve_eq(a, b, c, 0.001f, ray->t);
+	dist = solve_eq(a, b, c, 0.001f, ray->t, &ray->inside);
 	return (dist);
 }
 
@@ -150,7 +156,7 @@ static	float	intersect_cylinder(t_obj *cyl, t_ray *ray)
     a = dot(ray->dir, ray->dir) - d_v * d_v;
     b = 2 * (dot(ray->dir, x) - d_v * x_v);
     c = dot(x, x) - x_v * x_v - cyl->cyl_r * cyl->cyl_r;
-    dist = solve_eq(a, b, c, 0.001f, ray->t);
+    dist = solve_eq(a, b, c, 0.001f, ray->t, &ray->inside);
     return (dist);
 }
 
@@ -273,7 +279,7 @@ static		bool		intersect(t_ray *ray, hit_record *hit, __global t_obj* objects, in
 		if (object.type == 3)
 			dist_i = intersect_cylinder(&object, ray);
 
-		if (dist_i != 0.0f && dist_i < ray->t)
+		if (dist_i != 0.0f && dist_i < ray->t && dist_i > 0.001f && dist_i < FLT_MAX)
 		{
 			ray->t = dist_i;
 			hit->id = i;
@@ -325,11 +331,11 @@ static	float4	trace(t_ray *ray, __global t_obj *objects, __global t_light *light
 	{
 		if (lights[i].type == 1)
 			intensity += lights[i].intensity;
-		else
+		else if (!ray->inside)
 		{
 			light_dir = get_light_dir(hit.hit_point, lights[i]);
 			t_ray shadow_ray = new_ray(hit.hit_point + hit.N * 0.001f, light_dir);
-			if (shadow_intersect(&shadow_ray, objects, 0.0001f, lights[i].type == 2 ? 1.0f : FLT_MAX, obj_n))
+			if (shadow_intersect(&shadow_ray, objects, 0.001f, lights[i].type == 2 ? 1.0f : FLT_MAX, obj_n))
 				continue;
 
 			intensity += get_light(light_dir, hit.N, lights[i]);
