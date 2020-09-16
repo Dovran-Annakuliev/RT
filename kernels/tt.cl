@@ -204,32 +204,32 @@ __kernel void raytrace(t_camera camera, __global t_obj* objects, __global float*
 {
 	int x = get_global_id(0);
 	int y = get_global_id(1);
-	int width = get_global_size(0);
+	int w = get_global_size(0);
 	int height = get_global_size(1);
 	float Px, Py;
 	float3 dir;
-	if (x == width/ 2 && y == height / 2)
+	if (x == w/ 2 && y == height / 2)
 			printf("\n");
 
     /* 0 sample */
-	Px = (float)x / (width - 1);
+	Px = (float)x / (w - 1);
 	Py = (float)y / (height - 1);
 	dir = camera.upper_left_corner + Px * camera.horizontal + Py * camera.vertical - camera.origin;
 	dir = normalize(dir);
-	output[y * width + x] = trace(camera.origin, dir, objects, lights);
+	output[y * w + x] = trace(camera.origin, dir, objects, lights);
 
 	if (samples > 1)
 	{
 		for (int i = 0; i < samples; i++)
 		{
-			Px = ((float)x + randoms[(y * width + x) * samples + i]) / (width - 1);
-			Py = ((float)y + randoms[(y * width + x) * samples + i]) / (height - 1);
+			Px = ((float)x + randoms[(y * w + x) * samples + i]) / (w - 1);
+			Py = ((float)y + randoms[(y * w + x) * samples + i]) / (height - 1);
 			dir = camera.upper_left_corner + Px * camera.horizontal + Py * camera.vertical - camera.origin;
 			dir = normalize(dir);
-			output[y * width + x] += trace(camera.origin, dir, objects, lights);
+			output[y * w + x] += trace(camera.origin, dir, objects, lights);
 		}
 	}
 
 	/* is there is only one sample we do not need to divide the color. Maybe move this in the end of the if-statement above */
-	output[y * width + x] /= samples == 1 ? 1 : samples + 1;
+	output[y * w + x] /= samples == 1 ? 1 : samples + 1;
 }

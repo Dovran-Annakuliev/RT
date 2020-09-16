@@ -24,9 +24,8 @@ char			**get_kernel_source(t_cl *cl, char *path)
 
 	line = NULL;
 	fd = open(path, O_RDONLY);
-	if ((fd  < 0) || ((read(fd, line, 0)) < 0))
+	if ((fd < 0) || ((read(fd, line, 0)) < 0))
 		error(KERNEL_FILE_OPEN_ERROR, "Cannot open kernel file");
-
 	cl->count = get_lines(fd);
 	close(fd);
 	if (!(source = (char **)malloc(sizeof(char *) * cl->count)))
@@ -45,10 +44,24 @@ char			**get_kernel_source(t_cl *cl, char *path)
 	return (source);
 }
 
+static	void	print_log(cl_program program, cl_device_id device_id)
+{
+	char	*log;
+	size_t	log_size;
+
+	clGetProgramBuildInfo(program, device_id,
+							CL_PROGRAM_BUILD_LOG, 0, NULL, &log_size);
+	log = (char *)malloc(sizeof(char) * log_size);
+	log[log_size] = '\0';
+	clGetProgramBuildInfo(program, device_id,
+							CL_PROGRAM_BUILD_LOG, log_size + 1, log, NULL);
+	ft_printf("%s\n", log);
+	free(log);
+}
+
 void			cl_init(t_cl *cl, int width, int height)
 {
 	cl_int				ret;
-	size_t log_size;
 
 	ret = clGetPlatformIDs(1, &cl->platform_id, NULL);
 	ret = clGetDeviceIDs(cl->platform_id, CL_DEVICE_TYPE_GPU, 1,
@@ -56,20 +69,10 @@ void			cl_init(t_cl *cl, int width, int height)
 	cl->context = clCreateContext(NULL, 1, &cl->device_id, NULL, NULL, &ret);
 	cl->program = clCreateProgramWithSource(cl->context, cl->count,
 			(const char **)cl->kernel_source, NULL, &ret);
-	ft_printf("prog = %d\n", ret);
 	ret = clBuildProgram(cl->program, 1, &cl->device_id, NULL, NULL, NULL);
-	ft_printf("build = %d\n", ret);
 	if (ret < 0)
-	{
-		clGetProgramBuildInfo(cl->program, cl->device_id, CL_PROGRAM_BUILD_LOG, 0, NULL, &log_size);
-		char *log = (char *) malloc(sizeof(char) * log_size);
-		log[log_size] = '\0';
-		clGetProgramBuildInfo(cl->program, cl->device_id, CL_PROGRAM_BUILD_LOG, log_size + 1, log, NULL);
-		ft_printf("%s\n", log);
-		free(log);
-	}
+		print_log(cl->program, cl->device_id);
 	cl->kernel = clCreateKernel(cl->program, "raytrace", &ret);
-	ft_printf("kernel = %d\n", ret);
 	cl->queue = clCreateCommandQueue(cl->context, cl->device_id, 0, &ret);
 	cl->dim = 2;
 	cl->global_size[0] = width;

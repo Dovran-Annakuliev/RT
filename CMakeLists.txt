@@ -60,7 +60,6 @@ add_executable(RTv1
         includes/lights.h
         includes/material.h
         includes/objects.h
-        includes/rgba.h
         includes/vectors.h
         libft/includes/ft_printf.h
         libft/includes/libft.h
@@ -401,12 +400,8 @@ add_executable(RTv1
         sources/coloring.c
         sources/error.c
         sources/init.c
-        sources/lights.c
         sources/main.c
-        sources/material.c
-        sources/objects.c
         sources/render.c
-        sources/rgba.c
         sources/vectors.c
         sources/vectors_2.c
         sources/camera.c
