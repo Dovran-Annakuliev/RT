@@ -44,7 +44,7 @@ all: $(NAME)
 sources%.o: %.c
 		$(GCC) -c $< -o $@ -I $(INC)
 
-lib: install
+lib: #install
 		make -C libft
 
 install:
@@ -58,7 +58,7 @@ clean:
 		rm -f $(OBJS)
 		make -C libft clean
 
-fclean: clean uninstall
+fclean: clean #uninstall
 		rm -f $(NAME)
 		make -C libft fclean
 

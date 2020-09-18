@@ -1,8 +1,8 @@
 #ifndef MATERIAL_H
 # define MATERIAL_H
 
-# include <OpenGL/gl.h>
-# include <OpenCL/opencl.h>
+# include <GL/gl.h>
+# include <CL/cl.h>
 
 typedef struct	s_material
 {

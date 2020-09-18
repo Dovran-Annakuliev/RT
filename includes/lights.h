@@ -5,8 +5,8 @@
 #  include <OpenGL/gl.h>
 #  include <OpenCL/opencl.h>
 # else
-#  include <GL/opengl.h>
-#  include <CL/opencl.h>
+#  include <GL/gl.h>
+#  include <CL/cl.h>
 # endif
 
 typedef struct		s_light
