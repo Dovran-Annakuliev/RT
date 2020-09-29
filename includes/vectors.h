@@ -1,8 +1,8 @@
 #ifndef VECTORS_H
 # define VECTORS_H
 
-# include <GL/gl.h>
-# include <CL/cl.h>
+# include <OpenGL/gl.h>
+# include <OpenCL/opencl.h>
 
 cl_float3				new_vector3(float x, float y, float z);
 cl_float3				vec_add(cl_float3 v1, cl_float3 v2);

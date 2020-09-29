@@ -5,15 +5,14 @@
 #  include <OpenGL/gl.h>
 #  include <OpenCL/opencl.h>
 # else
-#  include <GL/gl.h>
-#  include <CL/cl.h>
+#  include <GL/opengl.h>
+#  include <CL/opencl.h>
 # endif
 
-#include <SDL2/SDL.h>
 # include <time.h>
 # include "../libft/includes/libft.h"
-//# include "../SDL2.framework/Headers/SDL.h"
-//# include "../SDL2_image.framework/Headers/SDL_image.h"
+# include "../SDL2.framework/Headers/SDL.h"
+# include "../SDL2_image.framework/Headers/SDL_image.h"
 # include "error_codes.h"
 # include "vectors.h"
 # include "objects.h"

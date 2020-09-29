@@ -13,18 +13,16 @@ int				ft_count_words_split(const char **s)
 static int		ft_count_words_space(char const *s)
 {
 	int	words;
-	int i;
 
-	i = 0;
 	words = 0;
-	while (s[i])
+	while (*s)
 	{
-		while (s[i] && ft_isspace(s[i]))
-			i++;
-		if (s[i])
+		while (*s == ' ' || *s == '\t')
+			s++;
+		if (*s)
 		{
-			while (s[i] && !ft_isspace(s[i]))
-				i++;
+			while (*s && *s != ' ' && *s != '\t')
+				s++;
 			words++;
 		}
 	}
@@ -36,7 +34,7 @@ static size_t	word_len(char const *s, size_t i)
 	size_t j;
 
 	j = i;
-	while (s[j] && !ft_isspace(s[i]))
+	while (s[j] && s[j] != ' ' && s[j] != '\t')
 		j++;
 	return (j - i);
 }
@@ -69,7 +67,7 @@ char			**ft_strsplit_space(char const *s)
 		return (NULL);
 	while (s[i])
 	{
-		if (!ft_isspace(s[i]))
+		if (s[i] != ' ' && s[i] != '\t')
 		{
 			len = word_len(s, i);
 			if (!(arr[j++] = ft_strsub(s, i, len)))
