@@ -11,7 +11,7 @@ git clone --recursive https://github.com/Dovran-Annakuliev/RTv1.git && cd RTv1 &
 
 # Start
 * Run ```./RTv1 scenes/5_spheres_2_planes_3_spots.txt```.
-Examples of scenes can be found in the "scene" folder.
+Examples of scenes can be found in the "scenes" folder.
 
 
 # Examples
