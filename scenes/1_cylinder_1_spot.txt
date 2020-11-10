@@ -1,5 +1,5 @@
 cylinder:
-		position	(0.0f,	0.0f,	-10.0f)
+		position	(0.0f, §0.0f, -10.0f)
 		radius		0.8f
 		axis		(0.0, 1.0f, 0.0f)
 		material:

@@ -10,6 +10,8 @@ static void	check_type(int fd, char *line, t_rt *data)
 		parse_cone(fd, data);
 	else if (ft_strcmp(line, "cylinder:") == 0)
 		parse_cylinder(fd, data);
+	else if (ft_strcmp(line, "triangle:") == 0)
+		parse_triangle(fd, data);
 	else if (ft_strcmp(line, "ambient_light:") == 0)
 		parce_ambient_light(fd, data);
 	else if (ft_strcmp(line, "point_light:") == 0)
@@ -33,6 +35,8 @@ static void	read_size(int fd, char *line, t_rt *data)
 		else if (ft_strcmp(line, "cone:") == 0)
 			data->parse.obj_size++;
 		else if (ft_strcmp(line, "cylinder:") == 0)
+			data->parse.obj_size++;
+		else if (ft_strcmp(line, "triangle:") == 0)
 			data->parse.obj_size++;
 		else if (ft_strcmp(line, "ambient_light:") == 0)
 			data->parse.light_size++;
