@@ -118,6 +118,8 @@ static	float	intersect_plane(t_obj *plane, t_ray *ray)
 		return (0);
 	float b = dot(plane->p_pos - ray->orig, plane->p_normal) / a;
 	dist = b < 0.001f ? 0 : b;
+	float3 hp  = ray->orig + ray->dir * dist;
+
 	return (dist);
 }
 
@@ -175,33 +177,6 @@ static	float3	get_plane_normal(t_obj *plane, t_ray *ray)
 
 static	float3	get_cone_normal(t_obj *cone, float3 hit_pos, t_ray *ray)
 {
-	/*
-	float3	pos_to_hitpoint;
-	float3	X = ray->orig - cone->cone_pos;
-	float	d_v = dot(ray->dir, cone->cone_axis);
-	float	x_v = dot(X, cone->cone_axis);
-	float	m = d_v * ray->t + x_v;
-	pos_to_hitpoint = hit_pos - cone->cone_pos;
-	float	k = cos(cone->cone_angle * M_PI_F / 180);
-	float	a = m * k * k;
-	return (normalize(pos_to_hitpoint - (1 + k * k) * cone->cone_axis * a));
-	*/
-
-	/*
-	float3 c_to_p = hit_pos - cone->cone_pos;
-	float3 tangent = cross(c_to_p, cone->cone_axis);
-	float3 res = cross(tangent, c_to_p);
-	return (normalize(res));
-	*/
-
-	/*
-	float3 cp = hit_pos - cone->cone_pos;
-	float axis_dot_cp = dot(cone->cone_axis, cp);
-	float cp2 = dot(cp, cp);
-	float3 normal = normalize(cp * (axis_dot_cp / cp2) - cone->cone_axis);
-	return (normal);
-	*/
-
 	float3 cp = hit_pos - cone->cone_pos;
 	float angle = tan(cone->cone_angle * M_PI_F / 180);
     float temp = 1 + angle * angle;

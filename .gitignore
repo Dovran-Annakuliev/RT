@@ -3,5 +3,5 @@ cmake-build-debug
 *.o
 *.a
 *.out
-.DS_store
+.DS_Store
 RTv1
