@@ -16,6 +16,9 @@ typedef struct			s_obj
 	cl_float3			cyl_pos;
 	cl_float			cyl_r;
 	cl_float3			cyl_axis;
+	cl_float3			tr_0;
+	cl_float3			tr_1;
+	cl_float3			tr_2;
 	t_material			material;
 }						t_obj;
 
