@@ -36,5 +36,31 @@ int				main(int ac, char **av)
 	cl_init(&data->cl, data->w, data->h);
 	main_loop(data);
 	close_rt(data);
+
 	return (0);
 }
+
+
+//ft_printf("pos: %f, %f, %f\n", data->parse.obj[0].cyl_pos.x,
+//data->parse.obj[0].cyl_pos.y,
+//data->parse.obj[0].cyl_pos.z);
+//
+//ft_printf("tri_0: %f, %f, %f\n", data->parse.obj[1].tr_0.x,
+//data->parse.obj[1].tr_0.y,
+//data->parse.obj[1].tr_0.z);
+//
+//ft_printf("tri_1: %f, %f, %f\n", data->parse.obj[1].tr_1.x,
+//data->parse.obj[1].tr_1.y,
+//data->parse.obj[1].tr_1.z);
+//
+//ft_printf("tri_2: %f, %f, %f\n", data->parse.obj[1].tr_2.x,
+//data->parse.obj[1].tr_2.y,
+//data->parse.obj[1].tr_2.z);
+//
+//ft_printf("col: %f, %f, %f\n", data->parse.obj[1].material.diff_color.x,
+//data->parse.obj[1].material.diff_color.y,
+//data->parse.obj[1].material.diff_color.z);
+//
+//ft_printf("spec: %f\n", data->parse.obj[1].material.specular);
+//
+//ft_printf("ref: %f\n", data->parse.obj[1].material.reflection);

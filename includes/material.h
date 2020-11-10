@@ -1,8 +1,13 @@
 #ifndef MATERIAL_H
 # define MATERIAL_H
 
-# include <OpenGL/gl.h>
-# include <OpenCL/opencl.h>
+# ifdef __APPLE__
+#  include <OpenGL/gl.h>
+#  include <OpenCL/opencl.h>
+# else
+#  include <GL/gl.h>
+#  include <CL/cl.h>
+# endif
 
 typedef struct	s_material
 {

@@ -4,14 +4,15 @@
 # ifdef __APPLE__
 #  include <OpenGL/gl.h>
 #  include <OpenCL/opencl.h>
+#  include "../SDL2.framework/Headers/SDL.h"
 # else
-#  include <GL/opengl.h>
-#  include <CL/opencl.h>
+#  include <GL/gl.h>
+#  include <CL/cl.h>
+#  include <SDL2/SDL.h>
 # endif
 
 # include <time.h>
 # include "../libft/includes/libft.h"
-# include "../SDL2.framework/Headers/SDL.h"
 # include "../SDL2_image.framework/Headers/SDL_image.h"
 # include "error_codes.h"
 # include "vectors.h"
@@ -80,6 +81,7 @@ void					parse_sphere(int fd, t_rt *data);
 void					parse_plane(int fd, t_rt *data);
 void					parse_cone(int fd, t_rt *data);
 void					parse_cylinder(int fd, t_rt *data);
+void					parse_triangle(int fd, t_rt *data);
 void					parce_ambient_light(int fd, t_rt *data);
 void					parce_point_light(int fd, t_rt *data);
 void					parce_directional_light(int fd, t_rt *data);
