@@ -282,6 +282,8 @@ static		bool		intersect(t_ray *ray, hit_record *hit, __global t_obj* objects, in
 			dist_i = intersect_cone(&object, ray);
 		if (object.type == 3)
 			dist_i = intersect_cylinder(&object, ray);
+		if (object.type == 4)
+            dist_i = intersect_triangle(&object, ray);
 
 		if (dist_i != 0.0f && dist_i < ray->t && dist_i > 0.001f && dist_i < FLT_MAX)
 		{
@@ -308,6 +310,8 @@ static	bool	shadow_intersect(t_ray *ray, __global t_obj* objects, float	min_v, f
 			dist_i = intersect_cone(&object, ray);
 		if (object.type == 3)
 			dist_i = intersect_cylinder(&object, ray);
+		if (object.type == 4)
+            dist_i = intersect_triangle(&object, ray);
 
 		if (dist_i != 0.0f && dist_i < ray->t && dist_i > min_v && dist_i < max_v)
 		{

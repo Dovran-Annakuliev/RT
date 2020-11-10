@@ -1,16 +1,7 @@
-cylinder:
-		position	(0.0f, 0.0f, -10.0f)
-		radius		0.8f
-		axis		(0.0, 1.0f, 0.0f)
-		material:
-			color (255.0f, 150.0f, 255.0f, 0.0f)
-			specular 500.0f
-			reflection 0.0f
-
 triangle:
-		vertex0	(1.0f, 0.0f, -10.0f)
+		vertex0	(-2.0f, 0.0f, -10.0f)
 		vertex1	(2.0f, 0.0f, -10.0f)
-		vertex2	(3.0f, 0.0f, -10.0f)
+		vertex2	(0.0f, 5.0f, -10.0f)
 		material:
 			color (255.0f, 150.0f, 255.0f, 0.0f)
 			specular 500.0f
