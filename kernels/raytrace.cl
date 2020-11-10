@@ -125,7 +125,7 @@ static	float	intersect_plane(t_obj *plane, t_ray *ray)
 
 static float		intersect_triangle(t_obj *triangle,  t_ray *ray)
 {
-    float EPS = 0.00001f;
+    float EPS = 0.001f;
     float3 e1 = triangle->tr_1 - triangle->tr_0;
     float3 e2 = triangle->tr_2 - triangle->tr_1;
     float3 pvec = cross(ray->dir, e2);
@@ -139,13 +139,13 @@ static float		intersect_triangle(t_obj *triangle,  t_ray *ray)
     float3 tvec = ray->orig - triangle->tr_0;
     float u = dot(tvec, pvec) * inv_det;
     if (u < 0 || u > 1) {
-        return 0;
+        return (0);
     }
 
     float3 qvec = cross(tvec, e1);
     float v = dot(ray->dir, qvec) * inv_det;
     if (v < 0 || u + v > 1) {
-        return 0;
+        return (0);
     }
 
     return (dot(e2, qvec) * inv_det);
