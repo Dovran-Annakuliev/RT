@@ -243,6 +243,12 @@ static	float3	get_normal(t_obj *object, hit_record hit, t_ray *ray)
 		normal = get_cone_normal(object, hit.hit_point, ray);
 	if (object->type == 3)
 		normal = get_cylinder_normal(object, hit.hit_point, ray);
+    if (object->type = 4)
+    {
+      float3 e1 = object->tr_1 - object->tr_0;
+      float3 e2 = object->tr_2 - object->tr_1;
+      normal = cross(ray->dir, e2);
+    }
 	return (normal);
 }
 

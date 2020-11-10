@@ -31,28 +31,11 @@ int				main(int ac, char **av)
 	ac != 2 ? error(INVALID_ARGUMENTS, "INVALID_ARGUMENTS") : 0;
 	data = init_data();
 	read_arg(av[1], data);
-
-	printf("col: %f, %f, %f\n", data->parse.obj[0].material.diff_color.x,
-	data->parse.obj[0].material.diff_color.y,
-	data->parse.obj[0].material.diff_color.z);
-	printf("tri_0: %f, %f, %f\n", data->parse.obj[0].tr_0.x,
-			  data->parse.obj[0].tr_0.y,
-			  data->parse.obj[0].tr_0.z);
-
-	printf("tri_1: %f, %f, %f\n", data->parse.obj[0].tr_1.x,
-			  data->parse.obj[0].tr_1.y,
-			  data->parse.obj[0].tr_1.z);
-
-	printf("tri_2: %f, %f, %f\n", data->parse.obj[0].tr_2.x,
-			  data->parse.obj[0].tr_2.y,
-			  data->parse.obj[0].tr_2.z);
-
 	set_cameras(data->parse.camera, data->parse.camera_size, data->w, data->h);
 	data->cl.kernel_source = get_kernel_source(&data->cl, data->cl_path);
 	cl_init(&data->cl, data->w, data->h);
 	main_loop(data);
 	close_rt(data);
-
 	return (0);
 }
 
