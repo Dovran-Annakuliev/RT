@@ -125,9 +125,9 @@ static	float	intersect_plane(t_obj *plane, t_ray *ray)
 
 static float		intersect_triangle(t_obj *triangle,  t_ray *ray)
 {
-    float EPS = 0.001f;
+    float EPS = 0.0001f;
     float3 e1 = triangle->tr_1 - triangle->tr_0;
-    float3 e2 = triangle->tr_2 - triangle->tr_1;
+    float3 e2 = triangle->tr_2 - triangle->tr_0;
     float3 pvec = cross(ray->dir, e2);
     float det = dot(e1, pvec);
 
@@ -243,7 +243,7 @@ static	float3	get_normal(t_obj *object, hit_record hit, t_ray *ray)
 		normal = get_cone_normal(object, hit.hit_point, ray);
 	if (object->type == 3)
 		normal = get_cylinder_normal(object, hit.hit_point, ray);
-    if (object->type = 4)
+    if (object->type == 4)
     {
       float3 e1 = object->tr_1 - object->tr_0;
       float3 e2 = object->tr_2 - object->tr_1;
@@ -334,10 +334,11 @@ static	float4	trace(t_ray *ray, __global t_obj *objects, __global t_light *light
 	float4	color;
 	float3	light_dir;
 	float	intensity = 0;
-
+	float4  bg_color = (float4)(55.0f, 55.0f, 55.0f, 0.0f);
+	float4  blue = (float4)(0.0f, 0.0f, 125.0f, 0.0f);
 
 	if (!intersect(ray, &hit, objects, obj_n))
-		return ((float4)(55.0f, 55.0f, 55.0f, 0.0f));
+		return (bg_color);
 	t_obj object_hit = objects[hit.id];
 	hit.hit_point = ray->orig + ray->dir * ray->t;
 	hit.N = get_normal(&object_hit, hit, ray);
