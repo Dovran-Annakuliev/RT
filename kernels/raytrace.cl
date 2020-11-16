@@ -120,12 +120,26 @@ static	float	intersect_plane(t_obj *plane, t_ray *ray)
 		return (0);
 	float b = dot(plane->p_pos - ray->orig, plane->p_normal) / a;
 	dist = b < 0.001f ? 0 : b;
+
+	float3 hit_point = ray->orig + ray->dir * dist;
 	return (dist);
 }
 
+/*
+static float intersect_rectangle(t_obj *rect, t_ray *ray)
+{
+    float dist = intersect_plane(rect, ray);
+    float v1 = ;
+    float v2 = ;
+    float v3 = rect->p4 - rect->p3;
+    float v4 = rect->p4 - rect->p3;
+    float v5 = rect->p4 - rect->p3;
+}
+*/
+
 static float		intersect_triangle(t_obj *triangle,  t_ray *ray)
 {
-    float EPS = 0.0001f;
+    float EPS = 0.00001f;
     float3 e1 = triangle->tr_1 - triangle->tr_0;
     float3 e2 = triangle->tr_2 - triangle->tr_0;
     float3 pvec = cross(ray->dir, e2);
@@ -147,7 +161,6 @@ static float		intersect_triangle(t_obj *triangle,  t_ray *ray)
     if (v < 0 || u + v > 1) {
         return (0);
     }
-
     return (dot(e2, qvec) * inv_det);
 }
 
@@ -268,7 +281,7 @@ static	float3	get_light_dir(float3 hit_point, t_light light)
 	if (light.type == 2)
 		light_dir = (float3)(light.pos.x, light.pos.y, light.pos.z) - hit_point;
 	if (light.type == 3)
-		light_dir = light.dir;
+		light_dir = -light.dir;
 	return (light_dir);
 }
 
@@ -364,7 +377,7 @@ static	float4	trace(t_ray *ray, __global t_obj *objects, __global t_light *light
 		}
 	}
 	intensity = intensity > 1 ? 1 : intensity;
-	color = object_hit.material.diff_color * intensity;
+	color = blue * intensity;
 	return (clamp_color(color));
 }
 
