@@ -377,7 +377,7 @@ static	float4	trace(t_ray *ray, __global t_obj *objects, __global t_light *light
 		}
 	}
 	intensity = intensity > 1 ? 1 : intensity;
-	color = blue * intensity;
+	color = object_hit.material.diff_color * intensity;
 	return (clamp_color(color));
 }
 
