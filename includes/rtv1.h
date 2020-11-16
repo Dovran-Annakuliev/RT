@@ -82,6 +82,8 @@ void					parse_plane(int fd, t_rt *data);
 void					parse_cone(int fd, t_rt *data);
 void					parse_cylinder(int fd, t_rt *data);
 void					parse_triangle(int fd, t_rt *data);
+void					parse_rectangle(int fd, t_rt *data);
+void					parse_circle(int fd, t_rt *data);
 void					parce_ambient_light(int fd, t_rt *data);
 void					parce_point_light(int fd, t_rt *data);
 void					parce_directional_light(int fd, t_rt *data);
