@@ -23,7 +23,9 @@ void	parse_error(int err, const char *message)
 	else if (err == WRONG_MATERIAL)
 		ft_printf("Wrong material in line: %s\n", message);
 	else if (err == INVALID_CAMERA)
-		ft_printf("camera not found\n");
+		ft_printf("Camera not found\n");
+	else if (err == WRONG_TYPE_LIGHT)
+		ft_printf("Wrong type light\n");
 }
 
 void	error(int err, const char *message)
