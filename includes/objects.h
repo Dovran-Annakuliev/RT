@@ -19,6 +19,13 @@ typedef struct			s_obj
 	cl_float3			tr_0;
 	cl_float3			tr_1;
 	cl_float3			tr_2;
+	cl_float3			rec_0;
+	cl_float3			rec_1;
+	cl_float3			rec_2;
+	cl_float3			rec_3;
+	cl_float3			crcl_pos;
+	cl_float3			crcl_normal;
+	cl_float			crcl_r;
 	t_material			material;
 }						t_obj;
 
