@@ -49,28 +49,30 @@ typedef struct			s_camera
 
 typedef struct			s_obj
 {
-	int 				type;
-	float3				s_center;
-	float				s_radius;
-	float3				p_pos;
-	float3				p_normal;
-	float3				cone_pos;
-   	float				cone_angle;
-    float3				cone_axis;
-    float3				cyl_pos;
-	float				cyl_r;
-	float3				cyl_axis;
-	float3				tr_0;
-	float3				tr_1;
-	float3				tr_2;
-	float3			    rec_0;
-    float3			    rec_1;
-    float3			    rec_2;
-    float3			    rec_3;
-    float3			    crcl_pos;
-    float3			    crcl_normal;
-    float			    crcl_r;
-	t_material			material;
+	int					type;
+    float3			    s_center;
+    float			    s_radius;
+    float3			    p_pos;
+    float3 			    p_normal;
+    float3			    cone_pos;
+    float			    cone_angle;
+    float3  			cone_axis;
+    float3	    		cyl_pos;
+    float		    	cyl_r;
+    float3			    cyl_axis;
+    float3	    		tr_0;
+    float3		    	tr_1;
+    float3			    tr_2;
+    float3  			tr_normal;
+    int		    		tr_or;
+    float3	    		rec_0;
+    float3	    		rec_1;
+    float3	    		rec_2;
+    float3	    		rec_3;
+    float3	    		crcl_pos;
+    float3	    		crcl_normal;
+    float	    		crcl_r;
+    t_material			material;
 }						t_obj;
 
 typedef struct		s_light
@@ -270,9 +272,9 @@ static	float3	get_normal(t_obj *object, hit_record hit, t_ray *ray)
 		normal = get_cylinder_normal(object, hit.hit_point, ray);
     if (object->type == 4)
     {
-      float3 e1 = object->tr_1 - object->tr_0;
-      float3 e2 = object->tr_2 - object->tr_0;
-      normal = normalize(cross(e1, e2));
+        normal = object->tr_normal;
+        if (dot(ray->dir, normal) > 0)
+            normal = normal * -1;
     }
 	return (normal);
 }

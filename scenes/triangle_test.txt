@@ -1,5 +1,5 @@
 triangle:
-        vertex0	(0.0f, 0.0f, -14.0f)
+        vertex0	(2.0f, 0.0f, -10.0f)
         vertex1	(-2.0f, 0.0f, -10.0f)
         vertex2	(0.0f, 4.0f, -10.0f)
 		material:
@@ -24,7 +24,7 @@ plane:
                 reflection 0.0f
 
 ambient_light:
-        intensity 0.2f
+        intensity 0.0f
 
 point_light:
         type: point
