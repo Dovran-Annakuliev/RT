@@ -1,11 +1,20 @@
 triangle:
 		vertex0	(-2.0f, 0.0f, -10.0f)
-		vertex1	(2.0f, 0.0f, -10.0f)
+		vertex1	(0.0f, 0.0f, -14.0f)
 		vertex2	(0.0f, 4.0f, -10.0f)
 		material:
 			color (0.0f, 255.0f, 0.0f, 0.0f)
 			specular 0.0f
 			reflection 0.0f
+
+triangle:
+        vertex0	(0.0f, 0.0f, -14.0f)
+        vertex1	(2.0f, 0.0f, -10.0f)
+        vertex2	(0.0f, 4.0f, -10.0f)
+        material:
+            color (0.0f, 255.0f, 0.0f, 0.0f)
+            specular 0.0f
+            reflection 0.0f
 
 triangle:
 		vertex0	(-2.0f, 0.0f, -10.0f)
@@ -25,19 +34,35 @@ triangle:
             specular 0.0f
             reflection 0.0f
 
+plane:
+      position (0.0f, -5.0f, 0.0f)
+      normal   (0.0f, 1.0f, 0.0f)
+      material:
+                color (112.0f, 72.0f, 60.0f, 0.0f)
+                specular 200.0f
+                reflection 0.0f
+
 ambient_light:
         intensity 0.0f
 
 point_light:
-        position (10.0f, 10.0f, 10.0f)
-        intensity 0.3f
+        type: point
+            position (10.0f, 10.0f, 10.0f)
+            intensity 0.0f
+            color (255.0f, 255.0f, 255.0f, 0.0f)
 
 directional_light:
-        direction (5.0f, -6.0f, -10.0f)
-        intensity 0.5f
+        direction (5.0f, 0.0f, 0.0f)
+        intensity 0.3f
 
 camera:
       look_from  {0.0f, 0.0f, 20.0f};
 	  look_at  {0.0f, 0.0f, -1.0f};
+      vertical_fov  25.0f;
+      viewport_height  2.0f;
+
+camera:
+      look_from  {0.0f, 5.0f, -30.0f};
+      look_at  {0.0f, 0.0f, -1.0f};
       vertical_fov  25.0f;
       viewport_height  2.0f;

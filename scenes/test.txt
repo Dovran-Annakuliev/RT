@@ -40,9 +40,6 @@ point_light:
             radius (0.4f)
             color (255.0f, 255.0f, 255.0f, 0.0f)
 
-
-
-
 point_light:
         type: rectangle
             position (1.0f, 2.0f, 3.0f)

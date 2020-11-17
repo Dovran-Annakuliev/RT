@@ -63,6 +63,13 @@ typedef struct			s_obj
 	float3				tr_0;
 	float3				tr_1;
 	float3				tr_2;
+	float3			    rec_0;
+    float3			    rec_1;
+    float3			    rec_2;
+    float3			    rec_3;
+    float3			    crcl_pos;
+    float3			    crcl_normal;
+    float			    crcl_r;
 	t_material			material;
 }						t_obj;
 
@@ -71,6 +78,11 @@ typedef struct		s_light
 	int				type;
 	float3			pos;
 	float3			dir;
+	float		    r;
+    float4		    clr;
+    float		    width;
+    float		    height;
+    float3		    normal;
 	float			intensity;
 }					t_light;
 
@@ -259,8 +271,8 @@ static	float3	get_normal(t_obj *object, hit_record hit, t_ray *ray)
     if (object->type == 4)
     {
       float3 e1 = object->tr_1 - object->tr_0;
-      float3 e2 = object->tr_2 - object->tr_1;
-      normal = cross(ray->dir, e2);
+      float3 e2 = object->tr_2 - object->tr_0;
+      normal = normalize(cross(e1, e2));
     }
 	return (normal);
 }
@@ -278,10 +290,11 @@ static	float  get_light(float3 L, float3 N, t_light light)
 static	float3	get_light_dir(float3 hit_point, t_light light)
 {
 	float3	light_dir;
+
+    if (light.type == 1)
+        light_dir = -light.dir;
 	if (light.type == 2)
 		light_dir = (float3)(light.pos.x, light.pos.y, light.pos.z) - hit_point;
-	if (light.type == 3)
-		light_dir = -light.dir;
 	return (light_dir);
 }
 
@@ -348,7 +361,6 @@ static	float4	trace(t_ray *ray, __global t_obj *objects, __global t_light *light
 	float3	light_dir;
 	float	intensity = 0;
 	float4  bg_color = (float4)(55.0f, 55.0f, 55.0f, 0.0f);
-	float4  blue = (float4)(0.0f, 0.0f, 125.0f, 0.0f);
 
 	if (!intersect(ray, &hit, objects, obj_n))
 		return (bg_color);
@@ -357,13 +369,13 @@ static	float4	trace(t_ray *ray, __global t_obj *objects, __global t_light *light
 	hit.N = get_normal(&object_hit, hit, ray);
 	for (int i = 0; i < lights_n; i++)
 	{
-		if (lights[i].type == 1)
+		if (lights[i].type == 0)
 			intensity += lights[i].intensity;
 		else if (!ray->inside)
 		{
 			light_dir = get_light_dir(hit.hit_point, lights[i]);
 			t_ray shadow_ray = new_ray(hit.hit_point + hit.N * 0.001f, light_dir);
-			if (shadow_intersect(&shadow_ray, objects, 0.001f, lights[i].type == 2 ? 1.0f : FLT_MAX, obj_n))
+			if (shadow_intersect(&shadow_ray, objects, 0.001f, lights[i].type == 1 ? 1.0f : FLT_MAX, obj_n))
 				continue;
 
 			intensity += get_light(light_dir, hit.N, lights[i]);
