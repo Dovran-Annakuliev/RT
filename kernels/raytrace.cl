@@ -325,7 +325,7 @@ static		bool		intersect(t_ray *ray, hit_record *hit, __global t_obj* objects, in
 			hit->id = i;
 		}
 	}
-	return (ray->t < 100);
+	return (ray->t < 200);
 }
 
 static	bool	shadow_intersect(t_ray *ray, __global t_obj* objects, float	min_v, float max_v, int obj_n)
@@ -412,6 +412,24 @@ __kernel void raytrace(t_camera camera, __global t_obj* objects, __global float*
 	t_ray ray = new_ray(camera.origin, dir);
 	output[y * width + x] = trace(&ray, objects, lights, obj_n, lights_n);
 
+
+	for (int i = 0; i < 4; i++)
+	{
+	    for (int j = 0; j < 4; j++)
+        {
+    			Px = ((float)x + (i + 0.5) / 4) / (width - 1);
+    			Py = ((float)y + (j + 0.5) / 4) / (height - 1);
+    			dir = camera.upper_left_corner + Px * camera.horizontal - Py * camera.vertical - camera.origin;
+    			dir = normalize(dir);
+    			t_ray ray = new_ray(camera.origin, dir);
+    			output[y * width + x] += trace(&ray, objects, lights, obj_n, lights_n);
+        }
+    }
+    output[y * width + x] = clamp_color(output[y * width + x] / (4 * 4));
+
+
+    /* random jitter sampling */
+    /*
 	if (samples > 1)
 	{
 		for (int i = 0; i < samples; i++)
@@ -424,9 +442,10 @@ __kernel void raytrace(t_camera camera, __global t_obj* objects, __global float*
 			output[y * width + x] += trace(&ray, objects, lights, obj_n, lights_n);
 		}
 	}
+	/*
 
 	/* is there is only one sample we do not need to divide the color */
-	output[y * width + x] /= samples == 1 ? 1 : samples + 1;
+	/*output[y * width + x] /= samples == 1 ? 1 : samples + 1;*/
 }
 
 static		float4 clamp_color(float4 color)

@@ -24,7 +24,7 @@ plane:
                 reflection 0.0f
 
 ambient_light:
-        intensity 0.0f
+        intensity 0.3f
 
 point_light:
         type: point
@@ -39,11 +39,5 @@ directional_light:
 camera:
       look_from  {0.0f, 5.0f, 30.0f};
 	  look_at  {0.0f, 0.0f, -1.0f};
-      vertical_fov  25.0f;
-      viewport_height  2.0f;
-
-camera:
-      look_from  {0.0f, 5.0f, -30.0f};
-      look_at  {0.0f, 0.0f, -1.0f};
       vertical_fov  25.0f;
       viewport_height  2.0f;
