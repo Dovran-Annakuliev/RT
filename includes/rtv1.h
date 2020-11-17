@@ -107,6 +107,10 @@ char					**ft_strsplit_space(const char *s);
 int						ft_count_words_split(const char **s);
 float					ft_atof(const char *str);
 void					clamp_color(cl_float4 *color);
+cl_int					is_counter_clockwise(t_obj triangle, cl_float3 camera_dir);
+void					get_triangle_orientations(t_parse *p, cl_float3 camera_dir);
+void					calculate_triangle_normals(t_parse *p);
+
 
 /*
 ** ---OpenCl_functions---

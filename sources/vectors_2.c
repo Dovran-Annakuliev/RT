@@ -9,3 +9,8 @@ cl_float3	vec_add(cl_float3 v1, cl_float3 v2)
 	res.z = v1.z + v2.z;
 	return (res);
 }
+
+cl_float	vec_dot(cl_float3 v1, cl_float3 v2)
+{
+	return (v1.x * v2.x + v1.y * v2.y + v1.z * v2.z);
+}

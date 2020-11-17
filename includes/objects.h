@@ -19,6 +19,8 @@ typedef struct			s_obj
 	cl_float3			tr_0;
 	cl_float3			tr_1;
 	cl_float3			tr_2;
+	cl_float3			tr_normal;
+	cl_int				tr_or;
 	cl_float3			rec_0;
 	cl_float3			rec_1;
 	cl_float3			rec_2;

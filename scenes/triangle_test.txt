@@ -24,17 +24,17 @@ plane:
                 reflection 0.0f
 
 ambient_light:
-        intensity 0.0f
+        intensity 0.2f
 
 point_light:
         type: point
 			position (10.0f, 10.0f, 10.0f)
-			intensity 0.0f
+			intensity 0.3f
             color (255.0f, 255.0f, 255.0f, 0.0f)
 
 directional_light:
         direction (5.0f, -6.0f, -10.0f)
-        intensity 0.3f
+        intensity 0.0f
 
 camera:
       look_from  {0.0f, 5.0f, 30.0f};

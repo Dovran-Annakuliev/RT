@@ -32,6 +32,7 @@ int				main(int ac, char **av)
 	data = init_data();
 	read_arg(av[1], data);
 	set_cameras(data->parse.camera, data->parse.camera_size, data->w, data->h);
+	calculate_triangle_normals(&data->parse);
 	data->cl.kernel_source = get_kernel_source(&data->cl, data->cl_path);
 	cl_init(&data->cl, data->w, data->h);
 	main_loop(data);
