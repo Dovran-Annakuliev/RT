@@ -12,13 +12,12 @@
 typedef struct		s_light
 {
 	int				type;
-	int 			type_2;
 	cl_float3		pos;
 	cl_float3		dir;
-	cl_float3		r;
+	cl_float		r;
 	cl_float4		clr;
-	cl_float3		width;
-	cl_float3		height;
+	cl_float		width;
+	cl_float		height;
 	cl_float3		normal;
 	float			intensity;
 }					t_light;

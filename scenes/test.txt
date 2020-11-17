@@ -28,6 +28,12 @@ ambient_light:
         intensity 0.3f
 
 point_light:
+        type: point
+			position (1.0f, 2.0f, 3.0f)
+			intensity 0.4f
+            color (255.0f, 255.0f, 255.0f, 0.0f)
+
+point_light:
         type: sphere
             position (1.0f, 2.0f, 3.0f)
             intensity 0.4f
@@ -35,11 +41,7 @@ point_light:
             color (255.0f, 255.0f, 255.0f, 0.0f)
 
 
-point_light:
-        type: point
-			intensity 0.4f
-            position (1.0f, 2.0f, 3.0f)
-            color (255.0f, 255.0f, 255.0f, 0.0f)
+
 
 point_light:
         type: rectangle
