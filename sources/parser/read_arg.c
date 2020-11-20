@@ -16,6 +16,8 @@ static void	check_type(int fd, char *line, t_rt *data)
 		parse_rectangle(fd, data);
 	else if (ft_strcmp(line, "circle:") == 0)
 		parse_circle(fd, data);
+	else if (ft_strcmp(line, "object3d:") == 0)
+		parse_object3d(fd, data);
 	else if (ft_strcmp(line, "ambient_light:") == 0)
 		parce_ambient_light(fd, data);
 	else if (ft_strcmp(line, "point_light:") == 0)
@@ -46,6 +48,8 @@ static void	read_size(int fd, char *line, t_rt *data)
 			data->parse.obj_size++;
 		else if (ft_strcmp(line, "circle:") == 0)
 			data->parse.obj_size++;
+		else if (ft_strcmp(line, "object3d:") == 0)
+			read_object3d(fd, data);
 		else if (ft_strcmp(line, "ambient_light:") == 0)
 			data->parse.light_size++;
 		else if (ft_strcmp(line, "point_light:") == 0)
@@ -88,7 +92,6 @@ void		read_arg(char *source, t_rt *data)
 	if (((fd = open(source, O_RDONLY)) < 0) || ((read(fd, line, 0)) < 0))
 		error(INVALID_ARGUMENTS, source);
 	default_settings_parse(data);
-	read_size(fd, line, data);
 	parse_malloc(data);
 	close(fd);
 	fd = open(source, O_RDONLY);
@@ -98,9 +101,8 @@ void		read_arg(char *source, t_rt *data)
 		{
 			check_type(fd, line, data);
 			ft_strdel(&line);
-			get_next_line(fd, &line);
 		}
-		if (line != NULL)
+		else
 			ft_strdel(&line);
 	}
 	free(line);

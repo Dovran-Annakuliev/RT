@@ -49,3 +49,20 @@ void	parse_circle(int fd, t_rt *data)
 	data->parse.obj_index++;
 	ft_strdel(&line);
 }
+
+void	parse_object3d(int fd, t_rt *data)
+{
+	char *line;
+	char **tmp;
+
+	data->parse.obj[data->parse.obj_index].type = 7;
+	get_next_line(fd, &line);
+	tmp = ft_strsplit_space(line);
+	if (ft_strcmp(tmp[0], "file:") != 0)
+		error(INVALID_ARGUMENTS_IN_LINE, line);
+	parse_object3d_file(data, line);
+	ft_strdel(&line);
+	parse_material(fd, &data->parse.obj[data->parse.obj_index]);
+	data->parse.obj_index++;
+	ft_strdel(&line);
+}

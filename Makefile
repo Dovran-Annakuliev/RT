@@ -22,6 +22,8 @@ SRCS = $(SRC_DIR)camera.c\
 		$(PARSER_DIR)parse_light_2.c\
 		$(PARSER_DIR)parse_obj.c\
 		$(PARSER_DIR)parse_obj_2.c\
+		$(PARSER_DIR)parse_object3d.c\
+		$(PARSER_DIR)parse_object3d_utilities.c\
 		$(PARSER_DIR)parse_other.c\
 		$(PARSER_DIR)parse_utilities.c\
 		$(PARSER_DIR)parse_utilities_2.c\
