@@ -1,5 +1,5 @@
 sphere:
-		position	(0.0f,	0.0f,	-10.0f)
+		position	(0.0f,	0.0f,	-5.0f)
 		radius		(0.9f)
 		material:
                 color (255.0f, 150.0f, 255.0f, 0.0f)
@@ -11,7 +11,7 @@ plane:
       normal   (0.0f, 1.0f, 0.0f)
       material:
                 color (112.0f, 72.0f, 60.0f, 0.0f)
-                specular 200.0f
+                specular 0.0f
                 reflection 0.0f
 
 ambient_light:
@@ -19,13 +19,13 @@ ambient_light:
 
 point_light:
         type: point
-            position (10.0f, 10.0f, 10.0f)
-            intensity 0.3f
+            position (5.0f, 5.0f, 5.0f)
+            intensity 0.6f
             color (255.0f, 255.0f, 255.0f, 0.0f)
 
 directional_light:
         direction (5.0f, -6.0f, -10.0f)
-        intensity 0.3f
+        intensity 0.0f
 
 camera:
       look_from  {0.0f, 0.0f, 10.0f};

@@ -2,7 +2,7 @@
 
 static	char		*return_path(void)
 {
-	return ("kernels/raytrace.cl");
+	return ("kernels/raytrace_1.cl");
 }
 
 float				*new_random_array(int w, int h, int samples)

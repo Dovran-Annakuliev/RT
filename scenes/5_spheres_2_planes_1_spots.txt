@@ -3,7 +3,7 @@ sphere:
 		radius		(1.0f)
 		material:
                 color (0.0f, 255.0f, 0.0f, 0.0f)
-                specular 5000.0f
+                specular 0.0f
                 reflection 0.5f
 
 sphere:
@@ -11,7 +11,7 @@ sphere:
 		radius		(6.0f)
 		material:
                 color (255.0f, 255.0f, 255.0f, 0.0f)
-                specular 5000.0f
+                specular 0.0f
                 reflection 0.5f
 
 sphere:
@@ -19,7 +19,7 @@ sphere:
 		radius		(0.5f)
 		material:
                 color (255.0f, 0.0f, 0.0f, 0.0f)
-                specular 5000.0f
+                specular 0.0f
                 reflection 0.5f
 
 sphere:
@@ -27,7 +27,7 @@ sphere:
 		radius		(0.5f)
 		material:
                 color (0.0f, 0.0f, 255.0f, 0.0f)
-                specular 5000.0f
+                specular 0.0f
                 reflection 0.5f
 
 sphere:
@@ -35,7 +35,7 @@ sphere:
 		radius		(0.5f)
 		material:
                 color (0.0f, 255.0f, 0.0f, 0.0f)
-                specular 5000.0f
+                specular 0.0f
                 reflection 0.5f
 
 plane:
@@ -55,20 +55,20 @@ plane:
                 reflection 0.5f
 
 ambient_light:
-        intensity 0.3f
+        intensity 0.1f
 
 point_light:
         type: point
-            position (0.0f, 10.0f, 10.0f)
+            position (10.0f, 10.0f, 10.0f)
             intensity 0.5f
             color (255.0f, 255.0f, 255.0f, 0.0f)
 
 directional_light:
         direction (3.0f, -3.0f, -10.0f)
-        intensity 0.3f
+        intensity 0.0f
 
 camera:
-      look_from  {0.0f, 0.0f, 10.0f};
+      look_from  {0.0f, 6.0f, 20.0f};
 	  look_at  {0.0f, 0.0f, -1.0f};
       vertical_fov  25.0f;
       viewport_height  4.0f

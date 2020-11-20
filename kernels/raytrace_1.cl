@@ -288,7 +288,7 @@ static	float  get_light(float3 L, float3 N, t_light light)
 
     float r2 = length(L);
 	if (dot_light_dir > 0)
-		df_light_int += (light.intensity  * 1000 / (4.0f * M_PI_F * r2  * r2)) * dot_light_dir / (length(N) * length(L));
+		df_light_int += light.intensity * dot_light_dir / (length(N) * length(L));
 	return(df_light_int);
 }
 
@@ -415,7 +415,7 @@ __kernel void raytrace(t_camera camera, __global t_obj* objects, __global float*
 	t_ray ray = new_ray(camera.origin, dir);
 	output[y * width + x] = trace(&ray, objects, lights, obj_n, lights_n);
 
-
+    /*
     int n = 4;
 	for (int i = 0; i < n; i++)
 	{
@@ -430,6 +430,7 @@ __kernel void raytrace(t_camera camera, __global t_obj* objects, __global float*
         }
     }
     output[y * width + x] = clamp(output[y * width + x] / (n * n), (float4)(0.0f, 0.0f, 0.0f, 0.0f), (float4)(255.0f, 255.0f, 255.0f, 255.0f));
+    */
 
 }
 
