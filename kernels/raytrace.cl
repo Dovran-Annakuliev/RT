@@ -392,7 +392,7 @@ static	float4	trace(t_ray *ray, __global t_obj *objects, __global t_light *light
 	}
 	intensity = intensity > 1 ? 1 : intensity;
 	color = object_hit.material.diff_color * intensity;
-	return (clamp_color(color));
+	return (clamp(color, (float4){0.0f, 0.0f, 0.0f, 0.0f}, (float4){255.0f, 255.0f, 255.0f, 255.0f}));
 }
 
 __kernel void raytrace(t_camera camera, __global t_obj* objects, __global float* randoms, int samples, __global t_light *lights, __global float4* output, int	obj_n, int lights_n)
@@ -426,38 +426,8 @@ __kernel void raytrace(t_camera camera, __global t_obj* objects, __global float*
     			output[y * width + x] += trace(&ray, objects, lights, obj_n, lights_n);
         }
     }
-    output[y * width + x] = clamp_color(output[y * width + x] / (n * n));
+    output[y * width + x] = clamp(output[y * width + x] / (n * n), (float4){0.0f, 0.0f, 0.0f, 0.0f}, (float4){255.0f, 255.0f, 255.0f, 255.0f});
 
-
-    /* random jitter sampling */
-    /*
-	if (samples > 1)
-	{
-		for (int i = 0; i < samples; i++)
-		{
-			Px = ((float)x + randoms[(y * width + x) * samples + i]) / (width - 1);
-			Py = ((float)y + randoms[(y * width + x) * samples + i]) / (height - 1);
-			dir = camera.upper_left_corner + Px * camera.horizontal - Py * camera.vertical - camera.origin;
-			dir = normalize(dir);
-			t_ray ray = new_ray(camera.origin, dir);
-			output[y * width + x] += trace(&ray, objects, lights, obj_n, lights_n);
-		}
-	}
-	/*
-
-	/* is there is only one sample we do not need to divide the color */
-	/*output[y * width + x] /= samples == 1 ? 1 : samples + 1;*/
-}
-
-static		float4 clamp_color(float4 color)
-{
-	float4 res;
-
-	res.x = color.x > 255.0f ? 255.0f : color.x;
-	res.y = color.y > 255.0f ? 255.0f : color.y;
-	res.z = color.z > 255.0f ? 255.0f : color.z;
-	res.w = color.w > 255.0f ? 255.0f : color.w;
-	return (res);
 }
 
 static		float3 reflect_ray(float3 R, float3 N)
