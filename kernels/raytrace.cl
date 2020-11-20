@@ -413,19 +413,20 @@ __kernel void raytrace(t_camera camera, __global t_obj* objects, __global float*
 	output[y * width + x] = trace(&ray, objects, lights, obj_n, lights_n);
 
 
-	for (int i = 0; i < 4; i++)
+    int n = 4;
+	for (int i = 0; i < n; i++)
 	{
-	    for (int j = 0; j < 4; j++)
+	    for (int j = 0; j < n; j++)
         {
-    			Px = ((float)x + (i + 0.5) / 4) / (width - 1);
-    			Py = ((float)y + (j + 0.5) / 4) / (height - 1);
+    			Px = ((float)x + (i + 0.5) / n) / (width - 1);
+    			Py = ((float)y + (j + 0.5) / n) / (height - 1);
     			dir = camera.upper_left_corner + Px * camera.horizontal - Py * camera.vertical - camera.origin;
     			dir = normalize(dir);
     			t_ray ray = new_ray(camera.origin, dir);
     			output[y * width + x] += trace(&ray, objects, lights, obj_n, lights_n);
         }
     }
-    output[y * width + x] = clamp_color(output[y * width + x] / (4 * 4));
+    output[y * width + x] = clamp_color(output[y * width + x] / (n * n));
 
 
     /* random jitter sampling */

@@ -68,7 +68,7 @@ directional_light:
         intensity 0.5f
 
 camera:
-      look_from  {0.0f, 0.0f, 30.0f};
+      look_from  {0.0f, 0.0f, 10.0f};
 	  look_at  {0.0f, 0.0f, -1.0f};
       vertical_fov  25.0f;
       viewport_height  4.0f
