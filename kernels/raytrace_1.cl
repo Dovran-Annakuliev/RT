@@ -5,32 +5,6 @@ typedef struct	s_material
 	float		reflection;
 }				t_material;
 
-typedef	struct	s_ray
-{
-	float3		orig;
-	float3		dir;
-	float		t;
-	int			inside;
-}				t_ray;
-
-static	t_ray	new_ray(float3 orig, float3 dir)
-{
-	t_ray r;
-
-	r.orig = orig;
-	r.dir = dir;
-	r.inside = 0;
-	return (r);
-}
-
-typedef struct	s_hit_record
-{
-	t_ray		ray;
-	float3		hit_point;
-	float3		N;
-	int			id;
-}				hit_record;
-
 typedef struct			s_camera
 {
 	float				viewport_width;
@@ -88,9 +62,35 @@ typedef struct		s_light
 	float			intensity;
 }					t_light;
 
-static		float4 clamp_color(float4 color);
 
-static	float		solve_eq(float a, float b, float c, float t_min, float t_max, int	*inside)
+typedef	struct	s_ray
+{
+	float3		orig;
+	float3		dir;
+	float		t;
+	int			inside;
+}				t_ray;
+
+static	t_ray	new_ray(float3 orig, float3 dir)
+{
+	t_ray r;
+
+	r.orig = orig;
+	r.dir = dir;
+	r.t = 0.0f;
+	r.inside = 0;
+	return (r);
+}
+
+typedef struct	s_hit_record
+{
+	t_ray		ray;
+	float3		hit_point;
+	float3		N;
+	int			id;
+}				hit_record;
+
+static	float		solve_eq(float a, float b, float c, float t_min, float t_max, int *inside)
 {
 	float dis = b * b - 4 * a * c;
 	if (dis < 0.0f)
@@ -306,12 +306,13 @@ static	float3	get_light_dir(float3 hit_point, t_light light)
 
 static		bool		intersect(t_ray *ray, hit_record *hit, __global t_obj* objects, int obj_n)
 {
-	float	dist_i = 0;
+	float	dist_i = 0.0f;
 	ray->t = FLT_MAX;
 
-	for(int i = 0; i < obj_n; i++)
+	for (int i = 0; i < obj_n; i++)
 	{
 		t_obj object = objects[i];
+
 		if (object.type == 0)
 			dist_i = intersect_sphere(&object, ray);
 		if (object.type == 1)
