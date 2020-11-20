@@ -67,6 +67,5 @@ void				render(t_rt *rt)
 	clReleaseMemObject(buffers.output_buffer);
 	clReleaseMemObject(buffers.obj_buffer);
 	clReleaseMemObject(buffers.rand_buffer);
-//	printf("rendering\n");
 	rt->update_status = 0;
 }

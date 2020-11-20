@@ -12,6 +12,7 @@ SRCS = $(SRC_DIR)camera.c\
 		$(SRC_DIR)render.c\
 		$(SRC_DIR)vectors.c\
 		$(SRC_DIR)vectors_2.c\
+		$(SRC_DIR)triangle_orientation.c\
 		$(CONTROLLERS_DIR)controller.c\
 		$(CONTROLLERS_DIR)keyboard_controller.c\
 		$(CONTROLLERS_DIR)mouse_controller.c\

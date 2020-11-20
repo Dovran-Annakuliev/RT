@@ -49,21 +49,30 @@ typedef struct			s_camera
 
 typedef struct			s_obj
 {
-	int 				type;
-	float3				s_center;
-	float				s_radius;
-	float3				p_pos;
-	float3				p_normal;
-	float3				cone_pos;
-   	float				cone_angle;
-    float3				cone_axis;
-    float3				cyl_pos;
-	float				cyl_r;
-	float3				cyl_axis;
-	float3				tr_0;
-	float3				tr_1;
-	float3				tr_2;
-	t_material			material;
+	int					type;
+    float3			    s_center;
+    float			    s_radius;
+    float3			    p_pos;
+    float3 			    p_normal;
+    float3			    cone_pos;
+    float			    cone_angle;
+    float3  			cone_axis;
+    float3	    		cyl_pos;
+    float		    	cyl_r;
+    float3			    cyl_axis;
+    float3	    		tr_0;
+    float3		    	tr_1;
+    float3			    tr_2;
+    float3  			tr_normal;
+    int		    		tr_or;
+    float3	    		rec_0;
+    float3	    		rec_1;
+    float3	    		rec_2;
+    float3	    		rec_3;
+    float3	    		crcl_pos;
+    float3	    		crcl_normal;
+    float	    		crcl_r;
+    t_material			material;
 }						t_obj;
 
 typedef struct		s_light
@@ -71,6 +80,11 @@ typedef struct		s_light
 	int				type;
 	float3			pos;
 	float3			dir;
+	float		    r;
+    float4		    clr;
+    float		    width;
+    float		    height;
+    float3		    normal;
 	float			intensity;
 }					t_light;
 
@@ -120,12 +134,26 @@ static	float	intersect_plane(t_obj *plane, t_ray *ray)
 		return (0);
 	float b = dot(plane->p_pos - ray->orig, plane->p_normal) / a;
 	dist = b < 0.001f ? 0 : b;
+
+	float3 hit_point = ray->orig + ray->dir * dist;
 	return (dist);
 }
 
+/*
+static float intersect_rectangle(t_obj *rect, t_ray *ray)
+{
+    float dist = intersect_plane(rect, ray);
+    float v1 = ;
+    float v2 = ;
+    float v3 = rect->p4 - rect->p3;
+    float v4 = rect->p4 - rect->p3;
+    float v5 = rect->p4 - rect->p3;
+}
+*/
+
 static float		intersect_triangle(t_obj *triangle,  t_ray *ray)
 {
-    float EPS = 0.0001f;
+    float EPS = 0.00001f;
     float3 e1 = triangle->tr_1 - triangle->tr_0;
     float3 e2 = triangle->tr_2 - triangle->tr_0;
     float3 pvec = cross(ray->dir, e2);
@@ -147,7 +175,6 @@ static float		intersect_triangle(t_obj *triangle,  t_ray *ray)
     if (v < 0 || u + v > 1) {
         return (0);
     }
-
     return (dot(e2, qvec) * inv_det);
 }
 
@@ -245,9 +272,9 @@ static	float3	get_normal(t_obj *object, hit_record hit, t_ray *ray)
 		normal = get_cylinder_normal(object, hit.hit_point, ray);
     if (object->type == 4)
     {
-      float3 e1 = object->tr_1 - object->tr_0;
-      float3 e2 = object->tr_2 - object->tr_1;
-      normal = cross(ray->dir, e2);
+        normal = object->tr_normal;
+        if (dot(ray->dir, normal) > 0)
+            normal = normal * -1;
     }
 	return (normal);
 }
@@ -265,10 +292,11 @@ static	float  get_light(float3 L, float3 N, t_light light)
 static	float3	get_light_dir(float3 hit_point, t_light light)
 {
 	float3	light_dir;
+
+    if (light.type == 1)
+        light_dir = -light.dir;
 	if (light.type == 2)
 		light_dir = (float3)(light.pos.x, light.pos.y, light.pos.z) - hit_point;
-	if (light.type == 3)
-		light_dir = light.dir;
 	return (light_dir);
 }
 
@@ -297,7 +325,7 @@ static		bool		intersect(t_ray *ray, hit_record *hit, __global t_obj* objects, in
 			hit->id = i;
 		}
 	}
-	return (ray->t < 100);
+	return (ray->t < 200);
 }
 
 static	bool	shadow_intersect(t_ray *ray, __global t_obj* objects, float	min_v, float max_v, int obj_n)
@@ -335,7 +363,6 @@ static	float4	trace(t_ray *ray, __global t_obj *objects, __global t_light *light
 	float3	light_dir;
 	float	intensity = 0;
 	float4  bg_color = (float4)(55.0f, 55.0f, 55.0f, 0.0f);
-	float4  blue = (float4)(0.0f, 0.0f, 125.0f, 0.0f);
 
 	if (!intersect(ray, &hit, objects, obj_n))
 		return (bg_color);
@@ -344,13 +371,13 @@ static	float4	trace(t_ray *ray, __global t_obj *objects, __global t_light *light
 	hit.N = get_normal(&object_hit, hit, ray);
 	for (int i = 0; i < lights_n; i++)
 	{
-		if (lights[i].type == 1)
+		if (lights[i].type == 0)
 			intensity += lights[i].intensity;
 		else if (!ray->inside)
 		{
 			light_dir = get_light_dir(hit.hit_point, lights[i]);
 			t_ray shadow_ray = new_ray(hit.hit_point + hit.N * 0.001f, light_dir);
-			if (shadow_intersect(&shadow_ray, objects, 0.001f, lights[i].type == 2 ? 1.0f : FLT_MAX, obj_n))
+			if (shadow_intersect(&shadow_ray, objects, 0.001f, lights[i].type == 1 ? FLT_MAX : 1.0f, obj_n))
 				continue;
 
 			intensity += get_light(light_dir, hit.N, lights[i]);
@@ -365,7 +392,7 @@ static	float4	trace(t_ray *ray, __global t_obj *objects, __global t_light *light
 	}
 	intensity = intensity > 1 ? 1 : intensity;
 	color = object_hit.material.diff_color * intensity;
-	return (clamp_color(color));
+	return (clamp(color, (float4){0.0f, 0.0f, 0.0f, 0.0f}, (float4){255.0f, 255.0f, 255.0f, 255.0f}));
 }
 
 __kernel void raytrace(t_camera camera, __global t_obj* objects, __global float* randoms, int samples, __global t_light *lights, __global float4* output, int	obj_n, int lights_n)
@@ -385,32 +412,22 @@ __kernel void raytrace(t_camera camera, __global t_obj* objects, __global float*
 	t_ray ray = new_ray(camera.origin, dir);
 	output[y * width + x] = trace(&ray, objects, lights, obj_n, lights_n);
 
-	if (samples > 1)
+
+    int n = 4;
+	for (int i = 0; i < n; i++)
 	{
-		for (int i = 0; i < samples; i++)
-		{
-			Px = ((float)x + randoms[(y * width + x) * samples + i]) / (width - 1);
-			Py = ((float)y + randoms[(y * width + x) * samples + i]) / (height - 1);
-			dir = camera.upper_left_corner + Px * camera.horizontal - Py * camera.vertical - camera.origin;
-			dir = normalize(dir);
-			t_ray ray = new_ray(camera.origin, dir);
-			output[y * width + x] += trace(&ray, objects, lights, obj_n, lights_n);
-		}
-	}
+	    for (int j = 0; j < n; j++)
+        {
+    			Px = ((float)x + (i + 0.5) / n) / (width - 1);
+    			Py = ((float)y + (j + 0.5) / n) / (height - 1);
+    			dir = camera.upper_left_corner + Px * camera.horizontal - Py * camera.vertical - camera.origin;
+    			dir = normalize(dir);
+    			t_ray ray = new_ray(camera.origin, dir);
+    			output[y * width + x] += trace(&ray, objects, lights, obj_n, lights_n);
+        }
+    }
+    output[y * width + x] = clamp(output[y * width + x] / (n * n), (float4){0.0f, 0.0f, 0.0f, 0.0f}, (float4){255.0f, 255.0f, 255.0f, 255.0f});
 
-	/* is there is only one sample we do not need to divide the color */
-	output[y * width + x] /= samples == 1 ? 1 : samples + 1;
-}
-
-static		float4 clamp_color(float4 color)
-{
-	float4 res;
-
-	res.x = color.x > 255.0f ? 255.0f : color.x;
-	res.y = color.y > 255.0f ? 255.0f : color.y;
-	res.z = color.z > 255.0f ? 255.0f : color.z;
-	res.w = color.w > 255.0f ? 255.0f : color.w;
-	return (res);
 }
 
 static		float3 reflect_ray(float3 R, float3 N)
