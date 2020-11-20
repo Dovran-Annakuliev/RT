@@ -377,7 +377,7 @@ static	float4	trace(t_ray *ray, __global t_obj *objects, __global t_light *light
 		{
 			light_dir = get_light_dir(hit.hit_point, lights[i]);
 			t_ray shadow_ray = new_ray(hit.hit_point + hit.N * 0.001f, light_dir);
-			if (shadow_intersect(&shadow_ray, objects, 0.001f, lights[i].type == 1 ? 1.0f : FLT_MAX, obj_n))
+			if (shadow_intersect(&shadow_ray, objects, 0.001f, lights[i].type == 1 ? FLT_MAX : 1.0f, obj_n))
 				continue;
 
 			intensity += get_light(light_dir, hit.N, lights[i]);
