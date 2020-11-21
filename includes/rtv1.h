@@ -101,7 +101,7 @@ cl_float3				parse_cl_float3(char *line, char *type);
 cl_float4				parse_cl_float4(char *line, char *type);
 cl_float3 				parse_object3d_vertex(char *line);
 cl_float3				parse_object3d_normal(char *line);
-cl_float3				parse_object3d_face(char *line, t_rt *data);
+void 				parse_object3d_face(char *line, t_rt *data);
 void					read_object3d(int fd, t_rt *data);
 int						parse_type_light(char *line);
 void					parse_light_sphere(int fd, t_rt *data);

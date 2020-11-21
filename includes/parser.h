@@ -18,9 +18,6 @@ typedef struct	s_parse
 	cl_float3 	*obj3d_vn;
 	int 		obj3d_vn_size;
 	int 		obj3d_vn_idx;
-	cl_float4 	*obj3d_f;
-	int 		obj3d_f_size;
-	int 		obj3d_f_idx;
 }				t_parse;
 
 #endif

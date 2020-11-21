@@ -53,14 +53,19 @@ void	parse_circle(int fd, t_rt *data)
 void	parse_object3d(int fd, t_rt *data)
 {
 	char *line;
-	char **tmp;
+	char **split;
 
 	data->parse.obj[data->parse.obj_index].type = 7;
 	get_next_line(fd, &line);
-	tmp = ft_strsplit_space(line);
-	if (ft_strcmp(tmp[0], "file:") != 0)
+	split = ft_strsplit_space(line);
+	printf("line: %s/0\n", line);
+	printf("file_line: %s/0\n", split[0]);
+	printf("address_line: %s/0\n", split[1]);
+	ft_count_words_split((const char**)split) != 2 ?
+		error(INVALID_ARGUMENTS_IN_LINE, line) : 0;
+	if (ft_strcmp(split[0], "file:") != 0)
 		error(INVALID_ARGUMENTS_IN_LINE, line);
-	parse_object3d_file(data, line);
+	parse_object3d_file(data, split[1]);
 	ft_strdel(&line);
 	parse_material(fd, &data->parse.obj[data->parse.obj_index]);
 	data->parse.obj_index++;
