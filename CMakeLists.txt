@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.17)
 project(RTv1)
 
 set(CMAKE_CXX_STANDARD 14)
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -framework OpenGL -framework OpenCL -framework AppKit -I ~/Library/Frameworks/SDL2.framework/Headers -F /Users/rfork/Library/Frameworks/ -framework SDL2 -I ~/Library/Frameworks/SDL2_image.framework/Headers -F /Users/rfork/Library/Frameworks/ -framework SDL2_image")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -framework OpenGL -framework OpenCL -framework AppKit -I ~/Library/Frameworks/SDL2.framework/Headers -F /Users/sauron/Library/Frameworks/ -framework SDL2 -I ~/Library/Frameworks/SDL2_image.framework/Headers -F /Users/sauron/Library/Frameworks/ -framework SDL2_image")
 
 include_directories(includes)
 include_directories(libft/includes)

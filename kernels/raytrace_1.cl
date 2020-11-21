@@ -273,8 +273,10 @@ static	float3	get_normal(t_obj *object, hit_record hit, t_ray *ray)
     if (object->type == 4)
     {
         normal = object->tr_normal;
+        /*
         if (dot(ray->dir, normal) > 0)
             normal = normal * -1;
+        */
     }
 	return (normal);
 }
@@ -368,6 +370,7 @@ static	float4	trace(t_ray *ray, __global t_obj *objects, __global t_light *light
 	float3	light_dir;
 	float	intensity = 0;
 	float4  bg_color = (float4)(55.0f, 55.0f, 55.0f, 0.0f);
+	float4  blue = (float4)(0.0f, 0.0f, 140.0f, 0.0f);
 
 	if (!intersect(ray, &hit, objects, obj_n))
 		return (bg_color);
@@ -395,7 +398,8 @@ static	float4	trace(t_ray *ray, __global t_obj *objects, __global t_light *light
 			}
 		}
 	}
-	color = object_hit.material.diff_color * intensity;
+	intensity = intensity > 1 ? 1 : intensity;
+	color = (object_hit.type == 4 ? blue : object_hit.material.diff_color) * intensity;
 	return (clamp(color, (float4)(0.0f, 0.0f, 0.0f, 0.0f), (float4)(255.0f, 255.0f, 255.0f, 255.0f)));
 }
 
