@@ -370,7 +370,6 @@ static	float4	trace(t_ray *ray, __global t_obj *objects, __global t_light *light
 	float3	light_dir;
 	float	intensity = 0;
 	float4  bg_color = (float4)(55.0f, 55.0f, 55.0f, 0.0f);
-	float4  white = (float4)(200.0f, 200.0f, 200.0f, 0.0f);
 
 	if (!intersect(ray, &hit, objects, obj_n))
 		return (bg_color);
@@ -399,7 +398,7 @@ static	float4	trace(t_ray *ray, __global t_obj *objects, __global t_light *light
 		}
 	}
 	intensity = intensity > 1 ? 1 : intensity;
-	color = (object_hit.type == 4 ? white : object_hit.material.diff_color) * intensity;
+	color = object_hit.material.diff_color * intensity;
 	return (clamp(color, (float4)(0.0f, 0.0f, 0.0f, 0.0f), (float4)(255.0f, 255.0f, 255.0f, 255.0f)));
 }
 
@@ -420,7 +419,7 @@ __kernel void raytrace(t_camera camera, __global t_obj* objects, __global float*
 	t_ray ray = new_ray(camera.origin, dir);
 	output[y * width + x] = trace(&ray, objects, lights, obj_n, lights_n);
 
-    /*
+
     int n = 4;
 	for (int i = 0; i < n; i++)
 	{
@@ -435,7 +434,7 @@ __kernel void raytrace(t_camera camera, __global t_obj* objects, __global float*
         }
     }
     output[y * width + x] = clamp(output[y * width + x] / (n * n), (float4)(0.0f, 0.0f, 0.0f, 0.0f), (float4)(255.0f, 255.0f, 255.0f, 255.0f));
-    */
+
 
 }
 

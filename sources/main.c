@@ -87,17 +87,10 @@ static void print_obj(t_rt *data)
 		}
 		else
 			printf("unknown_type[%d] = %d\n", i, data->parse.obj[i].type);
-<<<<<<< HEAD
-		printf("\tmaterial:\n\t\tcolor = %f, %f, %f, %f\n", data->parse.obj[i].material.diff_color.x,
-			   data->parse.obj[i].material.diff_color.y,
-			   data->parse.obj[i].material.diff_color.z,
-			   data->parse.obj[i].material.diff_color.w);
-=======
 		printf("\tmaterial:\n\t\tdiff_color = %f, %f, %f, %f\n\t\tspecular = %f\n\t\treflection = %f\n",
 			data->parse.obj[i].material.diff_color.x, data->parse.obj[i].material.diff_color.y, data->parse.obj[i].material.diff_color.z, data->parse.obj[i].material.diff_color.w,
 			data->parse.obj[i].material.specular,
 			data->parse.obj[i].material.reflection);
->>>>>>> master
 	}
 }
 
@@ -108,17 +101,10 @@ void print_light(t_rt *data)
 		if (data->parse.light[i].type == 0)
 			printf("light[%d]: ambient:\n\tintensity = %f\n", i, data->parse.light[i].intensity);
 		else if (data->parse.light[i].type == 1)
-<<<<<<< HEAD
-			printf("light[%d]: directional:\n\tdirection = %f, %f, %f\n\tintensity = %f",
-				   i,
-				   data->parse.light[i].dir.x, data->parse.light[i].dir.y, data->parse.light[i].dir.z,
-				   data->parse.light[i].intensity);
-=======
 			printf("light[%d]: directional:\n\tdirection = %f, %f, %f\n\tintensity = %f\n",
 		  		i,
 		  		data->parse.light[i].dir.x, data->parse.light[i].dir.y, data->parse.light[i].dir.z,
 		  		data->parse.light[i].intensity);
->>>>>>> master
 		else if (data->parse.light[i].type == 2)
 			printf("light[%d]: point:\n\tdirection = %f, %f, %f\n\tintensity = %f\n\tcolor = %f, %f, %f, %f\n",
 				   i,
