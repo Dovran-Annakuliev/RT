@@ -90,7 +90,7 @@ void print_light(t_rt *data){
 		if (data->parse.light[i].type == 0)
 			printf("light[%d]: ambient:\n\tintensity = %f\n", i, data->parse.light[i].intensity);
 		else if (data->parse.light[i].type == 1)
-			printf("light[%d]: directional:\n\tdirection = %f, %f, %f\n\tintensity = %f",
+			printf("light[%d]: directional:\n\tdirection = %f, %f, %f\n\tintensity = %f\n",
 		  		i,
 		  		data->parse.light[i].dir.x, data->parse.light[i].dir.y, data->parse.light[i].dir.z,
 		  		data->parse.light[i].intensity);
