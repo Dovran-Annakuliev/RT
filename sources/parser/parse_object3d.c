@@ -15,7 +15,7 @@ static void check_type_obj(t_rt *data, char *line, t_material *material){
 		}
 	}
 	else if (line[0] == 'f')
-		parse_object3d_face(line, data, (t_material *) &material);
+		parse_object3d_face(line, data, material);
 }
 
 void	parse_object3d_file(t_rt *data, char *source, t_material *material)
@@ -31,7 +31,7 @@ void	parse_object3d_file(t_rt *data, char *source, t_material *material)
 	while (get_next_line(fd, &line))
 	{
 		if (ft_strlen(line) > 0)
-			check_type_obj(data, line, (t_material *) &material);
+			check_type_obj(data, line, material);
 		ft_strdel(&line);
 	}
 	free(line);
