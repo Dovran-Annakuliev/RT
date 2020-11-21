@@ -41,20 +41,41 @@ static void read_size_object3d(int fd, t_rt *data)
 	ft_strdel(&line);
 }
 
+static void	default_settings_parse(t_rt *data)
+{
+	data->parse.obj3d_v_size = 0;
+	data->parse.obj3d_v_idx = 0;
+	data->parse.obj3d_vn_size = 0;
+	data->parse.obj3d_vn_idx = 0;
+}
+
+static void	parse_malloc(t_rt *data)
+{
+	data->parse.obj3d_v = (cl_float3*)malloc(sizeof(cl_float3)
+											 * data->parse.obj3d_v_size);
+	data->parse.obj3d_vn = (cl_float3*)malloc(sizeof(cl_float3)
+											  * data->parse.obj3d_vn_size);
+}
+
 void read_object3d(int fd, t_rt *data)
 {
 	char *line;
 	char *line_2;
-	char **tmp;
+	char **split;
 
 	line_2 = NULL;
 	get_next_line(fd, &line);
-	tmp = ft_strsplit_space(line);
-	if (ft_strcmp(tmp[0], "file") != 0)
+	split = ft_strsplit_space(line);
+	ft_count_words_split((const char**)split) != 2 ?
+		error(INVALID_ARGUMENTS_IN_LINE, line) : 0;
+	if (ft_strcmp(split[0], "file:") != 0)
 		error(INVALID_ARGUMENTS_IN_LINE, line);
-	if (((fd = open(line, O_RDONLY)) < 0) || ((read(fd, line_2, 0)) < 0))
-		error(INVALID_ARGUMENTS, line);
+	if (((fd = open(ft_strsplit(split[1], '"')[0], O_RDONLY)) < 0)
+		|| ((read(fd, line_2, 0)) < 0))
+			error(INVALID_ARGUMENTS, line);
+	default_settings_parse(data);
 	read_size_object3d(fd, data);
+	parse_malloc(data);
 	ft_strdel(&line);
 	ft_strdel(&line_2);
 	close(fd);

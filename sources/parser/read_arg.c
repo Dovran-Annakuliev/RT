@@ -92,6 +92,7 @@ void		read_arg(char *source, t_rt *data)
 	if (((fd = open(source, O_RDONLY)) < 0) || ((read(fd, line, 0)) < 0))
 		error(INVALID_ARGUMENTS, source);
 	default_settings_parse(data);
+	read_size(fd,line,data);
 	parse_malloc(data);
 	close(fd);
 	fd = open(source, O_RDONLY);

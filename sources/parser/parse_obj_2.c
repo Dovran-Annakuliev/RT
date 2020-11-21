@@ -55,7 +55,6 @@ void	parse_object3d(int fd, t_rt *data)
 	char *line;
 	char **split;
 
-	data->parse.obj[data->parse.obj_index].type = 7;
 	get_next_line(fd, &line);
 	split = ft_strsplit_space(line);
 	ft_count_words_split((const char**)split) != 2 ?
@@ -65,6 +64,5 @@ void	parse_object3d(int fd, t_rt *data)
 	parse_object3d_file(data, split[1]);
 	ft_strdel(&line);
 	parse_material(fd, &data->parse.obj[data->parse.obj_index]);
-	data->parse.obj_index++;
 	ft_strdel(&line);
 }
