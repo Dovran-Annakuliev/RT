@@ -1,7 +1,7 @@
 #include "../../includes/rtv1.h"
 
 static void check_type_obj(t_rt *data, char *line){
-	if (line[0] == 'v')
+	if (line != NULL && line[0] == 'v')
 	{
 		if (line[1] == ' ')
 		{
@@ -34,10 +34,6 @@ static void	parse_malloc(t_rt *data)
 			* data->parse.obj3d_vn_size);
 }
 
-static void create_triangle(t_rt *data)
-{
-
-}
 
 void	parse_object3d_file(t_rt *data, char *source)
 {
@@ -47,8 +43,10 @@ void	parse_object3d_file(t_rt *data, char *source)
 
 	line = NULL;
 	split = ft_strsplit(source, '"');
-//	if (((fd = open(split[0], O_RDONLY)) < 0) || ((read(fd, line, 0)) < 0))
-//		error(INVALID_ARGUMENTS, split[0]);
+	if (((fd = open(split[0], O_RDONLY)) < 0) || ((read(fd, line, 0)) < 0))
+		error(INVALID_ARGUMENTS, split[0]);
+	default_settings_parse(data);
+	parse_malloc(data);
 	while (get_next_line(fd, &line))
 	{
 		if (ft_strlen(line) > 0)
@@ -59,9 +57,6 @@ void	parse_object3d_file(t_rt *data, char *source)
 		else
 			ft_strdel(&line);
 	}
-	create_triangle(data);
 	free(line);
-	free(data->parse.obj3d_v);
-	free(data->parse.obj3d_vn);
 	close(fd);
 }

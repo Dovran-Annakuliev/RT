@@ -44,9 +44,9 @@ cl_float8 parse_vertex_and_normal(char *line, t_rt *data)
 	res.x = data->parse.obj3d_v[ft_atoi(split[0])].x;
 	res.y = data->parse.obj3d_v[ft_atoi(split[0])].y;
 	res.z = data->parse.obj3d_v[ft_atoi(split[0])].z;
-	res.s0 = data->parse.obj3d_vn[ft_atoi(split[normal_idx])].x;
-	res.s1 = data->parse.obj3d_vn[ft_atoi(split[normal_idx])].y;
-	res.s2 = data->parse.obj3d_vn[ft_atoi(split[normal_idx])].z;
+	res.s0 = data->parse.obj3d_vn[ft_atoi(split[normal_idx - 1])].x;
+	res.s1 = data->parse.obj3d_vn[ft_atoi(split[normal_idx - 1])].y;
+	res.s2 = data->parse.obj3d_vn[ft_atoi(split[normal_idx - 1])].z;
 	free_split(&split);
 	return (res);
 }

@@ -63,6 +63,8 @@ void				close_rt(t_rt *data)
 	free(data->parse.obj);
 	free(data->parse.light);
 	free(data->parse.camera);
+	free(data->parse.obj3d_v);
+	free(data->parse.obj3d_vn);
 	free(data);
 	data = NULL;
 }

@@ -30,18 +30,12 @@ static void read_size_object3d(int fd, t_rt *data)
 		if (line[0] == 'v')
 		{
 			if (line[1] == ' ')
-			{
 				data->parse.obj3d_v_size++;
-			}
 			else if (line[1] == 'n' && line[2] == ' ')
-			{
 				data->parse.obj3d_vn_size++;
-			}
 		}
 		else if (line[0] == 'f' && line[1] == ' ')
-		{
 			data->parse.obj_size++;
-		}
 		ft_strdel(&line);
 	}
 	ft_strdel(&line);

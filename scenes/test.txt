@@ -15,7 +15,7 @@ plane:
                 reflection 0.5f
 
 object3d:
-		file: "/Users/rfork/project/RTv1/scenes/objects/test/obj"
+		file: "/Users/rfork/project/RTv1/scenes/objects/test.obj"
 		material:
 				  color (0.0f, 255.0f, 255.0f, 0.0f)
 				  specular 0.0f
