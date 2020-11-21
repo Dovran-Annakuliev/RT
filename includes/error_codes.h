@@ -26,5 +26,6 @@
 # define WRONG_NAME_VALUE -20
 # define WRONG_MATERIAL -21
 # define INVALID_CAMERA -22
+# define WRONG_TYPE_LIGHT -23
 
 #endif

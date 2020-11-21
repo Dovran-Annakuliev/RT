@@ -8,8 +8,7 @@ void	parce_ambient_light(int fd, t_rt *data)
 	get_next_line(fd, &line);
 	data->parse.light[data->parse.light_index].intensity =
 			parse_float(line, "intensity");
-	if (data->parse.light[data->parse.light_index].intensity < 0.f ||
-		data->parse.light[data->parse.light_index].intensity > 1.f)
+	if (data->parse.light[data->parse.light_index].intensity < 0.f)
 		error(WRONG_INTENSITY, line);
 	data->parse.light_index++;
 	ft_strdel(&line);
@@ -27,8 +26,7 @@ void	parce_directional_light(int fd, t_rt *data)
 	get_next_line(fd, &line);
 	data->parse.light[data->parse.light_index].intensity =
 			parse_float(line, "intensity");
-	if (data->parse.light[data->parse.light_index].intensity < 0.f
-		|| data->parse.light[data->parse.light_index].intensity > 1.f)
+	if (data->parse.light[data->parse.light_index].intensity < 0.f)
 		error(WRONG_INTENSITY, line);
 	data->parse.light_index++;
 	ft_strdel(&line);
@@ -49,8 +47,7 @@ void	parce_point_light(int fd, t_rt *data)
 	get_next_line(fd, &line);
 	data->parse.light[data->parse.light_index].intensity =
 			parse_float(line, "intensity");
-	if (data->parse.light[data->parse.light_index].intensity < 0.f ||
-		data->parse.light[data->parse.light_index].intensity > 1.f)
+	if (data->parse.light[data->parse.light_index].intensity < 0.f)
 		error(WRONG_INTENSITY, line);
 	ft_strdel(&line);
 	if (data->parse.light[data->parse.light_index].type == 2)

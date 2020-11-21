@@ -1,0 +1,422 @@
+cmake_minimum_required(VERSION 3.17)
+project(RTv1)
+
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -framework OpenGL -framework OpenCL -framework AppKit -I ~/Library/Frameworks/SDL2.framework/Headers -F /Users/rfork/Library/Frameworks/ -framework SDL2 -I ~/Library/Frameworks/SDL2_image.framework/Headers -F /Users/rfork/Library/Frameworks/ -framework SDL2_image")
+
+include_directories(includes)
+include_directories(libft/includes)
+include_directories(SDL2.framework)
+include_directories(SDL2.framework/Headers)
+include_directories(SDL2.framework/Versions)
+include_directories(SDL2.framework/Versions/A)
+include_directories(SDL2.framework/Versions/A/Headers)
+include_directories(SDL2.framework/Versions/Current)
+include_directories(SDL2.framework/Versions/Current/Headers)
+include_directories(SDL2_image.framework)
+include_directories(SDL2_image.framework/Frameworks)
+include_directories(SDL2_image.framework/Frameworks/webp.framework)
+include_directories(SDL2_image.framework/Frameworks/webp.framework/Headers)
+include_directories(SDL2_image.framework/Frameworks/webp.framework/Headers/webp)
+include_directories(SDL2_image.framework/Frameworks/webp.framework/Versions)
+include_directories(SDL2_image.framework/Frameworks/webp.framework/Versions/A)
+include_directories(SDL2_image.framework/Frameworks/webp.framework/Versions/A/Headers)
+include_directories(SDL2_image.framework/Frameworks/webp.framework/Versions/A/Headers/webp)
+include_directories(SDL2_image.framework/Frameworks/webp.framework/Versions/Current)
+include_directories(SDL2_image.framework/Frameworks/webp.framework/Versions/Current/Headers)
+include_directories(SDL2_image.framework/Frameworks/webp.framework/Versions/Current/Headers/webp)
+include_directories(SDL2_image.framework/Headers)
+include_directories(SDL2_image.framework/Versions)
+include_directories(SDL2_image.framework/Versions/A)
+include_directories(SDL2_image.framework/Versions/A/Frameworks)
+include_directories(SDL2_image.framework/Versions/A/Frameworks/webp.framework)
+include_directories(SDL2_image.framework/Versions/A/Frameworks/webp.framework/Headers)
+include_directories(SDL2_image.framework/Versions/A/Frameworks/webp.framework/Headers/webp)
+include_directories(SDL2_image.framework/Versions/A/Frameworks/webp.framework/Versions)
+include_directories(SDL2_image.framework/Versions/A/Frameworks/webp.framework/Versions/A)
+include_directories(SDL2_image.framework/Versions/A/Frameworks/webp.framework/Versions/A/Headers)
+include_directories(SDL2_image.framework/Versions/A/Frameworks/webp.framework/Versions/A/Headers/webp)
+include_directories(SDL2_image.framework/Versions/A/Frameworks/webp.framework/Versions/Current)
+include_directories(SDL2_image.framework/Versions/A/Frameworks/webp.framework/Versions/Current/Headers)
+include_directories(SDL2_image.framework/Versions/A/Frameworks/webp.framework/Versions/Current/Headers/webp)
+include_directories(SDL2_image.framework/Versions/A/Headers)
+include_directories(SDL2_image.framework/Versions/Current)
+include_directories(SDL2_image.framework/Versions/Current/Frameworks)
+include_directories(SDL2_image.framework/Versions/Current/Frameworks/webp.framework)
+include_directories(SDL2_image.framework/Versions/Current/Frameworks/webp.framework/Headers)
+include_directories(SDL2_image.framework/Versions/Current/Frameworks/webp.framework/Headers/webp)
+include_directories(SDL2_image.framework/Versions/Current/Frameworks/webp.framework/Versions)
+include_directories(SDL2_image.framework/Versions/Current/Frameworks/webp.framework/Versions/A)
+include_directories(SDL2_image.framework/Versions/Current/Frameworks/webp.framework/Versions/A/Headers)
+include_directories(SDL2_image.framework/Versions/Current/Frameworks/webp.framework/Versions/A/Headers/webp)
+include_directories(SDL2_image.framework/Versions/Current/Frameworks/webp.framework/Versions/Current)
+include_directories(SDL2_image.framework/Versions/Current/Frameworks/webp.framework/Versions/Current/Headers)
+include_directories(SDL2_image.framework/Versions/Current/Frameworks/webp.framework/Versions/Current/Headers/webp)
+include_directories(SDL2_image.framework/Versions/Current/Headers)
+
+add_executable(RTv1
+        includes/camera.h
+        includes/error_codes.h
+        includes/lights.h
+        includes/material.h
+        includes/objects.h
+        includes/parser.h
+        includes/rtv1.h
+        includes/vectors.h
+        libft/includes/ft_printf.h
+        libft/includes/libft.h
+        libft/list_funcs/ft_lstadd.c
+        libft/list_funcs/ft_lstdel.c
+        libft/list_funcs/ft_lstdelone.c
+        libft/list_funcs/ft_lstiter.c
+        libft/list_funcs/ft_lstmap.c
+        libft/list_funcs/ft_lstnew.c
+        libft/memory_funcs/ft_bzero.c
+        libft/memory_funcs/ft_memalloc.c
+        libft/memory_funcs/ft_memccpy.c
+        libft/memory_funcs/ft_memchr.c
+        libft/memory_funcs/ft_memcmp.c
+        libft/memory_funcs/ft_memcpy.c
+        libft/memory_funcs/ft_memdel.c
+        libft/memory_funcs/ft_memmove.c
+        libft/memory_funcs/ft_memset.c
+        libft/numbers_funcs/ft_abs.c
+        libft/numbers_funcs/ft_atoi.c
+        libft/numbers_funcs/ft_itoa.c
+        libft/numbers_funcs/ft_itoa_base.c
+        libft/numbers_funcs/ft_lltoa.c
+        libft/numbers_funcs/ft_ulltoa_base.c
+        libft/numbers_funcs/ft_utoa.c
+        libft/numbers_funcs/ft_utoa_base.c
+        libft/print_funcs/printf_src/c_pr.c
+        libft/print_funcs/printf_src/cast.c
+        libft/print_funcs/printf_src/di_pr.c
+        libft/print_funcs/printf_src/f_pr.c
+        libft/print_funcs/printf_src/float_utils.c
+        libft/print_funcs/printf_src/float_utils2.c
+        libft/print_funcs/printf_src/float_utils3.c
+        libft/print_funcs/printf_src/long_arithmetics.c
+        libft/print_funcs/printf_src/long_arithmetics2.c
+        libft/print_funcs/printf_src/parse.c
+        libft/print_funcs/printf_src/parse_flags.c
+        libft/print_funcs/printf_src/parse_length.c
+        libft/print_funcs/printf_src/parse_precision.c
+        libft/print_funcs/printf_src/parse_type.c
+        libft/print_funcs/printf_src/parse_width.c
+        libft/print_funcs/printf_src/percent_pr.c
+        libft/print_funcs/printf_src/pointer_pr.c
+        libft/print_funcs/printf_src/pr.c
+        libft/print_funcs/printf_src/s_pr.c
+        libft/print_funcs/printf_src/uox_pr.c
+        libft/print_funcs/printf_src/utils.c
+        libft/print_funcs/ft_printf.c
+        libft/print_funcs/ft_putchar.c
+        libft/print_funcs/ft_putchar_fd.c
+        libft/print_funcs/ft_putendl.c
+        libft/print_funcs/ft_putendl_fd.c
+        libft/print_funcs/ft_putnbr.c
+        libft/print_funcs/ft_putnbr_fd.c
+        libft/print_funcs/ft_putstr.c
+        libft/print_funcs/ft_putstr_fd.c
+        libft/read_funcs/get_next_line.c
+        libft/string_funcs/ft_char_in_str.c
+        libft/string_funcs/ft_count_words.c
+        libft/string_funcs/ft_str_to_lower.c
+        libft/string_funcs/ft_strcat.c
+        libft/string_funcs/ft_strchr.c
+        libft/string_funcs/ft_strclr.c
+        libft/string_funcs/ft_strcmp.c
+        libft/string_funcs/ft_strcpy.c
+        libft/string_funcs/ft_strdel.c
+        libft/string_funcs/ft_strdup.c
+        libft/string_funcs/ft_strequ.c
+        libft/string_funcs/ft_striter.c
+        libft/string_funcs/ft_striteri.c
+        libft/string_funcs/ft_strjoin.c
+        libft/string_funcs/ft_strjoin_free.c
+        libft/string_funcs/ft_strlcat.c
+        libft/string_funcs/ft_strlen.c
+        libft/string_funcs/ft_strmap.c
+        libft/string_funcs/ft_strmapi.c
+        libft/string_funcs/ft_strncat.c
+        libft/string_funcs/ft_strncmp.c
+        libft/string_funcs/ft_strncpy.c
+        libft/string_funcs/ft_strnequ.c
+        libft/string_funcs/ft_strnew.c
+        libft/string_funcs/ft_strnstr.c
+        libft/string_funcs/ft_strrchr.c
+        libft/string_funcs/ft_strsplit.c
+        libft/string_funcs/ft_strstr.c
+        libft/string_funcs/ft_strsub.c
+        libft/string_funcs/ft_strtrim.c
+        libft/utility_funcs/ft_isalnum.c
+        libft/utility_funcs/ft_isalpha.c
+        libft/utility_funcs/ft_isascii.c
+        libft/utility_funcs/ft_isblank.c
+        libft/utility_funcs/ft_iscntrl.c
+        libft/utility_funcs/ft_isdigit.c
+        libft/utility_funcs/ft_islower.c
+        libft/utility_funcs/ft_isprint.c
+        libft/utility_funcs/ft_isspace.c
+        libft/utility_funcs/ft_isupper.c
+        libft/utility_funcs/ft_tolower.c
+        libft/utility_funcs/ft_toupper.c
+        SDL2.framework/Headers/begin_code.h
+        SDL2.framework/Headers/close_code.h
+        SDL2.framework/Headers/SDL.h
+        SDL2.framework/Headers/SDL_assert.h
+        SDL2.framework/Headers/SDL_atomic.h
+        SDL2.framework/Headers/SDL_audio.h
+        SDL2.framework/Headers/SDL_bits.h
+        SDL2.framework/Headers/SDL_blendmode.h
+        SDL2.framework/Headers/SDL_clipboard.h
+        SDL2.framework/Headers/SDL_config.h
+        SDL2.framework/Headers/SDL_config_macosx.h
+        SDL2.framework/Headers/SDL_copying.h
+        SDL2.framework/Headers/SDL_cpuinfo.h
+        SDL2.framework/Headers/SDL_endian.h
+        SDL2.framework/Headers/SDL_error.h
+        SDL2.framework/Headers/SDL_events.h
+        SDL2.framework/Headers/SDL_filesystem.h
+        SDL2.framework/Headers/SDL_gamecontroller.h
+        SDL2.framework/Headers/SDL_gesture.h
+        SDL2.framework/Headers/SDL_haptic.h
+        SDL2.framework/Headers/SDL_hints.h
+        SDL2.framework/Headers/SDL_joystick.h
+        SDL2.framework/Headers/SDL_keyboard.h
+        SDL2.framework/Headers/SDL_keycode.h
+        SDL2.framework/Headers/SDL_loadso.h
+        SDL2.framework/Headers/SDL_log.h
+        SDL2.framework/Headers/SDL_main.h
+        SDL2.framework/Headers/SDL_messagebox.h
+        SDL2.framework/Headers/SDL_metal.h
+        SDL2.framework/Headers/SDL_mouse.h
+        SDL2.framework/Headers/SDL_mutex.h
+        SDL2.framework/Headers/SDL_name.h
+        SDL2.framework/Headers/SDL_opengl.h
+        SDL2.framework/Headers/SDL_opengl_glext.h
+        SDL2.framework/Headers/SDL_opengles.h
+        SDL2.framework/Headers/SDL_opengles2.h
+        SDL2.framework/Headers/SDL_opengles2_gl2.h
+        SDL2.framework/Headers/SDL_opengles2_gl2ext.h
+        SDL2.framework/Headers/SDL_opengles2_gl2platform.h
+        SDL2.framework/Headers/SDL_opengles2_khrplatform.h
+        SDL2.framework/Headers/SDL_pixels.h
+        SDL2.framework/Headers/SDL_platform.h
+        SDL2.framework/Headers/SDL_power.h
+        SDL2.framework/Headers/SDL_quit.h
+        SDL2.framework/Headers/SDL_rect.h
+        SDL2.framework/Headers/SDL_render.h
+        SDL2.framework/Headers/SDL_revision.h
+        SDL2.framework/Headers/SDL_rwops.h
+        SDL2.framework/Headers/SDL_scancode.h
+        SDL2.framework/Headers/SDL_sensor.h
+        SDL2.framework/Headers/SDL_shape.h
+        SDL2.framework/Headers/SDL_stdinc.h
+        SDL2.framework/Headers/SDL_surface.h
+        SDL2.framework/Headers/SDL_system.h
+        SDL2.framework/Headers/SDL_syswm.h
+        SDL2.framework/Headers/SDL_thread.h
+        SDL2.framework/Headers/SDL_timer.h
+        SDL2.framework/Headers/SDL_touch.h
+        SDL2.framework/Headers/SDL_types.h
+        SDL2.framework/Headers/SDL_version.h
+        SDL2.framework/Headers/SDL_video.h
+        SDL2.framework/Headers/SDL_vulkan.h
+        SDL2.framework/Versions/A/Headers/begin_code.h
+        SDL2.framework/Versions/A/Headers/close_code.h
+        SDL2.framework/Versions/A/Headers/SDL.h
+        SDL2.framework/Versions/A/Headers/SDL_assert.h
+        SDL2.framework/Versions/A/Headers/SDL_atomic.h
+        SDL2.framework/Versions/A/Headers/SDL_audio.h
+        SDL2.framework/Versions/A/Headers/SDL_bits.h
+        SDL2.framework/Versions/A/Headers/SDL_blendmode.h
+        SDL2.framework/Versions/A/Headers/SDL_clipboard.h
+        SDL2.framework/Versions/A/Headers/SDL_config.h
+        SDL2.framework/Versions/A/Headers/SDL_config_macosx.h
+        SDL2.framework/Versions/A/Headers/SDL_copying.h
+        SDL2.framework/Versions/A/Headers/SDL_cpuinfo.h
+        SDL2.framework/Versions/A/Headers/SDL_endian.h
+        SDL2.framework/Versions/A/Headers/SDL_error.h
+        SDL2.framework/Versions/A/Headers/SDL_events.h
+        SDL2.framework/Versions/A/Headers/SDL_filesystem.h
+        SDL2.framework/Versions/A/Headers/SDL_gamecontroller.h
+        SDL2.framework/Versions/A/Headers/SDL_gesture.h
+        SDL2.framework/Versions/A/Headers/SDL_haptic.h
+        SDL2.framework/Versions/A/Headers/SDL_hints.h
+        SDL2.framework/Versions/A/Headers/SDL_joystick.h
+        SDL2.framework/Versions/A/Headers/SDL_keyboard.h
+        SDL2.framework/Versions/A/Headers/SDL_keycode.h
+        SDL2.framework/Versions/A/Headers/SDL_loadso.h
+        SDL2.framework/Versions/A/Headers/SDL_log.h
+        SDL2.framework/Versions/A/Headers/SDL_main.h
+        SDL2.framework/Versions/A/Headers/SDL_messagebox.h
+        SDL2.framework/Versions/A/Headers/SDL_metal.h
+        SDL2.framework/Versions/A/Headers/SDL_mouse.h
+        SDL2.framework/Versions/A/Headers/SDL_mutex.h
+        SDL2.framework/Versions/A/Headers/SDL_name.h
+        SDL2.framework/Versions/A/Headers/SDL_opengl.h
+        SDL2.framework/Versions/A/Headers/SDL_opengl_glext.h
+        SDL2.framework/Versions/A/Headers/SDL_opengles.h
+        SDL2.framework/Versions/A/Headers/SDL_opengles2.h
+        SDL2.framework/Versions/A/Headers/SDL_opengles2_gl2.h
+        SDL2.framework/Versions/A/Headers/SDL_opengles2_gl2ext.h
+        SDL2.framework/Versions/A/Headers/SDL_opengles2_gl2platform.h
+        SDL2.framework/Versions/A/Headers/SDL_opengles2_khrplatform.h
+        SDL2.framework/Versions/A/Headers/SDL_pixels.h
+        SDL2.framework/Versions/A/Headers/SDL_platform.h
+        SDL2.framework/Versions/A/Headers/SDL_power.h
+        SDL2.framework/Versions/A/Headers/SDL_quit.h
+        SDL2.framework/Versions/A/Headers/SDL_rect.h
+        SDL2.framework/Versions/A/Headers/SDL_render.h
+        SDL2.framework/Versions/A/Headers/SDL_revision.h
+        SDL2.framework/Versions/A/Headers/SDL_rwops.h
+        SDL2.framework/Versions/A/Headers/SDL_scancode.h
+        SDL2.framework/Versions/A/Headers/SDL_sensor.h
+        SDL2.framework/Versions/A/Headers/SDL_shape.h
+        SDL2.framework/Versions/A/Headers/SDL_stdinc.h
+        SDL2.framework/Versions/A/Headers/SDL_surface.h
+        SDL2.framework/Versions/A/Headers/SDL_system.h
+        SDL2.framework/Versions/A/Headers/SDL_syswm.h
+        SDL2.framework/Versions/A/Headers/SDL_thread.h
+        SDL2.framework/Versions/A/Headers/SDL_timer.h
+        SDL2.framework/Versions/A/Headers/SDL_touch.h
+        SDL2.framework/Versions/A/Headers/SDL_types.h
+        SDL2.framework/Versions/A/Headers/SDL_version.h
+        SDL2.framework/Versions/A/Headers/SDL_video.h
+        SDL2.framework/Versions/A/Headers/SDL_vulkan.h
+        SDL2.framework/Versions/Current/Headers/begin_code.h
+        SDL2.framework/Versions/Current/Headers/close_code.h
+        SDL2.framework/Versions/Current/Headers/SDL.h
+        SDL2.framework/Versions/Current/Headers/SDL_assert.h
+        SDL2.framework/Versions/Current/Headers/SDL_atomic.h
+        SDL2.framework/Versions/Current/Headers/SDL_audio.h
+        SDL2.framework/Versions/Current/Headers/SDL_bits.h
+        SDL2.framework/Versions/Current/Headers/SDL_blendmode.h
+        SDL2.framework/Versions/Current/Headers/SDL_clipboard.h
+        SDL2.framework/Versions/Current/Headers/SDL_config.h
+        SDL2.framework/Versions/Current/Headers/SDL_config_macosx.h
+        SDL2.framework/Versions/Current/Headers/SDL_copying.h
+        SDL2.framework/Versions/Current/Headers/SDL_cpuinfo.h
+        SDL2.framework/Versions/Current/Headers/SDL_endian.h
+        SDL2.framework/Versions/Current/Headers/SDL_error.h
+        SDL2.framework/Versions/Current/Headers/SDL_events.h
+        SDL2.framework/Versions/Current/Headers/SDL_filesystem.h
+        SDL2.framework/Versions/Current/Headers/SDL_gamecontroller.h
+        SDL2.framework/Versions/Current/Headers/SDL_gesture.h
+        SDL2.framework/Versions/Current/Headers/SDL_haptic.h
+        SDL2.framework/Versions/Current/Headers/SDL_hints.h
+        SDL2.framework/Versions/Current/Headers/SDL_joystick.h
+        SDL2.framework/Versions/Current/Headers/SDL_keyboard.h
+        SDL2.framework/Versions/Current/Headers/SDL_keycode.h
+        SDL2.framework/Versions/Current/Headers/SDL_loadso.h
+        SDL2.framework/Versions/Current/Headers/SDL_log.h
+        SDL2.framework/Versions/Current/Headers/SDL_main.h
+        SDL2.framework/Versions/Current/Headers/SDL_messagebox.h
+        SDL2.framework/Versions/Current/Headers/SDL_metal.h
+        SDL2.framework/Versions/Current/Headers/SDL_mouse.h
+        SDL2.framework/Versions/Current/Headers/SDL_mutex.h
+        SDL2.framework/Versions/Current/Headers/SDL_name.h
+        SDL2.framework/Versions/Current/Headers/SDL_opengl.h
+        SDL2.framework/Versions/Current/Headers/SDL_opengl_glext.h
+        SDL2.framework/Versions/Current/Headers/SDL_opengles.h
+        SDL2.framework/Versions/Current/Headers/SDL_opengles2.h
+        SDL2.framework/Versions/Current/Headers/SDL_opengles2_gl2.h
+        SDL2.framework/Versions/Current/Headers/SDL_opengles2_gl2ext.h
+        SDL2.framework/Versions/Current/Headers/SDL_opengles2_gl2platform.h
+        SDL2.framework/Versions/Current/Headers/SDL_opengles2_khrplatform.h
+        SDL2.framework/Versions/Current/Headers/SDL_pixels.h
+        SDL2.framework/Versions/Current/Headers/SDL_platform.h
+        SDL2.framework/Versions/Current/Headers/SDL_power.h
+        SDL2.framework/Versions/Current/Headers/SDL_quit.h
+        SDL2.framework/Versions/Current/Headers/SDL_rect.h
+        SDL2.framework/Versions/Current/Headers/SDL_render.h
+        SDL2.framework/Versions/Current/Headers/SDL_revision.h
+        SDL2.framework/Versions/Current/Headers/SDL_rwops.h
+        SDL2.framework/Versions/Current/Headers/SDL_scancode.h
+        SDL2.framework/Versions/Current/Headers/SDL_sensor.h
+        SDL2.framework/Versions/Current/Headers/SDL_shape.h
+        SDL2.framework/Versions/Current/Headers/SDL_stdinc.h
+        SDL2.framework/Versions/Current/Headers/SDL_surface.h
+        SDL2.framework/Versions/Current/Headers/SDL_system.h
+        SDL2.framework/Versions/Current/Headers/SDL_syswm.h
+        SDL2.framework/Versions/Current/Headers/SDL_thread.h
+        SDL2.framework/Versions/Current/Headers/SDL_timer.h
+        SDL2.framework/Versions/Current/Headers/SDL_touch.h
+        SDL2.framework/Versions/Current/Headers/SDL_types.h
+        SDL2.framework/Versions/Current/Headers/SDL_version.h
+        SDL2.framework/Versions/Current/Headers/SDL_video.h
+        SDL2.framework/Versions/Current/Headers/SDL_vulkan.h
+        SDL2_image.framework/Frameworks/webp.framework/Headers/webp/decode.h
+        SDL2_image.framework/Frameworks/webp.framework/Headers/webp/demux.h
+        SDL2_image.framework/Frameworks/webp.framework/Headers/webp/encode.h
+        SDL2_image.framework/Frameworks/webp.framework/Headers/webp/mux_types.h
+        SDL2_image.framework/Frameworks/webp.framework/Headers/webp/types.h
+        SDL2_image.framework/Frameworks/webp.framework/Versions/A/Headers/webp/decode.h
+        SDL2_image.framework/Frameworks/webp.framework/Versions/A/Headers/webp/demux.h
+        SDL2_image.framework/Frameworks/webp.framework/Versions/A/Headers/webp/encode.h
+        SDL2_image.framework/Frameworks/webp.framework/Versions/A/Headers/webp/mux_types.h
+        SDL2_image.framework/Frameworks/webp.framework/Versions/A/Headers/webp/types.h
+        SDL2_image.framework/Frameworks/webp.framework/Versions/Current/Headers/webp/decode.h
+        SDL2_image.framework/Frameworks/webp.framework/Versions/Current/Headers/webp/demux.h
+        SDL2_image.framework/Frameworks/webp.framework/Versions/Current/Headers/webp/encode.h
+        SDL2_image.framework/Frameworks/webp.framework/Versions/Current/Headers/webp/mux_types.h
+        SDL2_image.framework/Frameworks/webp.framework/Versions/Current/Headers/webp/types.h
+        SDL2_image.framework/Headers/SDL_image.h
+        SDL2_image.framework/Versions/A/Frameworks/webp.framework/Headers/webp/decode.h
+        SDL2_image.framework/Versions/A/Frameworks/webp.framework/Headers/webp/demux.h
+        SDL2_image.framework/Versions/A/Frameworks/webp.framework/Headers/webp/encode.h
+        SDL2_image.framework/Versions/A/Frameworks/webp.framework/Headers/webp/mux_types.h
+        SDL2_image.framework/Versions/A/Frameworks/webp.framework/Headers/webp/types.h
+        SDL2_image.framework/Versions/A/Frameworks/webp.framework/Versions/A/Headers/webp/decode.h
+        SDL2_image.framework/Versions/A/Frameworks/webp.framework/Versions/A/Headers/webp/demux.h
+        SDL2_image.framework/Versions/A/Frameworks/webp.framework/Versions/A/Headers/webp/encode.h
+        SDL2_image.framework/Versions/A/Frameworks/webp.framework/Versions/A/Headers/webp/mux_types.h
+        SDL2_image.framework/Versions/A/Frameworks/webp.framework/Versions/A/Headers/webp/types.h
+        SDL2_image.framework/Versions/A/Frameworks/webp.framework/Versions/Current/Headers/webp/decode.h
+        SDL2_image.framework/Versions/A/Frameworks/webp.framework/Versions/Current/Headers/webp/demux.h
+        SDL2_image.framework/Versions/A/Frameworks/webp.framework/Versions/Current/Headers/webp/encode.h
+        SDL2_image.framework/Versions/A/Frameworks/webp.framework/Versions/Current/Headers/webp/mux_types.h
+        SDL2_image.framework/Versions/A/Frameworks/webp.framework/Versions/Current/Headers/webp/types.h
+        SDL2_image.framework/Versions/A/Headers/SDL_image.h
+        SDL2_image.framework/Versions/Current/Frameworks/webp.framework/Headers/webp/decode.h
+        SDL2_image.framework/Versions/Current/Frameworks/webp.framework/Headers/webp/demux.h
+        SDL2_image.framework/Versions/Current/Frameworks/webp.framework/Headers/webp/encode.h
+        SDL2_image.framework/Versions/Current/Frameworks/webp.framework/Headers/webp/mux_types.h
+        SDL2_image.framework/Versions/Current/Frameworks/webp.framework/Headers/webp/types.h
+        SDL2_image.framework/Versions/Current/Frameworks/webp.framework/Versions/A/Headers/webp/decode.h
+        SDL2_image.framework/Versions/Current/Frameworks/webp.framework/Versions/A/Headers/webp/demux.h
+        SDL2_image.framework/Versions/Current/Frameworks/webp.framework/Versions/A/Headers/webp/encode.h
+        SDL2_image.framework/Versions/Current/Frameworks/webp.framework/Versions/A/Headers/webp/mux_types.h
+        SDL2_image.framework/Versions/Current/Frameworks/webp.framework/Versions/A/Headers/webp/types.h
+        SDL2_image.framework/Versions/Current/Frameworks/webp.framework/Versions/Current/Headers/webp/decode.h
+        SDL2_image.framework/Versions/Current/Frameworks/webp.framework/Versions/Current/Headers/webp/demux.h
+        SDL2_image.framework/Versions/Current/Frameworks/webp.framework/Versions/Current/Headers/webp/encode.h
+        SDL2_image.framework/Versions/Current/Frameworks/webp.framework/Versions/Current/Headers/webp/mux_types.h
+        SDL2_image.framework/Versions/Current/Frameworks/webp.framework/Versions/Current/Headers/webp/types.h
+        SDL2_image.framework/Versions/Current/Headers/SDL_image.h
+        sources/controllers/controller.c
+        sources/controllers/keyboard_controller.c
+        sources/controllers/mouse_controller.c
+        sources/parser/ft_atof.c
+        sources/parser/ft_strsplit_space.c
+        sources/parser/parse_light.c
+        sources/parser/parse_light_2.c
+        sources/parser/parse_obj.c
+        sources/parser/parse_obj_2.c
+        sources/parser/parse_object3d.c
+        sources/parser/parse_object3d_utilities.c
+        sources/parser/parse_other.c
+        sources/parser/parse_utilities.c
+        sources/parser/parse_utilities_2.c
+        sources/parser/read_arg.c
+        sources/camera.c
+        sources/cl_init.c
+        sources/coloring.c
+        sources/error.c
+        sources/init.c
+        sources/main.c
+        sources/render.c
+        sources/triangle_orientation.c
+        sources/vectors.c
+        sources/vectors_2.c)
