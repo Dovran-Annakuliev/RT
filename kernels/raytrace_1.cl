@@ -332,7 +332,7 @@ static		bool		intersect(t_ray *ray, hit_record *hit, __global t_obj* objects, in
 			hit->id = i;
 		}
 	}
-	return (ray->t < 200);
+	return (ray->t < 1000);
 }
 
 static	bool	shadow_intersect(t_ray *ray, __global t_obj* objects, float	min_v, float max_v, int obj_n)

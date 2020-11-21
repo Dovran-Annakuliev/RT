@@ -7,7 +7,7 @@ plane:
                 reflection 0.5f
 
 object3d:
-		file: "/Users/sauron/RTv1/scenes/objects/test.obj"
+		file: "/Users/sauron/RTv1/scenes/objects/cube.obj"
 		material:
 				  color (255.0f, 0.0f, 0.0f, 0.0f)
 				  specular 0.0f
@@ -18,8 +18,8 @@ ambient_light:
 
 point_light:
         type: point
-            position (0.0f, 5.0f, 10.0f)
-            intensity 0.4f
+            position (5.0f, 5.0f, 10.0f)
+            intensity 0.3f
             color (255.0f, 255.0f, 255.0f, 0.0f)
 
 directional_light:
@@ -28,7 +28,7 @@ directional_light:
 
 
 camera:
-      look_from  {10.0f, 10.0f, 10.0f};
+      look_from  {0.0f, 10.0f, 50.0f};
 	  look_at  {0.0f, 0.0f, 0.0f};
       vertical_fov  25.0f;
       viewport_height  2.0f
