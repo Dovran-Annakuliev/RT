@@ -24,7 +24,7 @@ static	void	main_loop(t_rt *data)
 	}
 }
 
-static void check_obj(t_rt *data){
+static void print_obj(t_rt *data){
 	printf("obj_size = %d\n", data->parse.obj_size);
 	for (int i = 0; i < data->parse.obj_size; i++){
 		if (data->parse.obj[i].type == 0){
@@ -81,7 +81,7 @@ static void check_obj(t_rt *data){
 	}
 }
 
-void check_light(t_rt *data){
+void print_light(t_rt *data){
 	for (int i = 0; i < data->parse.light_size; i++){
 		if (data->parse.light[i].type == 0)
 			printf("light[%d]: ambient:\n\tintensity = %f\n", i, data->parse.light[i].intensity);
@@ -115,7 +115,7 @@ void check_light(t_rt *data){
 	}
 }
 
-void check_camera(t_rt *data){
+void print_camera(t_rt *data){
 	for (int i = 0; i < data->parse.camera_size; i++){
 		printf("camera[%d]:\n\tlook_from = %f, %f, %f\n\tlook_at = %f, %f, %f\n\tvertical_fov = %f\n\tviewport_height = %f\n",
 			i,
@@ -134,9 +134,9 @@ int				main(int ac, char **av)
 	data = init_data();
 	read_arg(av[1], data);
 
-	check_obj(data);
-	check_light(data);
-	check_camera(data);
+	print_obj(data);
+	print_light(data);
+	print_camera(data);
 
 	set_cameras(data->parse.camera, data->parse.camera_size, data->w, data->h);
 	calculate_triangle_normals(&data->parse);
