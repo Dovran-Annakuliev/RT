@@ -62,6 +62,7 @@ void read_object3d(int fd, t_rt *data)
 	char *line;
 	char *line_2;
 	char **split;
+	char **split_2;
 
 	line_2 = NULL;
 	get_next_line(fd, &line);
@@ -70,7 +71,8 @@ void read_object3d(int fd, t_rt *data)
 		error(INVALID_ARGUMENTS_IN_LINE, line) : 0;
 	if (ft_strcmp(split[0], "file:") != 0)
 		error(INVALID_ARGUMENTS_IN_LINE, line);
-	if (((fd = open(ft_strsplit(split[1], '"')[0], O_RDONLY)) < 0)
+	split_2 = ft_strsplit(split[1], '"');
+	if (((fd = open(split_2[0], O_RDONLY)) < 0)
 		|| ((read(fd, line_2, 0)) < 0))
 			error(INVALID_ARGUMENTS, line);
 	default_settings_parse(data);
@@ -78,5 +80,7 @@ void read_object3d(int fd, t_rt *data)
 	parse_malloc(data);
 	ft_strdel(&line);
 	ft_strdel(&line_2);
+	free_split(&split);
+	free_split(&split_2);
 	close(fd);
 }
