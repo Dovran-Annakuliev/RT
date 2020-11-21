@@ -78,6 +78,10 @@ static void print_obj(t_rt *data){
 		}
 		else
 			printf("unknown_type[%d] = %d\n", i, data->parse.obj[i].type);
+		printf("\tmaterial:\n\t\tdiff_color = %f, %f, %f, %f\n\t\tspecular = %f\n\t\treflection = %f\n",
+			data->parse.obj[i].material.diff_color.x, data->parse.obj[i].material.diff_color.y, data->parse.obj[i].material.diff_color.z, data->parse.obj[i].material.diff_color.w,
+			data->parse.obj[i].material.specular,
+			data->parse.obj[i].material.reflection);
 	}
 }
 

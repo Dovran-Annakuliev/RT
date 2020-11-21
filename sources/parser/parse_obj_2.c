@@ -62,7 +62,7 @@ void	parse_object3d(int fd, t_rt *data)
 	if (ft_strcmp(split[0], "file:") != 0)
 		error(INVALID_ARGUMENTS_IN_LINE, line);
 	parse_material(fd, &data->parse.obj[data->parse.obj_index]);
-	parse_object3d_file(data, split[1], (t_material *) &data->parse.obj[data->parse.obj_index]);
+	parse_object3d_file(data, split[1], &data->parse.obj[data->parse.obj_index].material);
 	ft_strdel(&line);
 	ft_strdel(&line);
 }

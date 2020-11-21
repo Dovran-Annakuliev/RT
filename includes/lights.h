@@ -5,7 +5,7 @@
 #  include <OpenGL/gl.h>
 #  include <OpenCL/opencl.h>
 # else
-#  include <GL/opengl.h>
+//#  include <GL/opengl.h>
 #  include <CL/opencl.h>
 # endif
 
