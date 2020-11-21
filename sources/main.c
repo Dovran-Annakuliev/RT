@@ -81,6 +81,51 @@ static void check_obj(t_rt *data){
 	}
 }
 
+void check_light(t_rt *data){
+	for (int i = 0; i < data->parse.light_size; i++){
+		if (data->parse.light[i].type == 0)
+			printf("light[%d]: ambient:\n\tintensity = %f\n", i, data->parse.light[i].intensity);
+		else if (data->parse.light[i].type == 1)
+			printf("light[%d]: directional:\n\tdirection = %f, %f, %f\n\tintensity = %f",
+		  		i,
+		  		data->parse.light[i].dir.x, data->parse.light[i].dir.y, data->parse.light[i].dir.z,
+		  		data->parse.light[i].intensity);
+		else if (data->parse.light[i].type == 2)
+			printf("light[%d]: point:\n\tdirection = %f, %f, %f\n\tintensity = %f\n\tcolor = %f, %f, %f, %f\n",
+		  		i,
+				data->parse.light[i].dir.x, data->parse.light[i].dir.y, data->parse.light[i].dir.z,
+				data->parse.light[i].intensity,
+				data->parse.light[i].clr.x, data->parse.light[i].clr.y, data->parse.light[i].clr.z, data->parse.light[i].clr.w);
+		else if (data->parse.light[i].type == 3)
+			printf("light[%d]: sphere:\n\tdirection = %f, %f, %f\n\tintensity = %f\n\tradius = %f\n\tcolor = %f, %f, %f, %f\n",
+				   i,
+				   data->parse.light[i].dir.x, data->parse.light[i].dir.y, data->parse.light[i].dir.z,
+				   data->parse.light[i].intensity,
+				   data->parse.light[i].r,
+				   data->parse.light[i].clr.x, data->parse.light[i].clr.y, data->parse.light[i].clr.z, data->parse.light[i].clr.w);
+		else if (data->parse.light[i].type == 4)
+			printf("light[%d]: rectangle:\n\tdirection = %f, %f, %f\n\tintensity = %f\n\twidth = %f\n\theight = %f\n\tnormal = %f, %f, %f\n\tcolor = %f, %f, %f, %f\n",
+				   i,
+				   data->parse.light[i].dir.x, data->parse.light[i].dir.y, data->parse.light[i].dir.z,
+				   data->parse.light[i].intensity,
+				   data->parse.light[i].width,
+				   data->parse.light[i].height,
+				   data->parse.light[i].normal.x, data->parse.light[i].normal.y, data->parse.light[i].normal.z,
+				   data->parse.light[i].clr.x, data->parse.light[i].clr.y, data->parse.light[i].clr.z, data->parse.light[i].clr.w);
+	}
+}
+
+void check_camera(t_rt *data){
+	for (int i = 0; i < data->parse.camera_size; i++){
+		printf("camera[%d]:\n\tlook_from = %f, %f, %f\n\tlook_at = %f, %f, %f\n\tvertical_fov = %f\n\tviewport_height = %f\n",
+			i,
+			data->parse.camera[i].look_from.x, data->parse.camera[i].look_from.y, data->parse.camera[i].look_from.z,
+		   	data->parse.camera[i].look_at.x, data->parse.camera[i].look_at.y, data->parse.camera[i].look_at.z,
+		  	data->parse.camera[i].vertical_fov,
+		 	data->parse.camera[i].viewport_height);
+	}
+}
+
 int				main(int ac, char **av)
 {
 	t_rt		*data;
@@ -90,6 +135,8 @@ int				main(int ac, char **av)
 	read_arg(av[1], data);
 
 	check_obj(data);
+	check_light(data);
+	check_camera(data);
 
 	set_cameras(data->parse.camera, data->parse.camera_size, data->w, data->h);
 	calculate_triangle_normals(&data->parse);
