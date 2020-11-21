@@ -1,6 +1,6 @@
 #include "../../includes/rtv1.h"
 
-static void check_type_obj(t_rt *data, char *line){
+static void check_type_obj(t_rt *data, char *line, t_material *material){
 	if (line != NULL && line[0] == 'v')
 	{
 		if (line[1] == ' ')
@@ -15,13 +15,10 @@ static void check_type_obj(t_rt *data, char *line){
 		}
 	}
 	else if (line[0] == 'f')
-		parse_object3d_face(line, data);
+		parse_object3d_face(line, data, (t_material *) &material);
 }
 
-
-
-
-void	parse_object3d_file(t_rt *data, char *source)
+void	parse_object3d_file(t_rt *data, char *source, t_material *material)
 {
 	int fd;
 	char *line;
@@ -34,12 +31,8 @@ void	parse_object3d_file(t_rt *data, char *source)
 	while (get_next_line(fd, &line))
 	{
 		if (ft_strlen(line) > 0)
-		{
-			check_type_obj(data, line);
-			ft_strdel(&line);
-		}
-		else
-			ft_strdel(&line);
+			check_type_obj(data, line, (t_material *) &material);
+		ft_strdel(&line);
 	}
 	free(line);
 	close(fd);

@@ -99,12 +99,8 @@ void		read_arg(char *source, t_rt *data)
 	while (get_next_line(fd, &line))
 	{
 		if (ft_strlen(line) > 0)
-		{
 			check_type(fd, line, data);
-			ft_strdel(&line);
-		}
-		else
-			ft_strdel(&line);
+		ft_strdel(&line);
 	}
 	free(line);
 	close(fd);

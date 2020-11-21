@@ -52,7 +52,7 @@ cl_float8 parse_vertex_and_normal(char *line, t_rt *data)
 	return (res);
 }
 
-void 	parse_object3d_face(char *line, t_rt *data)
+void 	parse_object3d_face(char *line, t_rt *data, t_material *material)
 {
 	char **split;
 	cl_float8 tmp;
@@ -80,6 +80,10 @@ void 	parse_object3d_face(char *line, t_rt *data)
 		|| data->parse.obj[data->parse.obj_index].tr_normal.y != tmp.s4
 		|| data->parse.obj[data->parse.obj_index].tr_normal.z != tmp.s5)
 		error(INVALID_ARGUMENTS_IN_LINE, line);
+
+	data->parse.obj[data->parse.obj_index].material.diff_color = material->diff_color;
+	data->parse.obj[data->parse.obj_index].material.reflection = material->reflection;
+	data->parse.obj[data->parse.obj_index].material.specular = material->specular;
 
 	data->parse.obj_index++;
 	free_split(&split);

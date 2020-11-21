@@ -39,7 +39,7 @@ else
 endif
 ifeq ($(detected_OS),Linux)
 	LIB :=  -L libft -lft -L -lXrandr -lXrender -lXi -lXfixes \
-    	-lXxf86vm -lXext -lX11 -lpthread -lxcb -lXau -lXdmcp -lm -lOpenCL -lrt
+    	-lXxf86vm -lXext -lX11 -lpthread -lxcb -lXau -lXdmcp -lm -lOpenCL -lrt -lSDL2 -lSDL2_image
 endif
 ifeq ($(detected_OS),Darwin)  
 	LIB = -L libft -lft -framework OpenGL -framework Appkit -framework OpenCL -I SDL2.framework/Headers -F ./ -framework SDL2 -I SDL2_image.framework/Headers -F ./ -framework SDL2_image
