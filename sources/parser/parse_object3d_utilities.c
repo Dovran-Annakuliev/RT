@@ -34,11 +34,12 @@ cl_float8 parse_vertex_and_normal(char *line, t_rt *data)
 {
 	char **split;
 	int normal_idx;
+	int count_words;
 	cl_float8 res;
 
 	split = ft_strsplit(line, '/');
-	if (ft_count_words_split((const char**)split) < 1
-		|| ft_count_words_split((const char**)split) > 4)
+	count_words = ft_count_words_split((const char**)split);
+	if (count_words < 1 || count_words > 3)
 		error(INVALID_ARGUMENTS_IN_LINE, line);
 	normal_idx = ft_count_words_split((const char **)split);
 
@@ -65,21 +66,13 @@ void 	parse_object3d_face(char *line, t_rt *data, t_material *material)
 
 	tmp = parse_vertex_and_normal(split[1], data);
 	data->parse.obj[data->parse.obj_index].tr_0 = (cl_float3){tmp.s0, tmp.s1, tmp.s2};
-	data->parse.obj[data->parse.obj_index].tr_normal = (cl_float3){tmp.s3, tmp.s4, tmp.s5};
+	data->parse.obj[data->parse.obj_index].tr_normal = (cl_float3){0, 0, 0};
 
 	tmp = parse_vertex_and_normal(split[2], data);
 	data->parse.obj[data->parse.obj_index].tr_1 = (cl_float3){tmp.s0, tmp.s1, tmp.s2};
-	if (data->parse.obj[data->parse.obj_index].tr_normal.x != tmp.s3
-		|| data->parse.obj[data->parse.obj_index].tr_normal.y != tmp.s4
-		|| data->parse.obj[data->parse.obj_index].tr_normal.z != tmp.s5)
-		error(INVALID_ARGUMENTS_IN_LINE, line);
 
 	tmp = parse_vertex_and_normal(split[3], data);
 	data->parse.obj[data->parse.obj_index].tr_2 = (cl_float3){tmp.s0, tmp.s1, tmp.s2};
-	if (data->parse.obj[data->parse.obj_index].tr_normal.x != tmp.s3
-		|| data->parse.obj[data->parse.obj_index].tr_normal.y != tmp.s4
-		|| data->parse.obj[data->parse.obj_index].tr_normal.z != tmp.s5)
-		error(INVALID_ARGUMENTS_IN_LINE, line);
 
 	data->parse.obj[data->parse.obj_index].material.diff_color = material->diff_color;
 	data->parse.obj[data->parse.obj_index].material.reflection = material->reflection;

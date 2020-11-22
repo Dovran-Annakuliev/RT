@@ -1,20 +1,13 @@
 #include "../../includes/rtv1.h"
 
-static void check_type_obj(t_rt *data, char *line, t_material *material){
-	if (line != NULL && line[0] == 'v')
+static void check_type_obj(t_rt *data, char *line, t_material *material)
+{
+	if (line != NULL && line[0] == 'v' && line[1] == ' ')
 	{
-		if (line[1] == ' ')
-		{
-			data->parse.obj3d_v[data->parse.obj3d_v_idx] = parse_object3d_vertex(line);
-			data->parse.obj3d_v_idx++;
-		}
-		else if (line[1] == 'n')
-		{
-			data->parse.obj3d_vn[data->parse.obj3d_vn_idx] = parse_object3d_normal(line);
-			data->parse.obj3d_vn_idx++;
-		}
+		data->parse.obj3d_v[data->parse.obj3d_v_idx] = parse_object3d_vertex(line);
+		data->parse.obj3d_v_idx++;
 	}
-	else if (line[0] == 'f')
+	else if (line != NULL && line[0] == 'f' && line[1] == ' ')
 		parse_object3d_face(line, data, material);
 }
 
