@@ -7,7 +7,7 @@ plane:
                 reflection 0.5f
 
 object3d:
-		file: "/Users/sauron/RTv1/scenes/objects/test.obj"
+		file: "/Users/sauron/RTv1/scenes/objects/cube.obj"
 		material:
 				  color (255.0f, 60.0f, 60.0f, 0.0f)
 				  specular 0.0f
