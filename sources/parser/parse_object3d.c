@@ -21,6 +21,7 @@ void	parse_object3d_file(t_rt *data, char *source, t_material *material)
 	split = ft_strsplit(source, '"');
 	if (((fd = open(split[0], O_RDONLY)) < 0) || ((read(fd, line, 0)) < 0))
 		error(INVALID_ARGUMENTS, split[0]);
+	ft_strdel(&line);
 	while (get_next_line(fd, &line))
 	{
 		if (ft_strlen(line) > 0)
