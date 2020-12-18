@@ -1,4 +1,4 @@
-# RTv1
+# RT
 Visualization program using the ray tracing method.
 
 
